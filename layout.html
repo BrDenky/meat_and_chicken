@@ -1,0 +1,80 @@
+<!-- FONDO OSCURO AL ABRIR MENÚ -->
+<div class="overlay" id="overlay" onclick="cerrarMenu()"></div>
+
+<!-- MENÚ LATERAL -->
+<aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-header">
+        <span class="sidebar-logo">🌿 Tu Tienda</span>
+        <button class="sidebar-close" onclick="cerrarMenu()">✕</button>
+    </div>
+
+    <!-- Botones de tipo de usuario -->
+    <div class="sidebar-role">
+        <p class="sidebar-role-label">Ingresar como:</p>
+        <div class="role-buttons">
+            <button class="role-btn active" onclick="setRole(this, 'cliente')">🛒 Cliente</button>
+            <button class="role-btn" onclick="setRole(this, 'proveedor')">🏪 Proveedor</button>
+            <button class="role-btn" onclick="setRole(this, 'tecnico')">🎧 Soporte</button>
+        </div>
+    </div>
+
+    <!-- Menú CLIENTES -->
+    <nav class="sidebar-nav" id="menu-cliente">
+        <a href="#" class="nav-link">⭐ Mis Puntos</a>
+        <a href="#" class="nav-link">🛍️ Mis Pedidos</a>
+        <a href="#productos" class="nav-link" onclick="cerrarMenu()">🏪 Ver Proveedores</a>
+        <a href="#" class="nav-link">📰 Noticias de Calidad</a>
+        <a href="#" class="nav-link nav-disabled">💳 Pagos <span class="badge-soon">Próximamente</span></a>
+    </nav>
+
+    <!-- Menú PROVEEDORES -->
+    <nav class="sidebar-nav hidden" id="menu-proveedor">
+        <a href="#" class="nav-link">📦 Mis Productos</a>
+        <a href="#" class="nav-link">📸 Subir Fotos</a>
+        <a href="#" class="nav-link">🎬 Videos y Podcast</a>
+        <a href="#" class="nav-link">🏷️ Mis Ofertas</a>
+        <a href="#" class="nav-link">📖 Mis Historias</a>
+        <a href="#" class="nav-link nav-disabled">💳 Pasarela de Pago <span class="badge-soon">Próximamente</span></a>
+    </nav>
+
+    <!-- Menú SOPORTE -->
+    <nav class="sidebar-nav hidden" id="menu-tecnico">
+        <a href="#" class="nav-link">🎧 Panel CallCenter</a>
+        <a href="#" class="nav-link">🤖 Chatbot</a>
+        <a href="#" class="nav-link">📋 Tickets</a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <a href="#" class="nav-link">🔐 Iniciar Sesión</a>
+        <a href="#" class="nav-link highlight-link">🤝 Trabaja con Nosotros</a>
+    </div>
+
+</aside>
+
+<!-- HEADER -->
+<header id="header">
+    <div class="header-inner">
+
+        <button class="hamburger" onclick="abrirMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <a href="/" class="header-brand">
+            🥩 Meat & Chicken Fast
+        </a>
+
+        <div class="header-search">
+            <input type="text" id="searchInput" placeholder="Buscar proveedor o producto...">
+            <button onclick="buscar()">🔍</button>
+        </div>
+
+        <div class="header-actions">
+            <button class="action-btn">⭐ <span>Puntos</span></button>
+            <button class="action-btn">🛒 <span>Carrito</span></button>
+        </div>
+
+    </div>
+</header>

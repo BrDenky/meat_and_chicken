@@ -1,0 +1,49 @@
+.logo-badge {
+    /* Dimensiones y forma (del rect) */
+    width: 260px;
+    height: 60px;
+    background-color: #F05A22;
+    border-radius: 5px; /* Esto equivale al rx="5" */
+
+    /* Centrado del texto (del text x/y y text-anchor) */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* Estilos de fuente (del text) */
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    
+}
+
+.header_logo a {
+    text-decoration: none;
+}
+
+
+.related-product-image {
+    background: #f8f8f8;
+    height: 200px; /* Ajusta la altura según prefieras */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* Corta lo que sobresalga de la imagen */
+    border-radius: 10px 10px 0 0; /* Redondea las esquinas superiores */
+}
+
+.related-img {
+    width: 100%;
+    height: 100%;
+    /* 'cover' es fundamental para fotos de comida: llena el espacio 
+       sin deformar la carne, haciendo que se vea apetitosa */
+    object-fit: cover; 
+    transition: transform 0.3s ease; /* Para un efecto visual al pasar el mouse */
+}
+
+/* Efecto opcional: La imagen crece un poquito al pasar el mouse */
+.related-product:hover .related-img {
+    transform: scale(1.05);
+}
