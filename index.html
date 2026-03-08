@@ -75,7 +75,7 @@
             </button>
 
             <a href="/" class="header-brand">
-                🥩 Meat & Chicken Fast
+                <span>🥩</span> <span class="brand-text">Meat & Chicken Fast</span>
             </a>
 
             <div class="header-search">
@@ -84,7 +84,17 @@
             </div>
 
             <div class="header-actions">
-                <button class="action-btn">⭐ <span>Puntos</span></button>
+                <div class="puntos-dropdown-wrapper">
+                  <button class="action-btn" onclick="togglePuntos()">⭐ <span>1,240 pts</span></button>
+                  <div class="puntos-dropdown" id="puntosDropdown">
+                    <p class="puntos-dropdown-title">💎 Mis Puntos</p>
+                    <p class="puntos-dropdown-valor">1,240 pts</p>
+                    <div class="puntos-barra">
+                      <div class="puntos-barra-fill"></div>
+                    </div>
+                    <p class="puntos-dropdown-next">760 pts para tu próximo canje</p>
+                  </div>
+                </div>
                 <a class="action-btn" href="carrito.html">🛒 <span>Carrito</span></a>
             </div>
 
@@ -352,7 +362,7 @@
         </div>
 
         <!-- Puntos Acumulados -->
-        <div class="puntos-section"></div>
+        <div class="puntos-section" id="puntos">
             <div class="container">
                 <div class="puntos-banner">
 
@@ -360,7 +370,6 @@
                         <p class="puntos-eyebrow">💎 Programa de Lealtad</p>
                         <h2>Acumula puntos<br>en cada compra</h2>
                         <p>Canjea tus puntos por descuentos exclusivos en cualquier proveedor del marketplace. ¡Mientras más compras, más ganas!</p>
-                        
                     </div>
 
                     <div class="puntos-card">

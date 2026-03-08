@@ -22,6 +22,8 @@ body {
 #header {
     background: #fff;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    width: 100%;
+    overflow: hidden;
 }
 
 .header-top {
@@ -1150,7 +1152,35 @@ body {
   display: flex;
   align-items: center;
   gap: 16px;
+  box-sizing: border-box;
 }
+
+/* Esto va en tu archivo styles.css */
+
+@media (max-width: 600px) {
+    /* Ocultamos solo las letras del logo */
+    .brand-text {
+        display: none;
+    }
+
+    /* Reducimos el tamaño del buscador para que los iconos quepan */
+    .header-search {
+        flex: 1;
+        min-width: 50px;
+        margin: 0 5px;
+    }
+
+    /* Aseguramos que los botones de acción no tengan texto tampoco */
+    .header-actions .action-btn span {
+        display: none;
+    }
+
+    .header-inner {
+        gap: 5px;
+        padding: 10px 5px;
+    }
+}
+
 
 /* Las rayitas del hamburger ahora en blanco */
 .hamburger span {
@@ -3016,14 +3046,50 @@ body {
     object-fit: cover; /* Clave para que la carne se vea bien y no estirada */
     display: block;
 }
-.puntos-section .puntos-banner {
-  background: transparent;
+
+/* ================================
+   DROPDOWN PUNTOS
+   ================================ */
+.puntos-dropdown-wrapper {
+  position: relative;
 }
 
-.puntos-section * {
-  background-color: transparent;
+.puntos-dropdown {
+  display: none;
+  position: absolute;
+  top: 48px;
+  right: 0;
+  background: white;
+  border-radius: 12px;
+  padding: 16px 20px;
+  min-width: 220px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  z-index: 200;
+  color: #333;
 }
 
-.puntos-section .puntos-card {
-  background: rgba(255,255,255,0.1) !important;
+.puntos-dropdown.active {
+  display: block;
+}
+
+.puntos-dropdown-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #1B4332;
+  margin-bottom: 8px;
+}
+
+.puntos-dropdown-valor {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #D4A017;
+  margin-bottom: 10px;
+}
+
+.puntos-dropdown-next {
+  font-size: 0.78rem;
+  color: #888;
+  margin-top: 8px;
 }

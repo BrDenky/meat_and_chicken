@@ -85,7 +85,17 @@
             </div>
 
             <div class="header-actions">
-                <button class="action-btn">⭐ <span>Puntos</span></button>
+                <div class="puntos-dropdown-wrapper">
+                    <button class="action-btn" onclick="togglePuntos()">⭐ <span>1,240 pts</span></button>
+                    <div class="puntos-dropdown" id="puntosDropdown">
+                        <p class="puntos-dropdown-title">💎 Mis Puntos</p>
+                        <p class="puntos-dropdown-valor">1,240 pts</p>
+                        <div class="puntos-barra">
+                        <div class="puntos-barra-fill"></div>
+                        </div>
+                        <p class="puntos-dropdown-next">760 pts para tu próximo canje</p>
+                    </div>
+                </div>
                 <a class="action-btn" href="carrito.html">🛒 <span>Carrito</span></a>
             </div>
 
@@ -533,6 +543,7 @@
         document.getElementById('searchInput').addEventListener('keydown', function(e) {
         if (e.key === 'Enter') buscar();
         });
+        
     </script>
 </body>
 </html>
