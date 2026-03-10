@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="es-ES">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/shapes.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Carrito de Compras - Mi Tienda</title>
+    
+    
+</head>
+
+<body>
+    <!-- FONDO OSCURO AL ABRIR MENÚ -->
+    <div class="overlay" id="overlay" onclick="cerrarMenu()"></div>
+
+    <!-- MENÚ LATERAL -->
+    <aside class="sidebar" id="sidebar">
+
+        <div class="sidebar-header">
+            <span class="sidebar-logo">🌿 Tu Tienda</span>
+            <button class="sidebar-close" onclick="cerrarMenu()">✕</button>
+        </div>
+
+        <!-- Botones de tipo de usuario -->
+        <div class="sidebar-role">
+            <p class="sidebar-role-label">Ingresar como:</p>
+            <div class="role-buttons">
+                <button class="role-btn active" onclick="setRole(this, 'cliente')">🛒 Cliente</button>
+                <button class="role-btn" onclick="setRole(this, 'proveedor')">🏪 Proveedor</button>
+                <button class="role-btn" onclick="setRole(this, 'tecnico')">🎧 Soporte</button>
+            </div>
+        </div>
+
+        <!-- Menú CLIENTES -->
+        <nav class="sidebar-nav" id="menu-cliente">
+            <a href="#" class="nav-link">⭐ Mis Puntos</a>
+            <a href="#" class="nav-link">🛍️ Mis Pedidos</a>
+            <a href="#productos" class="nav-link" onclick="cerrarMenu()">🏪 Ver Proveedores</a>
+            <a href="#" class="nav-link">📰 Noticias de Calidad</a>
+            <a href="#" class="nav-link nav-disabled">💳 Pagos <span class="badge-soon">Próximamente</span></a>
+        </nav>
+
+        <!-- Menú PROVEEDORES -->
+        <nav class="sidebar-nav hidden" id="menu-proveedor">
+            <a href="#" class="nav-link">📦 Mis Productos</a>
+            <a href="#" class="nav-link">📸 Subir Fotos</a>
+            <a href="#" class="nav-link">🎬 Videos y Podcast</a>
+            <a href="#" class="nav-link">🏷️ Mis Ofertas</a>
+            <a href="#" class="nav-link">📖 Mis Historias</a>
+            <a href="#" class="nav-link nav-disabled">💳 Pasarela de Pago <span class="badge-soon">Próximamente</span></a>
+        </nav>
+
+        <!-- Menú SOPORTE -->
+        <nav class="sidebar-nav hidden" id="menu-tecnico">
+            <a href="#" class="nav-link">🎧 Panel CallCenter</a>
+            <a href="#" class="nav-link">🤖 Chatbot</a>
+            <a href="#" class="nav-link">📋 Tickets</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="#" class="nav-link">🔐 Iniciar Sesión</a>
+            <a href="#" class="nav-link highlight-link">🤝 Trabaja con Nosotros</a>
+        </div>
+
+    </aside>
+
+     <!-- HEADER -->
+    <header id="header">
+        <div class="header-inner">
+            <a href="/index.html" class="header-brand">
+                <span>🥩</span> <span class="brand-text">Meat & Chicken Fast</span>
+            </a>
+
+            <div class="header-search">
+                <input type="text" id="searchInput" placeholder="Buscar proveedor o producto...">
+            </div>
+
+            <div class="header-actions">
+                <div class="puntos-dropdown-wrapper">
+                  <button class="action-btn" onclick="togglePuntos()">⭐ <span>1,240 pts</span></button>
+                  <div class="puntos-dropdown" id="puntosDropdown">
+                    <p class="puntos-dropdown-title">💎 Mis Puntos</p>
+                    <p class="puntos-dropdown-valor">1,240 pts</p>
+                    <div class="puntos-barra">
+                      <div class="puntos-barra-fill"></div>
+                    </div>
+                    <p class="puntos-dropdown-next">760 pts para tu próximo canje</p>
+                  </div>
+                </div>
+                <a class="action-btn" href="carrito.html">🛒 <span>Carrito</span></a>
+                <button class="action-btn" onclick="iniciarSesion('cliente')">🔐 <span>Stalyn</span></button>
+            </div>
+
+        </div>
+    </header>
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="container">
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li>→</li>
+                <li><span>Carrito de Compras</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <main>
+        <div class="container">
+            <div class="page-title">
+                <h1>🛒 Carrito de Compras</h1>
+                <p id="cart-count">Tienes <strong>4 productos</strong> en tu carrito</p>
+            </div>
+
+            <div class="cart-container">
+                <!-- Cart Items -->
+                <div class="cart-items" id="cart-items">
+                    <!-- Header -->
+                    <div class="cart-header">
+                        <div>Producto</div>
+                        <div>Precio</div>
+                        <div>Cantidad</div>
+                        <div>Total</div>
+                        <div></div>
+                    </div>
+
+                    <!-- Cart Item 1 -->
+                    <div class="cart-item" data-id="1" data-price="18.10">
+                        <div class="item-product">
+                       <div class="item-image">
+                            <img src="img/corte_1.png" alt="Producto Cárnico" class="related-img">
+                        </div>
+                            <div class="item-details">
+                                <h3>Lomo Fino Premium</h3>
+                                <p>SKU: CAR-LF001</p>
+                                <p>Peso: 500g | Corte: Medallón</p>
+                            </div>
+                        </div>
+                        <div class="item-price discounted">
+                            $18.10
+                            <span class="item-price-original">$25.50</span>
+                        </div>
+                        <div>
+                            <div class="quantity-control">
+                                <button onclick="updateQuantity(1, -1)">-</button>
+                                <input type="number" value="2" min="1" id="qty-1" readonly>
+                                <button onclick="updateQuantity(1, 1)">+</button>
+                            </div>
+                        </div>
+                        <div class="item-total" id="total-1">$36.20</div>
+                        <div>
+                            <button class="item-remove" onclick="removeItem(1)">×</button>
+                        </div>
+                    </div>
+
+                    <!-- Cart Item 2 -->
+                    <div class="cart-item" data-id="2" data-price="4.50">
+                        <div class="item-product">
+                       <div class="item-image">
+                            <img src="img/corte_2.png" alt="Producto Cárnico" class="related-img">
+                        </div>
+                            <div class="item-details">
+                                <h3>Lomo Fino Premium</h3>
+                                <p>SKU: CAR-LF001</p>
+                                <p>Peso: 500g | Corte: Medallón</p>
+                            </div>
+                        </div>
+                        <div class="item-price">$4.50</div>
+                        <div>
+                            <div class="quantity-control">
+                                <button onclick="updateQuantity(2, -1)">-</button>
+                                <input type="number" value="1" min="1" id="qty-2" readonly>
+                                <button onclick="updateQuantity(2, 1)">+</button>
+                            </div>
+                        </div>
+                        <div class="item-total" id="total-2">$4.50</div>
+                        <div>
+                            <button class="item-remove" onclick="removeItem(2)">×</button>
+                        </div>
+                    </div>
+
+                    <!-- Cart Item 3 -->
+                    <div class="cart-item" data-id="3" data-price="10.70">
+                        <div class="item-product">
+                       <div class="item-image">
+                            <img src="img/corte_3.png" alt="Producto Cárnico" class="related-img">
+                        </div>
+                            <div class="item-details">
+                                <h3>Lomo Fino Premium</h3>
+                                <p>SKU: CAR-LF001</p>
+                                <p>Peso: 500g | Corte: Medallón</p>
+                            </div>
+                        </div>
+                        <div class="item-price">$10.70</div>
+                        <div>
+                            <div class="quantity-control">
+                                <button onclick="updateQuantity(3, -1)">-</button>
+                                <input type="number" value="3" min="1" id="qty-3" readonly>
+                                <button onclick="updateQuantity(3, 1)">+</button>
+                            </div>
+                        </div>
+                        <div class="item-total" id="total-3">$32.10</div>
+                        <div>
+                            <button class="item-remove" onclick="removeItem(3)">×</button>
+                        </div>
+                    </div>
+
+                    <!-- Cart Item 4 -->
+                    <div class="cart-item" data-id="4" data-price="5.80">
+                        <div class="item-product">
+                       <div class="item-image">
+                            <img src="img/corte_4.png" alt="Producto Cárnico" class="related-img">
+                        </div>
+                            <div class="item-details">
+                                <h3>Lomo Fino Premium</h3>
+                                <p>SKU: CAR-LF001</p>
+                                <p>Peso: 500g | Corte: Medallón</p>
+                            </div>
+                        </div>
+                        <div class="item-price">$5.80</div>
+                        <div>
+                            <div class="quantity-control">
+                                <button onclick="updateQuantity(4, -1)">-</button>
+                                <input type="number" value="1" min="1" id="qty-4" readonly>
+                                <button onclick="updateQuantity(4, 1)">+</button>
+                            </div>
+                        </div>
+                        <div class="item-total" id="total-4">$5.80</div>
+                        <div>
+                            <button class="item-remove" onclick="removeItem(4)">×</button>
+                        </div>
+                    </div>
+
+                    <div class="continue-shopping">
+                        <a href="resultados.html">← Continuar comprando</a>
+                    </div>
+                </div>
+
+                <!-- Cart Summary -->
+                <div class="cart-summary">
+                    <h2>Resumen del Pedido</h2>
+                    
+                    <div class="summary-row subtotal">
+                        <span>Subtotal (<span id="items-count">7</span> artículos)</span>
+                        <span id="subtotal">$78.60</span>
+                    </div>
+                    
+                    <div class="summary-row shipping">
+                        <span>Envío</span>
+                        <span class="shipping-badge">GRATIS</span>
+                    </div>
+                    
+                    <div class="summary-row discount" id="discount-row" style="display: none;">
+                        <span>Descuento</span>
+                        <span id="discount-amount">-$0.00</span>
+                    </div>
+                    
+                    <div class="summary-row total">
+                        <span>Total</span>
+                        <span class="price" id="total">$78.60</span>
+                    </div>
+                    
+                    <!-- Coupon -->
+                    <div class="coupon-section">
+                        <h4 style="font-size: 14px; color: #666; margin-bottom: 10px;">¿Tienes un cupón?</h4>
+                        <div class="coupon-input">
+                            <input type="text" id="coupon-code" placeholder="Código de cupón">
+                            <button onclick="applyCoupon()">Aplicar</button>
+                        </div>
+                        <div class="coupon-applied" id="coupon-applied">
+                            <span>Cupón <strong id="applied-code"></strong> aplicado</span>
+                            <button class="remove-coupon" onclick="removeCoupon()">×</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Actions -->
+                    <div class="cart-actions">
+                        <button class="btn btn-primary" onclick="window.location.href='pago.html'">
+                            Proceder al Pago
+                        </button>
+                        <button class="btn btn-secondary" onclick="clearCart()">
+                            Vaciar Carrito
+                        </button>
+                    </div>
+                    
+                    <!-- Payment Methods -->
+                    <div class="payment-methods">
+                        <h4>Métodos de Pago Aceptados</h4>
+                        <div class="payment-icons">
+                            <div class="payment-icon">💳</div>
+                            <div class="payment-icon">🏧</div>
+                            <div class="payment-icon">📱</div>
+                            <div class="payment-icon">💵</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Security -->
+                    <div class="security-badge">
+                        <span class="icon">🔒</span>
+                        <span class="text">Compra 100% segura. Tus datos están protegidos.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer id="footer">
+        <div class="container">
+            <p>&copy; 2026 Tu Tienda - Todos los derechos reservados</p>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script src="js/layout.js"></script>
+    <script src="js/home.js"></script>
+
+    <script>
+        // Datos del carrito
+        let cart = [];
+        
+        // Inicializar carrito
+        function initCart() {
+            const items = document.querySelectorAll('.cart-item');
+            cart = [];
+            
+            items.forEach(item => {
+                const id = parseInt(item.dataset.id);
+                const price = parseFloat(item.dataset.price);
+                const qty = parseInt(document.getElementById(`qty-${id}`).value);
+                
+                cart.push({ id, price, qty });
+            });
+            
+            updateTotals();
+        }
+        
+        // Actualizar cantidad
+        function updateQuantity(id, change) {
+            const input = document.getElementById(`qty-${id}`);
+            let currentQty = parseInt(input.value);
+            let newQty = currentQty + change;
+            
+            if (newQty < 1) {
+                if (confirm('¿Deseas eliminar este producto del carrito?')) {
+                    removeItem(id);
+                }
+                return;
+            }
+            
+            if (newQty > 99) {
+                showNotification('Cantidad máxima: 99 unidades', 'warning');
+                return;
+            }
+            
+            input.value = newQty;
+            
+            // Actualizar en el array
+            const item = cart.find(i => i.id === id);
+            if (item) {
+                item.qty = newQty;
+            }
+            
+            // Actualizar total del item
+            const itemTotal = document.getElementById(`total-${id}`);
+            const price = parseFloat(document.querySelector(`.cart-item[data-id="${id}"]`).dataset.price);
+            itemTotal.textContent = `$${(price * newQty).toFixed(2)}`;
+            
+            updateTotals();
+            showNotification('Cantidad actualizada');
+        }
+        
+        // Eliminar producto
+        function removeItem(id) {
+            const item = document.querySelector(`.cart-item[data-id="${id}"]`);
+            
+            if (item) {
+                item.style.animation = 'slideOut 0.3s ease';
+                
+                setTimeout(() => {
+                    item.remove();
+                    cart = cart.filter(i => i.id !== id);
+                    updateTotals();
+                    
+                    // Si el carrito está vacío
+                    if (cart.length === 0) {
+                        showEmptyCart();
+                    } else {
+                        showNotification('Producto eliminado del carrito', 'error');
+                    }
+                }, 300);
+            }
+        }
+        
+        // Mostrar carrito vacío
+        function showEmptyCart() {
+            const cartItems = document.getElementById('cart-items');
+            cartItems.innerHTML = `
+                <div class="empty-cart">
+                    <div class="empty-cart-icon">🛒</div>
+                    <h2>Tu carrito está vacío</h2>
+                    <p>Añade productos para empezar a comprar</p>
+                    <a href="index.html" class="btn btn-primary" style="display: inline-block; max-width: 300px; margin: 0 auto;">
+                        Ver productos
+                    </a>
+                </div>
+            `;
+        }
+        
+        // Actualizar totales
+        function updateTotals() {
+            let subtotal = 0;
+            let itemsCount = 0;
+            
+            cart.forEach(item => {
+                subtotal += item.price * item.qty;
+                itemsCount += item.qty;
+            });
+            
+            // Aplicar descuento si existe
+            let discount = 0;
+            if (document.getElementById('coupon-applied').classList.contains('active')) {
+                discount = subtotal * 0.1; // 10% de descuento
+            }
+            
+            const total = subtotal - discount;
+            
+            // Actualizar UI
+            document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('items-count').textContent = itemsCount;
+            document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+            document.getElementById('cart-count').innerHTML = `Tienes <strong>${itemsCount} producto${itemsCount !== 1 ? 's' : ''}</strong> en tu carrito`;
+            
+            if (discount > 0) {
+                document.getElementById('discount-row').style.display = 'flex';
+                document.getElementById('discount-amount').textContent = `-$${discount.toFixed(2)}`;
+            }
+        }
+        
+        // Aplicar cupón
+        function applyCoupon() {
+            const code = document.getElementById('coupon-code').value.trim().toUpperCase();
+            
+            if (!code) {
+                showNotification('Por favor ingresa un código de cupón', 'warning');
+                return;
+            }
+            
+            // Códigos válidos (simulado)
+            const validCoupons = {
+                'DESCUENTO10': 10,
+                'BIENVENIDO': 10,
+                'PROMO2026': 15
+            };
+            
+            if (validCoupons[code]) {
+                document.getElementById('coupon-applied').classList.add('active');
+                document.getElementById('applied-code').textContent = code;
+                document.getElementById('coupon-code').value = '';
+                updateTotals();
+                showNotification(`¡Cupón aplicado! ${validCoupons[code]}% de descuento`);
+            } else {
+                showNotification('Cupón inválido o expirado', 'error');
+            }
+        }
+        
+        // Remover cupón
+        function removeCoupon() {
+            document.getElementById('coupon-applied').classList.remove('active');
+            document.getElementById('discount-row').style.display = 'none';
+            updateTotals();
+            showNotification('Cupón eliminado');
+        }
+        
+        // Vaciar carrito
+        function clearCart() {
+            if (confirm('¿Estás seguro de que deseas vaciar el carrito?')) {
+                cart = [];
+                showEmptyCart();
+                updateTotals();
+            }
+        }
+        
+        // Proceder al pago
+        function proceedToCheckout() {
+            if (cart.length === 0) {
+                showNotification('Tu carrito está vacío', 'warning');
+                return;
+            }
+            
+            showNotification('Redirigiendo al proceso de pago...');
+            
+            setTimeout(() => {
+                // Aquí normalmente redirigirías a la página de checkout
+                alert('En una aplicación real, serías redirigido al proceso de pago.');
+            }, 1500);
+        }
+        
+        // Sistema de notificaciones
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideIn 0.3s ease reverse';
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3000);
+        }
+        
+        // Inicializar al cargar
+        window.addEventListener('DOMContentLoaded', initCart);
+        
+        // Animación de salida
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideOut {
+                from {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+                to {
+                    opacity: 0;
+                    transform: translateX(-100%);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        function buscar() {
+        const val = document.getElementById('searchInput').value.trim();
+        if (val) {
+            window.location.href = 'resultados.html?q=' + encodeURIComponent(val);
+        }
+        }
+
+        document.getElementById('searchInput').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') buscar();
+        });
+        
+    </script>
+</body>
+</html>

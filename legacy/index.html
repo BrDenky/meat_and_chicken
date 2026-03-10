@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="es-ES">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/styles.css">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>App_v1 - Inicio</title>
+</head>
+<!-- MODAL LOGIN -->
+<div class="login-overlay" id="loginOverlay" onclick="cerrarLogin()"></div>
+
+<div class="login-modal" id="loginModal">
+  <button class="login-cerrar" onclick="cerrarLogin()">✕</button>
+
+  <!-- Tabs Cliente / Proveedor -->
+  <div class="login-tabs">
+    <button class="login-tab active" onclick="cambiarLoginTab(this, 'cliente')">🛒 Cliente</button>
+    <button class="login-tab" onclick="cambiarLoginTab(this, 'proveedor')">🏪 Proveedor</button>
+  </div>
+
+  <!-- CLIENTE -->
+  <div class="login-content" id="login-cliente">
+
+    <!-- Subtabs Login / Registro -->
+    <div class="login-subtabs">
+      <button class="login-subtab active" onclick="cambiarSubtab(this, 'login-form')">Iniciar Sesión</button>
+      <button class="login-subtab" onclick="cambiarSubtab(this, 'registro-form')">Registrarse</button>
+    </div>
+
+    <!-- Formulario Login Cliente -->
+    <div id="login-form">
+      <h3>Bienvenido de nuevo 👋</h3>
+      <div class="login-campo">
+        <label>Correo electrónico</label>
+        <input type="email" placeholder="tu@correo.com">
+      </div>
+      <div class="login-campo">
+        <label>Contraseña</label>
+        <input type="password" placeholder="••••••••">
+      </div>
+      <a href="#" class="login-olvide">¿Olvidaste tu contraseña?</a>
+      <button class="login-btn" onclick="iniciarSesion('cliente')">Iniciar Sesión</button>
+    </div>
+
+    <!-- Formulario Registro Cliente -->
+    <div id="registro-form" class="hidden">
+      <h3>Crear cuenta 🎉</h3>
+      <div class="login-campo">
+        <label>Nombre completo</label>
+        <input type="text" placeholder="Tu nombre">
+      </div>
+      <div class="login-campo">
+        <label>Correo electrónico</label>
+        <input type="email" placeholder="tu@correo.com">
+      </div>
+      <div class="login-campo">
+        <label>Contraseña</label>
+        <input type="password" placeholder="••••••••">
+      </div>
+      <div class="login-campo">
+        <label>Confirmar contraseña</label>
+        <input type="password" placeholder="••••••••">
+      </div>
+      <button class="login-btn" onclick="registrarse()">Crear Cuenta</button>
+    </div>
+
+  </div>
+
+  <!-- PROVEEDOR -->
+  <div class="login-content hidden" id="login-proveedor">
+    <h3>Acceso Proveedores 🏪</h3>
+    <p class="login-subtitulo">¿Aún no eres proveedor? <a href="#">Trabaja con nosotros</a></p>
+    <div class="login-campo">
+      <label>Correo electrónico</label>
+      <input type="email" placeholder="proveedor@correo.com">
+    </div>
+    <div class="login-campo">
+      <label>Contraseña</label>
+      <input type="password" placeholder="••••••••">
+    </div>
+    <a href="#" class="login-olvide">¿Olvidaste tu contraseña?</a>
+    <button class="login-btn" onclick="iniciarSesion('proveedor')">Iniciar Sesión</button>
+  </div>
+
+</div>
+<body>
+    <!-- HEADER -->
+    <header id="header">
+        <div class="header-inner">
+            <a href="/index.html" class="header-brand">
+                <span>🥩</span> <span class="brand-text">Meat & Chicken Fast</span>
+            </a>
+
+            <div class="header-search">
+                <input type="text" id="searchInput" placeholder="Buscar proveedor o producto...">
+            </div>
+
+            <div class="header-actions">
+                <div class="puntos-dropdown-wrapper">
+                  <button class="action-btn" onclick="togglePuntos()">⭐ <span>1,240 pts</span></button>
+                  <div class="puntos-dropdown" id="puntosDropdown">
+                    <p class="puntos-dropdown-title">💎 Mis Puntos</p>
+                    <p class="puntos-dropdown-valor">1,240 pts</p>
+                    <div class="puntos-barra">
+                      <div class="puntos-barra-fill"></div>
+                    </div>
+                    <p class="puntos-dropdown-next">760 pts para tu próximo canje</p>
+                  </div>
+                </div>
+                <a class="action-btn" href="carrito.html">🛒 <span>Carrito</span></a>
+                <button class="action-btn" onclick="abrirLogin()">🔐 <span>Login</span></button>
+            </div>
+
+        </div>
+    </header>
+
+
+    <!-- SECCIÓN HERO -->
+    <section class="hero">
+        <div class="hero-content">
+            <p class="hero-eyebrow">Innovación Tecnológica</p>
+            <h1 class="hero-title">Comunidad carnica,<br>inteligente</h1>
+            <p class="hero-subtitle">Conectamos a los mejores proveedores locales con clientes que valoran la calidad y la frescura.</p>
+            <div class="hero-ctas">
+                <a href="#productos" class="btn-hero-primary">Ver Proveedores</a>
+                <a href="#" class="btn-hero-secondary">Trabaja con Nosotros 🤝</a>
+                <button class="btn-hero-secondary" onclick="toggleMisionVision()">📋 Misión y Visión</button>
+            </div>
+            <div class="mv-panel" id="mvPanel">
+            <div class="mv-item">
+                <h3>🎯 Misión</h3>
+                <p>Conectar directamente a proveedores responsables con consumidores y negocios mediante un modelo logístico flexible, herramientas digitales y protocolos sanitarios certificados, garantizando calidad, inocuidad y atención personalizada en cada pedido.</p>
+            </div>
+            <div class="mv-item">
+                <h3>🔭 Visión</h3>
+                <p>Ser la red de distribución cárnica más confiable, eficiente y personalizada del sector de Pintag y sus alrededores, integrando tecnología, trazabilidad y compromiso comunitario para impulsar el desarrollo sostenible del comercio local.</p>
+            </div>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="hero-circle">
+                <img src="img/logo.png">
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main>
+        
+        <!-- Ofertas del Día -->
+        <div class="ofertas-section">
+            <div class="container">
+                <h2 class="products-section-title">🔥 Ofertas del Día</h2>
+                <p class="ofertas-subtitle">Productos frescos disponibles hoy de nuestros proveedores</p>
+
+                <div class="ofertas-carrusel-wrapper">
+                    <button class="carrusel-btn izq" onclick="moverCarrusel(-1)">&#8592;</button>
+
+                    <div class="ofertas-carrusel" id="ofertasCarrusel">
+
+                        <div class="oferta-card" onclick="window.location.href='producto.html'" style="cursor: pointer;">
+                            <div class="oferta-badge">🥩 7 Pozo</div>
+                            <div class="oferta-img">
+                                <img src="img/ofertas/lomo.png" alt="Lomo de Res">
+                            </div>
+                            <h4>Lomo de Res</h4>
+                            <p>Corte premium, fresco del día</p>
+                            <div class="oferta-precios">
+                                <span class="precio-antes">$22.00</span>
+                                <span class="precio-ahora">$18.00</span>
+                            </div>
+                            <span class="oferta-tag">-18%</span>
+                            <button class="oferta-btn" onclick="event.stopPropagation(); agregarAlCarrito('Lomo de Res', 18.00, '🥩')">Añadir al carrito</button>
+                        </div>
+
+                        <div class="oferta-card" onclick="window.location.href='producto.html'" style="cursor: pointer;">
+                            <div class="oferta-badge">🐔 Pechugón</div>
+                            <div class="oferta-img">
+                                <img src="img/ofertas/pechuga.png" alt="Pechuga Entera">
+                            </div>
+                            <h4>Pechuga Entera</h4>
+                            <p>Pollo fresco, entrega inmediata</p>
+                            <div class="oferta-precios">
+                                <span class="precio-antes">$8.00</span>
+                                <span class="precio-ahora">$5.50</span>
+                            </div>
+                            <span class="oferta-tag">-31%</span>
+                            <button class="oferta-btn" onclick="event.stopPropagation(); agregarAlCarrito('Pechuga Entera', 5.50, '🍗')">Añadir al carrito</button>
+                        </div>
+
+                        <div class="oferta-card" onclick="window.location.href='producto.html'" style="cursor: pointer;">
+                            <div class="oferta-badge">🐓 Carnes Ñuble S.A.</div>
+                            <div class="oferta-img">
+                                <img src="img/ofertas/lomo_liso.jpg" alt="Pechuga Entera">
+                            </div>
+                            <h4>Lomo Liso </h4>
+                            <p>baby beef x 1kg</p>
+                            <div class="oferta-precios">
+                                <span class="precio-antes">$12.00</span>
+                                <span class="precio-ahora">$8.52</span>
+                            </div>
+                            <span class="oferta-tag">-29%</span>
+                            <button class="oferta-btn" onclick="event.stopPropagation(); agregarAlCarrito('Lomo Liso', 8.52, '🐓')">Añadir al carrito</button>
+                        </div>
+
+                        <div class="oferta-card" onclick="window.location.href='producto.html'" style="cursor: pointer;">
+                            <div class="oferta-badge"> 🐖 Quirocarne</div>
+                            <div class="oferta-img">
+                                <img src="img/ofertas/iberico.jpg" alt="Pechuga Entera">
+                            </div>
+                            <h4>Paquete mixto de ibéricos</h4>
+                            <p>chorizo + salchichón 400g</p>
+                            <div class="oferta-precios">
+                                <span class="precio-antes">$9.00</span>
+                                <span class="precio-ahora">$7.00</span>
+                            </div>
+                            <span class="oferta-tag">-22%</span>
+                            <button class="oferta-btn" onclick="event.stopPropagation(); agregarAlCarrito('Paquete mixto de ibéricos', 7.00, '🐖')">Añadir al carrito</button>
+                        </div>
+
+                        <div class="oferta-card" onclick="window.location.href='producto.html'" style="cursor: pointer;">
+                            <div class="oferta-badge">🐔 Bachoco</div>
+                            <div class="oferta-img">
+                                <img src="img/ofertas/pechuga.png" alt="Pechuga Entera">
+                            </div>
+                            <h4>Pechuga de pollo </h4>
+                            <p>Deshuesada x 2kg</p>
+                            <div class="oferta-precios">
+                                <span class="precio-antes">$6.00</span>
+                                <span class="precio-ahora">$4.50</span>
+                            </div>
+                            <span class="oferta-tag">-25%</span>
+                            <button class="oferta-btn" onclick="event.stopPropagation(); agregarAlCarrito('Pechuga de pollo', 4.50, '🐔')">Añadir al carrito</button>
+                        </div>
+
+                        <div class="oferta-card" onclick="window.location.href='producto.html'" style="cursor: pointer;">
+                            <div class="oferta-badge">🍔 Cárnicas Ismael</div>
+                            <div class="oferta-img">
+                                <img src="img/ofertas/hamburguesas.jpg" alt="Pechuga Entera">
+                            </div>
+                            <h4>Pack hamburguesas gourmet</h4>
+                            <p>4 unidades: vaca, ibérica, pollo y veggie</p>
+                            <div class="oferta-precios">
+                                <span class="precio-antes">$4.00</span>
+                                <span class="precio-ahora">$2.50</span>
+                            </div>
+                            <span class="oferta-tag">-38%</span>
+                            <button class="oferta-btn" onclick="event.stopPropagation(); agregarAlCarrito('Pack hamburguesas gourmet', 2.50, '🍔')">Añadir al carrito</button>
+                        </div>
+
+                        <div class="oferta-card" onclick="window.location.href='producto.html'" style="cursor: pointer;">
+                            <div class="oferta-badge">🍖 Grupo Jorge</div>
+                            <div class="oferta-img">
+                                <img src="img/ofertas/images.jpg" alt="Pechuga Entera">
+                            </div>
+                            <h4>Paleta de cerdo tricolor</h4>
+                            <p>Adobada,brasa, parrilla x 1,5kg</p>
+                            <div class="oferta-precios">
+                                <span class="precio-antes">$7.00</span>
+                                <span class="precio-ahora">$5.00</span>
+                            </div>
+                            <span class="oferta-tag">-28%</span>
+                            <button class="oferta-btn" onclick="event.stopPropagation(); agregarAlCarrito('Paleta de cerdo tricolor', 5.00, '🍖')">Añadir al carrito</button>
+                        </div>
+
+                    </div>
+
+                    <button class="carrusel-btn der" onclick="moverCarrusel(1)">&#8594;</button>
+                </div>
+            </div>
+        </div>
+      
+        <!-- Proveedores -->
+        <div class="container" id="productos">
+            <h2 class="products-section-title">Nuestros Proveedores</h2>
+
+            <div class="providers-grid">
+
+                <div class="provider-card" onclick="window.location.href='perfil_proveedor.html'" style="cursor: pointer;" >
+                    <div class="provider-top" style="background: #212121;">
+                        <div class="provider-avatar">
+                            <img src="img/proveedores/provedor_1.png" alt="Logo Proveedor">
+                        </div>
+                    </div>
+                    <div class="provider-body">
+                        <h3>7 Pozo</h3>
+                        <p class="provider-cat">🥩 Carne de Res</p>
+                        <p class="provider-desc">Carne de res de primera calidad, criada en campo abierto.</p>
+                        <button class="provider-btn" onclick="event.stopPropagation(); window.location.href='resultados.html?proveedor=7pozo'">Ver Productos →</button>
+                    </div>
+                </div>
+
+                <div class="provider-card" onclick="window.location.href='perfil_proveedor.html'" style="cursor: pointer;">
+                    <div class="provider-top" style="background: #212121;">
+                        <div class="provider-avatar">
+                            <img src="img/proveedores/provedor_1.png" alt="Logo Proveedor">
+                        </div>
+                    </div>
+                    <div class="provider-body">
+                        <h3>Pechugón</h3>
+                        <p class="provider-cat">🐔 Pollos al Por Mayor</p>
+                        <p class="provider-desc">Distribuidor líder de pollo fresco directo desde granja.</p>
+                        <button class="provider-btn" onclick="event.stopPropagation(); window.location.href='resultados.html?proveedor=pechugon'">Ver Productos →</button>
+                    </div>
+                </div>
+
+                <div class="provider-card" onclick="window.location.href='perfil_proveedor.html'" style="cursor: pointer;">
+                    <div class="provider-top" style="background: #212121;">
+                        <div class="provider-avatar">
+                            <img src="img/proveedores/provedor_1.png" alt="Logo Proveedor">
+                        </div>
+                    </div>
+                    <div class="provider-body">
+                        <h3> Carnes Ñuble S.A</h3>
+                        <p class="provider-cat">🐓 Distribuidora cárnica general</p>
+                        <p class="provider-desc">Distribuidor líder en cortes premium con cinco generaciones de historia. </p>
+                        <button class="provider-btn" onclick="event.stopPropagation(); window.location.href='resultados.html?proveedor=verdecampo'">Ver Productos →</button>
+                    </div>
+                </div>
+
+                <div class="provider-card" onclick="window.location.href='perfil_proveedor.html'" style="cursor: pointer;">
+                    <div class="provider-top" style="background: #212121;">
+                        <div class="provider-avatar">
+                            <img src="img/proveedores/provedor_1.png" alt="Logo Proveedor">
+                        </div>
+                    </div>
+                    <div class="provider-body">
+                        <h3>Quirocarne</h3>
+                        <p class="provider-cat"> 🐖 Tradición ibérica desde Madrid</p>
+                        <p class="provider-desc">Distribuidora cárnica especializada en productos para hostelería.</p>
+                        <button class="provider-btn" onclick="event.stopPropagation(); window.location.href='resultados.html?proveedor=marabierto'">Ver Productos →</button>
+                    </div>
+                </div>
+
+                <div class="provider-card" onclick="window.location.href='perfil_proveedor.html'" style="cursor: pointer;">
+                    <div class="provider-top" style="background: #212121;">
+                        <div class="provider-avatar">
+                            <img src="img/proveedores/provedor_1.png" alt="Logo Proveedor">
+                        </div>
+                    </div>
+                    <div class="provider-body">
+                        <h3>Bachoco</h3>
+                        <p class="provider-cat">🐔 Líder multiproteínas </p>
+                        <p class="provider-desc">Producción y comercialización de pollo, cerdo, pavo y huevo.</p>
+                        <button class="provider-btn" onclick="event.stopPropagation(); window.location.href='resultados.html?proveedor=paramo'">Ver Productos →</button>
+                    </div>
+                </div>
+
+                <div class="provider-card" onclick="window.location.href='perfil_proveedor.html'" style="cursor: pointer;">
+                    <div class="provider-top" style="background: #212121;">
+                        <div class="provider-avatar">
+                            <img src="img/proveedores/provedor_1.png" alt="Logo Proveedor">
+                        </div>
+                    </div>
+                    <div class="provider-body">
+                        <h3>Cárnicas Ismael</h3>
+                        <p class="provider-cat">🍔Hamburguesas gourmet y carne fresca </p>
+                        <p class="provider-desc">Mayorista con elaboración artesana.</p>
+                        <button class="provider-btn" onclick="event.stopPropagation(); window.location.href='resultados.html?proveedor=granosdelsur'">Ver Productos →</button>
+                    </div>
+                </div>
+
+                <div class="provider-card" onclick="window.location.href='perfil_proveedor.html'" style="cursor: pointer;">
+                    <div class="provider-top" style="background: #212121;">
+                        <div class="provider-avatar">
+                            <img src="img/proveedores/provedor_1.png" alt="Logo Proveedor">
+                        </div>
+                    </div>
+                    <div class="provider-body">
+                        <h3>Grupo Jorge</h3>
+                        <p class="provider-cat">🍖 Gigante del porcino</p>
+                        <p class="provider-desc">Producción y exportación de productos porcinos.</p>
+                        <button class="provider-btn" onclick="event.stopPropagation(); window.location.href='resultados.html?proveedor=frutiexpress'">Ver Productos →</button>
+                    </div>
+                </div>
+
+                <div class="provider-card" onclick="window.location.href='perfil_proveedor.html'" style="cursor: pointer;">
+                    <div class="provider-top" style="background: #212121;">
+                        <div class="provider-avatar">
+                            <img src="img/proveedores/provedor_1.png" alt="Logo Proveedor">
+                        </div>
+                    </div>
+                    <div class="provider-body">
+                        <h3>Ecosancho</h3>
+                        <p class="provider-cat">👩‍🌾Avicultura ecológica </p>
+                        <p class="provider-desc">Cría y distribución de pollo, gallina, pularda y capón ecológicos.</p>
+                        <button class="provider-btn" onclick="event.stopPropagation(); window.location.href='resultados.html?proveedor=dulcetierra'">Ver Productos →</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <!-- Servicios -->
+        <div class="container">
+            <div class="service-area">
+                <div class="service-fourth">
+                    <div class="service-icon">🚚</div>
+                    <div class="service-heading">Envío Gratis</div>
+                    <div class="service-description">En pedidos mayores a $50</div>
+                </div>
+                <div class="service-fourth">
+                    <div class="service-icon">🏪</div>
+                    <div class="service-heading">14 Sucursales</div>
+                    <div class="service-description">En toda la ciudad</div>
+                </div>
+                <div class="service-fourth">
+                    <div class="service-icon">🔒</div>
+                    <div class="service-heading">Compra Segura</div>
+                    <div class="service-description">Pago 100% protegido</div>
+                </div>
+                <div class="service-fourth">
+                    <div class="service-icon">💬</div>
+                    <div class="service-heading">Atención 24/7</div>
+                    <div class="service-description">Siempre disponibles</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Puntos Acumulados -->
+        <div class="puntos-section" id="puntos">
+            <div class="container">
+                <div class="puntos-banner">
+
+                    <div class="puntos-info">
+                        <p class="puntos-eyebrow">💎 Programa de Lealtad</p>
+                        <h2>Acumula puntos<br>en cada compra</h2>
+                        <p>Canjea tus puntos por descuentos exclusivos en cualquier proveedor del marketplace. ¡Mientras más compras, más ganas!</p>
+                    </div>
+
+                    <div class="puntos-card">
+                        <p class="puntos-card-label">Mis Puntos</p>
+                        <p class="puntos-card-valor">1,240 <span>pts</span></p>
+                        <div class="puntos-barra">
+                            <div class="puntos-barra-fill"></div>
+                        </div>
+                        <p class="puntos-card-next">760 pts para tu próximo canje</p>
+                        <div class="puntos-tiendas">
+                            <span>🥩 7 Pozo</span>
+                            <span>🐔 Pechugón</span>
+                            <span>🥦 Verde Campo</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Pasarela de Pagos -->
+        <div class="pagos-section">
+            <div class="container">
+                <h2 class="products-section-title">💳 Métodos de Pago</h2>
+                <p class="ofertas-subtitle">Estamos integrando las mejores pasarelas de pago para ti</p>
+
+                <div class="pagos-grid">
+
+                    <div class="pago-card">
+                        <span class="pago-icono">💳</span>
+                        <p>Visa / Mastercard</p>
+                        <span class="pago-tag">Próximamente</span>
+                    </div>
+
+                    <div class="pago-card">
+                        <span class="pago-icono">📱</span>
+                        <p>Transferencia</p>
+                        <span class="pago-tag">Próximamente</span>
+                    </div>
+
+                    <div class="pago-card">
+                        <span class="pago-icono">🏦</span>
+                        <p>Débito</p>
+                        <span class="pago-tag">Próximamente</span>
+                    </div>
+
+                    <div class="pago-card">
+                        <span class="pago-icono">💰</span>
+                        <p>Efectivo</p>
+                        <span class="pago-tag">Próximamente</span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="newsletter-section">
+            <div class="container">
+                <div class="newsletter-box">
+                    <h3>📬 Suscríbete y recibe ofertas exclusivas</h3>
+                    <p>Entérate primero de las mejores promociones de nuestros proveedores</p>
+                    <div class="newsletter-form">
+                        <input type="email" id="emailInput" placeholder="tu@correo.com">
+                        <button onclick="suscribir()">Suscribirse</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer id="footer">
+        <div class="container">
+            <div class="footer-container">
+
+                <div class="footer-brand">
+                    <span>🥩 Meat & Chicken Fast</span>
+                    <p>Conectamos productores locales con clientes que valoran la calidad y la frescura.</p>
+                </div>
+
+                <div>
+                    <h3>Proveedores</h3>
+                    <ul>
+                        <li><a href="#">7 Pozo — Carnes</a></li>
+                        <li><a href="#">Pechugón — Pollos</a></li>
+                        <li><a href="#">Carnes Ñuble S.A</a></li>
+                        <li><a href="#">Ver todos →</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3>Información</h3>
+                    <ul>
+                        <li><a href="#">Sobre Nosotros</a></li>
+                        <li><a href="#">Trabaja con Nosotros</a></li>
+                        <li><a href="#">Términos y Condiciones</a></li>
+                        <li><a href="#">Preguntas Frecuentes</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3>Contacto</h3>
+                    <ul>
+                        <li>📍 Calle Principal 123</li>
+                        <li>📞 (+593) 980 377 358</li>
+                        <li>✉️ infomeatandchicken@gmail.com</li>
+                    </ul>
+                    <div class="footer-social">
+                        <a href="#">ⓕ Facebook</a>
+                        <a href="#">🅾 Instagram</a>
+                        <a href="#">🐦 Twitter</a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="footer-after">
+                <p>&copy; 2026 Meat & Chicken Fast — Todos los derechos reservados</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script src="js/layout.js"></script>
+    <script src="js/home.js"></script>
+    
+</body>
+</html>

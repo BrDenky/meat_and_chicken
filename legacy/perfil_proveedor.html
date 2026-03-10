@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="es-ES">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/perfil_proveedor.css">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>7 Pozo - Perfil Proveedor</title>
+</head>
+
+<body>
+
+    <!-- FONDO OSCURO AL ABRIR MENÚ -->
+    <div class="overlay" id="overlay" onclick="cerrarMenu()"></div>
+
+    <!-- MENÚ LATERAL -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <span class="sidebar-logo">Meat and Chicken</span>
+            <button class="sidebar-close" onclick="cerrarMenu()">✕</button>
+        </div>
+
+        <div class="sidebar-role">
+            <p class="sidebar-role-label">Ingresar como:</p>
+            <div class="role-buttons">
+                <button class="role-btn active">🛒 Cliente</button>
+                <button class="role-btn">🏪 Proveedor</button>
+                <button class="role-btn">🎧 Soporte</button>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="index.html" class="nav-link">🏠 Inicio</a>
+            <a href="index.html#productos" class="nav-link">🏪 Ver Proveedores</a>
+            <a href="#" class="nav-link">⭐ Mis Puntos</a>
+            <a href="#" class="nav-link">🛍️ Mis Pedidos</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="#" class="nav-link">🔐 Iniciar Sesión</a>
+        </div>
+    </aside>
+
+    <!-- HEADER -->
+    <header id="header">
+        <div class="header-inner">
+            <a href="/index.html" class="header-brand">
+                <span>🥩</span> <span class="brand-text">Meat & Chicken Fast</span>
+            </a>
+
+            <div class="header-search">
+                <input type="text" id="searchInput" placeholder="Buscar proveedor o producto...">
+            </div>
+
+            <div class="header-actions">
+                <div class="puntos-dropdown-wrapper">
+                  <button class="action-btn" onclick="togglePuntos()">⭐ <span>1,240 pts</span></button>
+                  <div class="puntos-dropdown" id="puntosDropdown">
+                    <p class="puntos-dropdown-title">💎 Mis Puntos</p>
+                    <p class="puntos-dropdown-valor">1,240 pts</p>
+                    <div class="puntos-barra">
+                      <div class="puntos-barra-fill"></div>
+                    </div>
+                    <p class="puntos-dropdown-next">760 pts para tu próximo canje</p>
+                  </div>
+                </div>
+                <a class="action-btn" href="carrito.html">🛒 <span>Carrito</span></a>
+                <button class="action-btn" onclick="abrirLogin()">🔐 <span>Login</span></button>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- HERO DEL PROVEEDOR -->
+    <section class="proveedor-hero">
+        <div class="container">
+            <div class="proveedor-hero-content">
+                <div class="proveedor-logo-container">
+                        <div class="provider-avatar">
+                            <img src="img/proveedores/provedor_1.png" alt="Logo Proveedor">
+                        </div>
+                    <span class="proveedor-verificado">
+                        ✓ Verificado
+                    </span>
+                </div>
+
+                <div class="proveedor-info-header">
+                    <h1 class="proveedor-nombre">7 Pozo</h1>
+                    <div class="proveedor-categoria">
+                        🥩 Carne de Res Premium
+                    </div>
+                    <div class="proveedor-experiencia">
+                        ⭐ 25-30 años de experiencia en el mercado cárnico
+                    </div>
+
+                    <div class="proveedor-stats">
+                        <div class="stat-box">
+                            <div class="stat-number">150+</div>
+                            <div class="stat-label">Productos</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">4.9</div>
+                            <div class="stat-label">Calificación</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">5,000+</div>
+                            <div class="stat-label">Clientes</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">24/7</div>
+                            <div class="stat-label">Atención</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TABS DE NAVEGACIÓN -->
+    <div class="proveedor-tabs">
+        <div class="container">
+            <div class="tabs-container">
+                <button class="tab-btn active" onclick="cambiarTab('productos', this)">
+                    📦 Productos
+                </button>
+                <button class="tab-btn" onclick="cambiarTab('sobre', this)">
+                    ℹ️ Sobre Nosotros
+                </button>
+                <button class="tab-btn" onclick="cambiarTab('ubicacion', this)">
+                    📍 Ubicación
+                </button>
+                <button class="tab-btn" onclick="cambiarTab('noticias', this)">
+                    📰 Noticias
+                </button>
+                <button class="tab-btn" onclick="cambiarTab('contacto', this)">
+                    📞 Contacto
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENIDO -->
+    <main>
+        
+        <!-- TAB: PRODUCTOS -->
+        <div class="tab-content active" id="tab-productos">
+            <div class="container">
+                <h2 class="section-title">Nuestros Productos</h2>
+
+                <div class="productos-filtros">
+                    <button class="filtro-btn active">Todos</button>
+                    <button class="filtro-btn">Premium</button>
+                    <button class="filtro-btn">Cortes Especiales</button>
+                    <button class="filtro-btn">Mix Parrillero</button>
+                    <button class="filtro-btn">Ofertas</button>
+                </div>
+
+                <div class="productos-grid">
+                    <!-- Producto 1 -->
+                    <div class="producto-card">
+                        <div class="producto-imagen">
+                            <img src="img/ofertas/lomo.png" alt="Lomo">
+                            <span class="producto-badge">Premium</span>
+                        </div>
+                        <div class="producto-info">
+                            <h3 class="producto-nombre">Lomo de Res Premium</h3>
+                            <p class="producto-descripcion">Corte premium, fresco del día. Criado en campo abierto.</p>
+                            <div class="producto-meta">
+                                <span class="producto-precio">$18.00</span>
+                                <span class="producto-stock">✓ Disponible</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Producto 2 -->
+                    <div class="producto-card">
+                        <div class="producto-imagen">
+                            <img src="img/ofertas/lomo.png" alt="Costilla">
+                            <span class="producto-badge">Especial</span>
+                        </div>
+                        <div class="producto-info">
+                            <h3 class="producto-nombre">Costilla de Res</h3>
+                            <p class="producto-descripcion">Perfecta para parrilla. Trazabilidad garantizada.</p>
+                            <div class="producto-meta">
+                                <span class="producto-precio">$15.50</span>
+                                <span class="producto-stock">✓ Disponible</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Producto 3 -->
+                    <div class="producto-card">
+                        <div class="producto-imagen">
+                            <img src="img/ofertas/lomo.png" alt="Mix">
+                            <span class="producto-badge">Mix</span>
+                        </div>
+                        <div class="producto-info">
+                            <h3 class="producto-nombre">Mix Parrillero Especial</h3>
+                            <p class="producto-descripcion">Combinación perfecta de cortes premium para parrilla.</p>
+                            <div class="producto-meta">
+                                <span class="producto-precio">$45.00</span>
+                                <span class="producto-stock">✓ Disponible</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Producto 4 -->
+                    <div class="producto-card">
+                        <div class="producto-imagen">
+                            <img src="img/ofertas/lomo.png" alt="Chuleta">
+                        </div>
+                        <div class="producto-info">
+                            <h3 class="producto-nombre">Chuleta de Res</h3>
+                            <p class="producto-descripcion">Jugosa y tierna, ideal para todo tipo de preparaciones.</p>
+                            <div class="producto-meta">
+                                <span class="producto-precio">$12.50</span>
+                                <span class="producto-stock">✓ Disponible</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Producto 5 -->
+                    <div class="producto-card">
+                        <div class="producto-imagen">
+                            <img src="img/ofertas/lomo.png" alt="Molida">
+                            <span class="producto-badge">Oferta</span>
+                        </div>
+                        <div class="producto-info">
+                            <h3 class="producto-nombre">Carne Molida Extra</h3>
+                            <p class="producto-descripcion">Carne molida de primera calidad, baja en grasa.</p>
+                            <div class="producto-meta">
+                                <span class="producto-precio">$8.00</span>
+                                <span class="producto-stock">✓ Disponible</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Producto 6 -->
+                    <div class="producto-card">
+                        <div class="producto-imagen">
+                            <img src="img/ofertas/lomo.png" alt="Asado">
+                            <span class="producto-badge">Premium</span>
+                        </div>
+                        <div class="producto-info">
+                            <h3 class="producto-nombre">Asado de Tira</h3>
+                            <p class="producto-descripcion">Corte tradicional argentino, jugoso y sabroso.</p>
+                            <div class="producto-meta">
+                                <span class="producto-precio">$20.00</span>
+                                <span class="producto-stock">✓ Disponible</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: SOBRE NOSOTROS -->
+        <div class="tab-content" id="tab-sobre">
+            <div class="container">
+                <h2 class="section-title">Sobre Nosotros</h2>
+
+                <div class="sobre-grid">
+                    <div class="info-box">
+                        <h3>🎯 Nuestra Misión</h3>
+                        <p>
+                            Proveer carne de res de la más alta calidad a nuestros clientes, garantizando frescura,
+                            trazabilidad y excelencia en cada corte. Nos comprometemos a mantener los más altos
+                            estándares de calidad desde la granja hasta su mesa, apoyando a productores locales
+                            y promoviendo prácticas sostenibles.
+                        </p>
+                    </div>
+
+                    <div class="info-box">
+                        <h3>🔭 Nuestra Visión</h3>
+                        <p>
+                            Ser el proveedor líder de carne de res premium en Ecuador, reconocidos por nuestra
+                            calidad excepcional, innovación en procesos de trazabilidad y compromiso con la
+                            satisfacción del cliente. Aspiramos a expandir nuestra red de distribución mientras
+                            mantenemos nuestros valores de calidad y servicio.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="info-box" style="margin-bottom: 40px;">
+                    <h3>📖 Nuestra Historia</h3>
+                    <p style="line-height: 2;">
+                        Con más de <strong>25 años de experiencia</strong> en el mercado cárnico ecuatoriano, 7 Pozo
+                        comenzó como un pequeño negocio familiar dedicado a la distribución de carne de res de calidad.
+                        A lo largo de los años, hemos crecido hasta convertirnos en uno de los principales proveedores
+                        de carne premium en el país.
+                        <br><br>
+                        Nuestra pasión por la excelencia nos ha llevado a implementar sistemas de trazabilidad de
+                        última generación, garantizando que cada corte pueda rastrearse desde su origen hasta el
+                        consumidor final. Trabajamos directamente con ganaderos locales que comparten nuestros valores
+                        de calidad y sostenibilidad.
+                    </p>
+                </div>
+
+                <div class="info-box">
+                    <h3>💎 Nuestros Valores</h3>
+                    <ul class="valores-list">
+                        <li>
+                            <span class="valor-icon">✓</span>
+                            <div>
+                                <strong>Calidad</strong><br>
+                                Seleccionamos únicamente los mejores cortes de carne de res criada en condiciones óptimas.
+                            </div>
+                        </li>
+                        <li>
+                            <span class="valor-icon">🔍</span>
+                            <div>
+                                <strong>Trazabilidad</strong><br>
+                                Sistema completo de seguimiento desde la granja hasta el consumidor final.
+                            </div>
+                        </li>
+                        <li>
+                            <span class="valor-icon">🌱</span>
+                            <div>
+                                <strong>Sostenibilidad</strong><br>
+                                Prácticas responsables que cuidan el medio ambiente y apoyan a productores locales.
+                            </div>
+                        </li>
+                        <li>
+                            <span class="valor-icon">🤝</span>
+                            <div>
+                                <strong>Confianza</strong><br>
+                                Transparencia total en nuestros procesos y compromiso con la satisfacción del cliente.
+                            </div>
+                        </li>
+                        <li>
+                            <span class="valor-icon">⚡</span>
+                            <div>
+                                <strong>Frescura</strong><br>
+                                Productos frescos diariamente, manteniendo la cadena de frío en todo momento.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <h3 style="font-size: 28px; margin: 60px 0 30px; color: #333;">🏆 Certificaciones y Estándares</h3>
+                <div class="certificaciones-grid">
+                    <div class="certificacion-card">
+                        <div class="certificacion-icon">✓</div>
+                        <div class="certificacion-nombre">ISO 22000</div>
+                    </div>
+                    <div class="certificacion-card">
+                        <div class="certificacion-icon">🥩</div>
+                        <div class="certificacion-nombre">HACCP</div>
+                    </div>
+                    <div class="certificacion-card">
+                        <div class="certificacion-icon">🌿</div>
+                        <div class="certificacion-nombre">Orgánico</div>
+                    </div>
+                    <div class="certificacion-card">
+                        <div class="certificacion-icon">🏅</div>
+                        <div class="certificacion-nombre">Calidad Premium</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: UBICACIÓN -->
+        <div class="tab-content" id="tab-ubicacion">
+            <div class="container">
+                <h2 class="section-title">Nuestra Ubicación</h2>
+
+                <div class="ubicacion-container">
+                    <div class="mapa-container">
+                        <div class="mapa-placeholder">
+                            <div>🗺️</div>
+                            <p style="font-size: 18px; margin-top: 20px; color: #666;">Mapa interactivo</p>
+                            <p style="font-size: 14px; color: #999;">Calle Principal 123, Quito, Ecuador</p>
+                        </div>
+                    </div>
+
+                    <div class="direccion-info">
+                        <div class="direccion-item">
+                            <div class="direccion-icon">📍</div>
+                            <div class="direccion-text">
+                                <h4>Dirección Principal</h4>
+                                <p>
+                                    Calle Principal 123<br>
+                                    Sector Norte, Quito<br>
+                                    Pichincha, Ecuador
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="direccion-item">
+                            <div class="direccion-icon">📞</div>
+                            <div class="direccion-text">
+                                <h4>Teléfonos</h4>
+                                <p>
+                                    (+593) 2 234 5678<br>
+                                    (+593) 980 377 358<br>
+                                    WhatsApp disponible
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="direccion-item">
+                            <div class="direccion-icon">🕐</div>
+                            <div class="direccion-text">
+                                <h4>Horario de Atención</h4>
+                                <p>
+                                    Lunes a Viernes: 7:00 AM - 7:00 PM<br>
+                                    Sábados: 7:00 AM - 5:00 PM<br>
+                                    Domingos: 8:00 AM - 2:00 PM
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="direccion-item">
+                            <div class="direccion-icon">✉️</div>
+                            <div class="direccion-text">
+                                <h4>Correo Electrónico</h4>
+                                <p>
+                                    info@7pozo.com<br>
+                                    ventas@7pozo.com<br>
+                                    soporte@7pozo.com
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: NOTICIAS -->
+        <div class="tab-content" id="tab-noticias">
+            <div class="container">
+                <h2 class="section-title">Noticias y Novedades</h2>
+
+                <div class="noticias-grid">
+                    <div class="noticia-card">
+                        <div class="noticia-imagen">📰</div>
+                        <div class="noticia-contenido">
+                            <div class="noticia-fecha">5 de Marzo, 2026</div>
+                            <h3 class="noticia-titulo">Nuevos Cortes Premium Disponibles</h3>
+                            <p class="noticia-extracto">
+                                Ampliamos nuestra línea de cortes premium con nuevas opciones importadas
+                                directamente de las mejores ganaderías del país.
+                            </p>
+                            <a href="#" class="noticia-leer">Leer más →</a>
+                        </div>
+                    </div>
+
+                    <div class="noticia-card">
+                        <div class="noticia-imagen">🏆</div>
+                        <div class="noticia-contenido">
+                            <div class="noticia-fecha">28 de Febrero, 2026</div>
+                            <h3 class="noticia-titulo">Certificación ISO 22000 Renovada</h3>
+                            <p class="noticia-extracto">
+                                Con orgullo anunciamos la renovación de nuestra certificación ISO 22000,
+                                reafirmando nuestro compromiso con la calidad y seguridad alimentaria.
+                            </p>
+                            <a href="#" class="noticia-leer">Leer más →</a>
+                        </div>
+                    </div>
+
+                    <div class="noticia-card">
+                        <div class="noticia-imagen">🌱</div>
+                        <div class="noticia-contenido">
+                            <div class="noticia-fecha">15 de Febrero, 2026</div>
+                            <h3 class="noticia-titulo">Programa de Sostenibilidad 2026</h3>
+                            <p class="noticia-extracto">
+                                Lanzamos nuestro programa de sostenibilidad que incluye prácticas
+                                amigables con el medio ambiente y apoyo a ganaderos locales.
+                            </p>
+                            <a href="#" class="noticia-leer">Leer más →</a>
+                        </div>
+                    </div>
+
+                    <div class="noticia-card">
+                        <div class="noticia-imagen">🎉</div>
+                        <div class="noticia-contenido">
+                            <div class="noticia-fecha">1 de Febrero, 2026</div>
+                            <h3 class="noticia-titulo">25 Años de Excelencia</h3>
+                            <p class="noticia-extracto">
+                                Celebramos 25 años sirviendo a nuestros clientes con la mejor carne
+                                de res del Ecuador. ¡Gracias por confiar en nosotros!
+                            </p>
+                            <a href="#" class="noticia-leer">Leer más →</a>
+                        </div>
+                    </div>
+
+                    <div class="noticia-card">
+                        <div class="noticia-imagen">🚚</div>
+                        <div class="noticia-contenido">
+                            <div class="noticia-fecha">20 de Enero, 2026</div>
+                            <h3 class="noticia-titulo">Nuevo Sistema de Entregas</h3>
+                            <p class="noticia-extracto">
+                                Implementamos un nuevo sistema de entregas con seguimiento en tiempo
+                                real para mayor comodidad de nuestros clientes.
+                            </p>
+                            <a href="#" class="noticia-leer">Leer más →</a>
+                        </div>
+                    </div>
+
+                    <div class="noticia-card">
+                        <div class="noticia-imagen">📱</div>
+                        <div class="noticia-contenido">
+                            <div class="noticia-fecha">10 de Enero, 2026</div>
+                            <h3 class="noticia-titulo">App Móvil Disponible</h3>
+                            <p class="noticia-extracto">
+                                Descarga nuestra nueva aplicación móvil y realiza tus pedidos de
+                                forma rápida y sencilla desde tu smartphone.
+                            </p>
+                            <a href="#" class="noticia-leer">Leer más →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: CONTACTO -->
+        <div class="tab-content" id="tab-contacto">
+            <div class="container">
+                <h2 class="section-title">Contáctanos</h2>
+
+                <div class="contacto-grid">
+                    <div class="contacto-form">
+                        <h3 style="margin-bottom: 25px; color: #333;">Envíanos un Mensaje</h3>
+                        
+                        <form>
+                            <div class="form-group">
+                                <label class="form-label">Nombre Completo</label>
+                                <input type="text" class="form-input" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Correo Electrónico</label>
+                                <input type="email" class="form-input" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Teléfono</label>
+                                <input type="tel" class="form-input" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Asunto</label>
+                                <input type="text" class="form-input" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Mensaje</label>
+                                <textarea class="form-input" required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn-enviar">Enviar Mensaje</button>
+                        </form>
+                    </div>
+
+                    <div class="contacto-info">
+                        <h3 style="margin-bottom: 25px; color: #333;">Información de Contacto</h3>
+
+                        <div class="contacto-metodo">
+                            <h4>📞 Llámanos</h4>
+                            <p>
+                                (+593) 2 234 5678<br>
+                                (+593) 980 377 358<br>
+                                Lun-Vie: 7:00 AM - 7:00 PM
+                            </p>
+                        </div>
+
+                        <div class="contacto-metodo">
+                            <h4>💬 WhatsApp</h4>
+                            <p>
+                                (+593) 980 377 358<br>
+                                Atención inmediata<br>
+                                Disponible 24/7
+                            </p>
+                        </div>
+
+                        <div class="contacto-metodo">
+                            <h4>✉️ Email</h4>
+                            <p>
+                                info@7pozo.com<br>
+                                ventas@7pozo.com<br>
+                                Respuesta en 24 horas
+                            </p>
+                        </div>
+
+                        <div class="contacto-metodo">
+                            <h4>🌐 Redes Sociales</h4>
+                            <div class="social-links">
+                                <a href="#" class="social-btn">📘</a>
+                                <a href="#" class="social-btn">📸</a>
+                                <a href="#" class="social-btn">🐦</a>
+                                <a href="#" class="social-btn">💬</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer id="footer">
+        <div class="container">
+            <div class="footer-after">
+                <p>&copy; 2026 Meat & Chicken Fast — Todos los derechos reservados</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script src="js/layout.js"></script>
+    <script>
+        function cambiarTab(tab, elemento) {
+            // Ocultar todos los tabs
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Mostrar tab seleccionado
+            document.getElementById('tab-' + tab).classList.add('active');
+
+            // Actualizar botones
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            elemento.classList.add('active');
+
+            // Scroll suave al contenido
+            window.scrollTo({
+                top: document.querySelector('.proveedor-tabs').offsetTop,
+                behavior: 'smooth'
+            });
+        }
+
+        // Filtros de productos
+        document.querySelectorAll('.filtro-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Formulario de contacto
+        document.querySelector('.contacto-form form')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('✅ Mensaje enviado. Nos pondremos en contacto pronto.');
+            this.reset();
+        });
+    </script>
+</body>
+</html>

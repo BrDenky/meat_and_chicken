@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="es-ES">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/proveedor.css">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Panel Proveedor - Meat & Chicken</title>
+</head>
+
+<body>
+
+    <!-- FONDO OSCURO AL ABRIR MENÚ -->
+    <div class="overlay" id="overlay" onclick="cerrarMenu()"></div>
+
+    <!-- MENÚ LATERAL PROVEEDOR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <span class="sidebar-logo">Panel Proveedor</span>
+            <button class="sidebar-close" onclick="cerrarMenu()">✕</button>
+        </div>
+
+        <div class="sidebar-role">
+            <p class="sidebar-role-label">Proveedor:</p>
+            <div style="padding: 10px; background: #f8f8f8; border-radius: 5px; margin: 10px 0;">
+                <strong>🥩 7 Pozo</strong>
+                <p style="font-size: 12px; color: #666; margin-top: 5px;">25 años de experiencia</p>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#dashboard" class="nav-link">📊 Dashboard</a>
+            <a href="#productos" class="nav-link">📦 Mis Productos</a>
+            <a href="#pasarela" class="nav-link">💳 Pasarela de Pago</a>
+            <a href="#whatsapp" class="nav-link">💬 WhatsApp Bot</a>
+            <a href="#" class="nav-link">📸 Subir Fotos</a>
+            <a href="#" class="nav-link">🎬 Videos y Podcast</a>
+            <a href="#" class="nav-link">🏷️ Mis Ofertas</a>
+            <a href="#" class="nav-link">📖 Mis Historias</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="#" class="nav-link">⚙️ Configuración</a>
+            <a href="index.html" class="nav-link highlight-link">🏠 Volver a Tienda</a>
+        </div>
+    </aside>
+
+    <!-- HEADER -->
+    <header id="header">
+        <div class="header-inner">
+            <button class="hamburger" onclick="abrirMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <a href="#" class="header-brand">
+                <span>🥩</span> <span class="brand-text">Panel Proveedor - 7 Pozo</span>
+            </a>
+
+            <div class="header-actions">
+                <a class="action-btn" href="#">📊 <span>Ventas</span></a>
+                <a class="action-btn" href="#">🔔 <span>Notificaciones (3)</span></a>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main style="padding-top: 80px;">
+        
+        <!-- Dashboard Stats -->
+        <div class="container" id="dashboard">
+            <h2 class="products-section-title">📊 Dashboard</h2>
+            
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <h3>Productos Activos</h3>
+                    <div class="stat-value">24</div>
+                    <div class="stat-change">↗ +3 este mes</div>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Ventas del Mes</h3>
+                    <div class="stat-value">$4,520</div>
+                    <div class="stat-change">↗ +15% vs mes anterior</div>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Pedidos Totales</h3>
+                    <div class="stat-value">89</div>
+                    <div class="stat-change">↗ +8 esta semana</div>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Productos Frescos Hoy</h3>
+                    <div class="stat-value">18</div>
+                    <div class="stat-change">Actualizados hoy</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gestión de Productos -->
+        <div class="container" id="productos">
+            <div class="productos-tabla">
+                <div class="tabla-header">
+                    <h2>📦 Mis Productos</h2>
+                    <button class="btn-nuevo" onclick="abrirModalProducto()">+ Nuevo Producto</button>
+                </div>
+
+                <div class="tabla-filtros">
+                    <input type="text" class="filtro-input" placeholder="Buscar producto..." id="filtroNombre">
+                    <select class="filtro-select" id="filtroCategoria">
+                        <option value="">Todas las categorías</option>
+                        <option value="premium">Premium</option>
+                        <option value="especial">Especial</option>
+                        <option value="normal">Normal</option>
+                    </select>
+                    <select class="filtro-select" id="filtroEstado">
+                        <option value="">Todos los estados</option>
+                        <option value="disponible">Disponible</option>
+                        <option value="agotado">Agotado</option>
+                    </select>
+                </div>
+
+                <table class="tabla-productos">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Tipo</th>
+                            <th>Fecha Camal</th>
+                            <th>Trazabilidad</th>
+                            <th>Peso (kg)</th>
+                            <th>Precio</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <img src="img/ofertas/lomo.png" alt="Lomo" class="producto-img">
+                                    <span><strong>Lomo de Res Premium</strong></span>
+                                </div>
+                            </td>
+                            <td><span class="badge badge-premium">Premium</span></td>
+                            <td>07/03/2026</td>
+                            <td>TRZ-2026-001</td>
+                            <td>2.5 kg</td>
+                            <td><strong>$18.00</strong></td>
+                            <td><span class="badge badge-disponible">Disponible</span></td>
+                            <td>
+                                <button class="acciones-btn btn-editar" onclick="editarProducto(1)">✏️ Editar</button>
+                                <button class="acciones-btn btn-eliminar" onclick="eliminarProducto(1)">🗑️</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <img src="img/ofertas/lomo.png" alt="Costilla" class="producto-img">
+                                    <span><strong>Costilla de Res</strong></span>
+                                </div>
+                            </td>
+                            <td><span class="badge badge-normal">Normal</span></td>
+                            <td>07/03/2026</td>
+                            <td>TRZ-2026-002</td>
+                            <td>3.0 kg</td>
+                            <td><strong>$15.50</strong></td>
+                            <td><span class="badge badge-disponible">Disponible</span></td>
+                            <td>
+                                <button class="acciones-btn btn-editar" onclick="editarProducto(2)">✏️ Editar</button>
+                                <button class="acciones-btn btn-eliminar" onclick="eliminarProducto(2)">🗑️</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <img src="img/ofertas/lomo.png" alt="Mix" class="producto-img">
+                                    <span><strong>Mix Parrillero Especial</strong></span>
+                                </div>
+                            </td>
+                            <td><span class="badge badge-especial">Especial</span></td>
+                            <td>08/03/2026</td>
+                            <td>TRZ-2026-003</td>
+                            <td>5.0 kg</td>
+                            <td><strong>$45.00</strong></td>
+                            <td><span class="badge badge-agotado">Agotado</span></td>
+                            <td>
+                                <button class="acciones-btn btn-editar" onclick="editarProducto(3)">✏️ Editar</button>
+                                <button class="acciones-btn btn-eliminar" onclick="eliminarProducto(3)">🗑️</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Pasarela de Pago -->
+        <div class="container" id="pasarela">
+            <div class="pasarela-section">
+                <h2 class="products-section-title">💳 Pasarela de Pago</h2>
+                <p style="color: #666; margin-bottom: 20px;">Configura las cuentas bancarias donde recibirás los pagos de tus clientes</p>
+
+                <h3 style="margin-bottom: 15px; color: #333;">Bancos Ecuatorianos</h3>
+                <div class="bancos-grid">
+                    <div class="banco-card activo" onclick="toggleBanco(this)">
+                        <div class="banco-icon">🏦</div>
+                        <div class="banco-nombre">Banco Pichincha</div>
+                        <div class="banco-cuenta">Cta: 2100123456</div>
+                        <input type="checkbox" checked style="margin-top: 10px;">
+                    </div>
+
+                    <div class="banco-card" onclick="toggleBanco(this)">
+                        <div class="banco-icon">🏦</div>
+                        <div class="banco-nombre">Banco Guayaquil</div>
+                        <div class="banco-cuenta">Cta: 0012345678</div>
+                        <input type="checkbox" style="margin-top: 10px;">
+                    </div>
+
+                    <div class="banco-card" onclick="toggleBanco(this)">
+                        <div class="banco-icon">🏦</div>
+                        <div class="banco-nombre">Banco del Pacífico</div>
+                        <div class="banco-cuenta">Cta: 7654321098</div>
+                        <input type="checkbox" style="margin-top: 10px;">
+                    </div>
+
+                    <div class="banco-card" onclick="toggleBanco(this)">
+                        <div class="banco-icon">🏦</div>
+                        <div class="banco-nombre">Produbanco</div>
+                        <div class="banco-cuenta">Cta: 5432167890</div>
+                        <input type="checkbox" style="margin-top: 10px;">
+                    </div>
+                </div>
+
+                <div class="qr-section">
+                    <h3 style="margin-bottom: 15px; color: #333;">📱 Códigos QR para Pago</h3>
+                    <p style="color: #666; margin-bottom: 15px;">Los clientes podrán escanear estos códigos para realizar pagos directos</p>
+                    
+                    <div class="qr-grid">
+                        <div class="qr-card">
+                            <h4 style="margin-bottom: 10px;">Banco Pichincha</h4>
+                            <div class="qr-placeholder">
+                                📲
+                            </div>
+                            <button class="btn-nuevo" style="width: 100%; padding: 8px;">Subir QR</button>
+                        </div>
+
+                        <div class="qr-card">
+                            <h4 style="margin-bottom: 10px;">Banco Guayaquil</h4>
+                            <div class="qr-placeholder">
+                                📲
+                            </div>
+                            <button class="btn-nuevo" style="width: 100%; padding: 8px;">Subir QR</button>
+                        </div>
+
+                        <div class="qr-card">
+                            <h4 style="margin-bottom: 10px;">WhatsApp Pay</h4>
+                            <div class="qr-placeholder">
+                                💬
+                            </div>
+                            <button class="btn-nuevo" style="width: 100%; padding: 8px;">Generar QR</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WhatsApp Bot -->
+        <div class="container" id="whatsapp">
+            <div class="whatsapp-section">
+                <h2 class="products-section-title">💬 Bot de WhatsApp</h2>
+                <p style="color: #666; margin-bottom: 20px;">Automatiza la atención a tus clientes mediante WhatsApp</p>
+
+                <div class="whatsapp-config">
+                    <div class="config-box">
+                        <h4>⚙️ Configuración General</h4>
+                        
+                        <div style="margin: 20px 0;">
+                            <label style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <span>Activar Bot</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="botActivado" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </label>
+
+                            <label style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <span>Respuestas Automáticas</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="respuestasAuto" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </label>
+
+                            <label style="display: flex; justify-content: space-between; align-items: center;">
+                                <span>Notificaciones de Pedidos</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="notifPedidos" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Número de WhatsApp Business</label>
+                            <input type="tel" value="+593 980 377 358" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Horario de Atención</label>
+                            <select>
+                                <option>24/7 Disponible</option>
+                                <option>Horario de Oficina (8am - 6pm)</option>
+                                <option>Personalizado</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="config-box">
+                        <h4>💬 Mensajes Automáticos</h4>
+                        
+                        <div class="mensaje-template">
+                            <strong>Mensaje de Bienvenida:</strong>
+                            <p style="margin-top: 10px;">
+                                ¡Hola! 👋 Bienvenido a <strong>7 Pozo</strong>.<br>
+                                Somos especialistas en carne de res premium con <strong>25 años de experiencia</strong>.<br><br>
+                                📦 Consulta nuestros productos<br>
+                                🛒 Realiza tu pedido<br>
+                                💳 Información de pago<br>
+                                👤 Hablar con un asesor
+                            </p>
+                        </div>
+
+                        <div class="mensaje-template" style="margin-top: 15px;">
+                            <strong>Confirmación de Pedido:</strong>
+                            <p style="margin-top: 10px;">
+                                ✅ <strong>Pedido Confirmado</strong><br>
+                                Gracias por tu compra en 7 Pozo.<br><br>
+                                📋 Pedido: #[NUMERO]<br>
+                                💰 Total: $[MONTO]<br>
+                                🚚 Entrega estimada: [FECHA]<br><br>
+                                Te mantendremos informado. 🥩
+                            </p>
+                        </div>
+
+                        <button class="btn-nuevo" style="width: 100%; margin-top: 15px;">
+                            ✏️ Personalizar Mensajes
+                        </button>
+                    </div>
+                </div>
+
+                <div style="background: #d4edda; padding: 20px; border-radius: 10px; margin-top: 20px;">
+                    <h4 style="color: #155724; margin-bottom: 10px;">✨ Características del Bot</h4>
+                    <ul style="color: #155724; margin-left: 20px;">
+                        <li>Respuestas automáticas 24/7</li>
+                        <li>Catálogo de productos actualizado en tiempo real</li>
+                        <li>Confirmación automática de pedidos</li>
+                        <li>Envío de códigos QR para pago</li>
+                        <li>Actualización de estado de pedidos</li>
+                        <li>Atención inmediata a consultas frecuentes</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal Nuevo/Editar Producto -->
+    <div class="modal" id="modalProducto">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📦 Nuevo Producto</h2>
+                <button class="modal-close" onclick="cerrarModalProducto()">×</button>
+            </div>
+
+            <form id="formProducto">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Nombre del Producto <span class="required">*</span></label>
+                        <input type="text" name="nombre" required placeholder="Ej: Lomo de Res Premium">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tipo de Corte <span class="required">*</span></label>
+                        <select name="tipoCorte" required>
+                            <option value="">Selecciona...</option>
+                            <option value="premium">Premium</option>
+                            <option value="especial">Especial</option>
+                            <option value="normal">Normal</option>
+                            <option value="mix">Mix/Paquete</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Categoría <span class="required">*</span></label>
+                        <select name="categoria" required>
+                            <option value="">Selecciona...</option>
+                            <option value="res">Carne de Res</option>
+                            <option value="cerdo">Carne de Cerdo</option>
+                            <option value="pollo">Pollo</option>
+                            <option value="mix">Mix Parrillero</option>
+                            <option value="embutidos">Embutidos</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Fecha de Camal <span class="required">*</span></label>
+                        <input type="date" name="fechaCamal" required>
+                        <div class="form-hint">Fecha de sacrificio del animal</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Código de Trazabilidad <span class="required">*</span></label>
+                        <input type="text" name="trazabilidad" required placeholder="TRZ-2026-001">
+                        <div class="form-hint">Código único de seguimiento</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Peso (kg) <span class="required">*</span></label>
+                        <input type="number" name="peso" step="0.01" required placeholder="2.5">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Precio ($) <span class="required">*</span></label>
+                        <input type="number" name="precio" step="0.01" required placeholder="18.00">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Stock Disponible</label>
+                        <input type="number" name="stock" placeholder="50">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Estado <span class="required">*</span></label>
+                        <select name="estado" required>
+                            <option value="disponible">Disponible</option>
+                            <option value="agotado">Agotado</option>
+                            <option value="proximamente">Próximamente</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Descripción</label>
+                        <textarea name="descripcion" rows="3" placeholder="Describe las características del producto..."></textarea>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Imagen del Producto</label>
+                        <input type="file" name="imagen" accept="image/*" onchange="previewImagen(event)">
+                        <img id="imagenPreview" class="imagen-preview">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Información Adicional de Calidad</label>
+                        <textarea name="infoCalidad" rows="2" placeholder="Ej: Criado en campo abierto, alimentación natural, certificación orgánica..."></textarea>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-guardar">💾 Guardar Producto</button>
+                    <button type="button" class="btn-cancelar" onclick="cerrarModalProducto()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer id="footer">
+        <div class="container">
+            <div class="footer-after">
+                <p>&copy; 2026 Meat & Chicken Fast — Panel de Proveedor</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script src="js/layout.js"></script>
+    <script>
+        // Modal Producto
+        function abrirModalProducto() {
+            document.getElementById('modalProducto').classList.add('active');
+        }
+
+        function cerrarModalProducto() {
+            document.getElementById('modalProducto').classList.remove('active');
+            document.getElementById('formProducto').reset();
+            document.getElementById('imagenPreview').classList.remove('active');
+        }
+
+        // Preview de imagen
+        function previewImagen(event) {
+            const preview = document.getElementById('imagenPreview');
+            const file = event.target.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.classList.add('active');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Guardar producto
+        document.getElementById('formProducto').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('✅ Producto guardado exitosamente');
+            cerrarModalProducto();
+        });
+
+        // Editar producto
+        function editarProducto(id) {
+            abrirModalProducto();
+            // Aquí cargarías los datos del producto
+            alert('Editando producto ID: ' + id);
+        }
+
+        // Eliminar producto
+        function eliminarProducto(id) {
+            if (confirm('¿Estás seguro de eliminar este producto?')) {
+                alert('🗑️ Producto eliminado');
+            }
+        }
+
+        // Toggle banco
+        function toggleBanco(element) {
+            element.classList.toggle('activo');
+            const checkbox = element.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+        }
+
+        // Filtros de tabla
+        document.getElementById('filtroNombre')?.addEventListener('input', filtrarTabla);
+        document.getElementById('filtroCategoria')?.addEventListener('change', filtrarTabla);
+        document.getElementById('filtroEstado')?.addEventListener('change', filtrarTabla);
+
+        function filtrarTabla() {
+            // Lógica de filtrado
+            console.log('Filtrando tabla...');
+        }
+    </script>
+</body>
+</html>
