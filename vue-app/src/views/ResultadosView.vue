@@ -1,162 +1,317 @@
 <template>
-  <div class="resultados-view" style="display: flex; gap: 30px; padding: 40px 0;">
-    <div class="container" style="display: flex; gap: 30px; width: 100%;">
-        <!-- SIDEBAR DE FILTROS -->
-        <aside class="filtros-panel" style="width: 250px; flex-shrink: 0; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); align-self: flex-start;">
-            <h3 class="filtros-titulo" style="margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px;">🔧 Filtros</h3>
+  <div class="resultados-view">
+    <div class="container">
+      <nav class="breadcrumbs">
+        <span>Casa</span> | <span>Resultados de la búsqueda</span>
+      </nav>
 
-            <!-- Filtro por categoría -->
-            <div class="filtro-grupo" style="margin-bottom: 20px;">
-                <h4 style="margin-bottom: 10px; font-size: 14px;">Categoría</h4>
-                <label style="display: block; margin-bottom: 8px;"><input type="checkbox" value="pollos" v-model="categoriasFiltro"> Pollo</label>
-                <label style="display: block; margin-bottom: 8px;"><input type="checkbox" value="carnes" v-model="categoriasFiltro"> Carne de Res</label>
-            </div>
-
-            <!-- Filtro por proveedor -->
-            <div class="filtro-grupo" style="margin-bottom: 20px;">
-                <h4 style="margin-bottom: 10px; font-size: 14px;">Proveedor</h4>
-                <label style="display: block; margin-bottom: 8px;"><input type="checkbox" value="7pozo" v-model="proveedoresFiltro"> 7 Pozo</label>
-                <label style="display: block; margin-bottom: 8px;"><input type="checkbox" value="pechugon" v-model="proveedoresFiltro"> Pechugón</label>
-            </div>
-
-            <!-- Filtro por precio -->
-            <div class="filtro-grupo" style="margin-bottom: 20px;">
-                <h4 style="margin-bottom: 10px; font-size: 14px;">Precio máximo: <span>${{ precioMax }}</span></h4>
-                <input type="range" min="1" max="50" v-model.number="precioMax" style="width: 100%;">
-            </div>
-
-            <!-- Filtro ofertas -->
-            <div class="filtro-grupo" style="margin-bottom: 20px;">
-                <h4 style="margin-bottom: 10px; font-size: 14px;">Ofertas</h4>
-                <label><input type="checkbox" v-model="soloOfertas"> 🏷️ Solo con descuento</label>
-            </div>
-
-            <button class="filtro-limpiar" @click="limpiarFiltros" style="width: 100%; padding: 10px; background: none; border: 1px solid #ddd; border-radius: 5px; cursor: pointer;">✕ Limpiar filtros</button>
+      <div class="layout-principal">
+        <aside class="sidebar-categorias">
+            <ul class="lista-categorias">
+                <li 
+                    class="categoria-item" 
+                    :class="{ active: categoriaActiva === 'INICIO' }"
+                    @click="filtrarPorCategoria('INICIO')">
+                    INICIO
+                </li>
+                <li 
+                    v-for="cat in listaCategorias" 
+                    :key="cat" 
+                    class="categoria-item"
+                    :class="{ active: categoriaActiva === cat }"
+                    @click="filtrarPorCategoria(cat)">
+                    {{ cat.toUpperCase() }}
+                </li>
+            </ul>
         </aside>
 
-        <!-- RESULTADOS -->
-        <div class="resultados-contenido" style="flex: 1;">
-            
-            <!-- Barra superior -->
-            <div class="resultados-barra" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <p class="resultados-conteo" style="color: #666;">Mostrando {{ productosFiltrados.length }} resultados</p>
-                <div class="resultados-orden" style="display: flex; align-items: center; gap: 10px;">
-                    <label style="color: #666;">Ordenar por:</label>
-                    <select v-model="orden" style="padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
-                        <option value="default">Relevancia</option>
-                        <option value="precio-asc">Precio: menor a mayor</option>
-                        <option value="precio-desc">Precio: mayor a menor</option>
-                        <option value="descuento">Mayor descuento</option>
-                    </select>
+        <div class="resultados-contenido">
+          <h2 class="titulo-seccion">Resultados de la búsqueda</h2>
+          
+          <div class="resultados-barra">
+            <div class="barra-izquierda">
+              <span class="grid-icon">▤ ☰</span>
+              <p class="conteo">
+                <span v-if="searchQuery">Resultados para "<strong>{{ searchQuery }}</strong>": </span>
+                {{ productosFiltrados.length }} producto(s)
+                <button v-if="searchQuery" @click="searchQuery = ''" class="btn-limpiar">✕ Limpiar</button>
+              </p>
+            </div>
+            <div class="resultados-orden">
+              <label>Ordenar por:</label>
+              <select v-model="orden" class="select-orden">
+                <option value="default">Seleccione</option>
+                <option value="precio-asc">Precio: menor a mayor</option>
+                <option value="precio-desc">Precio: mayor a menor</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="resultados-grid">
+            <div class="producto-card" v-for="(p, index) in productosFiltrados" :key="index">
+              <div class="producto-imagen-wrapper">
+                <img :src="p.imagen" alt="producto">
+                <div class="producto-hover-acciones">
+                  <button class="hover-btn" title="Ver producto" @click="$router.push('/producto')">👁️‍🗨️</button>
+                  <button class="hover-btn" title="Agregar al carrito" @click="agregarAlCarrito(p.nombre)">🛒</button>
                 </div>
-            </div>
-
-            <!-- Tabs productos / proveedores -->
-            <div class="resultados-tabs" style="display: flex; gap: 10px; margin-bottom: 20px;">
-                <button :class="['tab-resultado', { active: currentTab === 'productos' }]" @click="currentTab = 'productos'" style="padding: 10px 20px; border: none; background: white; border-radius: 5px; cursor: pointer;">📦 Productos</button>
-                <button :class="['tab-resultado', { active: currentTab === 'proveedores' }]" @click="currentTab = 'proveedores'" style="padding: 10px 20px; border: none; background: white; border-radius: 5px; cursor: pointer;">🏪 Proveedores</button>
-            </div>
-
-            <!-- Grid de PRODUCTOS -->
-            <div v-show="currentTab === 'productos'">
-                <div class="resultados-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px;" v-if="productosFiltrados.length > 0">
-                    <div class="oferta-card" v-for="(p, index) in productosFiltrados" :key="index" @click="$router.push('/producto')" style="cursor: pointer; background: white; border-radius: 10px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: relative;">
-                        <div class="oferta-badge" style="position: absolute; top: 10px; left: 10px; background: #e63946; color: white; padding: 3px 8px; border-radius: 3px; font-size: 12px; z-index: 1;">{{ p.proveedor }}</div>
-                        <div style="height: 150px; margin-bottom: 15px; border-radius: 5px; overflow: hidden;">
-                            <img :src="p.imagen" alt="producto" style="width: 100%; height: 100%; object-fit: cover;">
-                        </div>
-                        <h4 style="margin: 0 0 5px 0;">{{ p.nombre }}</h4>
-                        <p style="margin: 0 0 10px 0; color: #666; font-size: 14px;">{{ p.categoria }}</p>
-                        <div class="oferta-precios" style="display: flex; align-items: center; justify-content: space-between;">
-                            <span v-if="p.precioAntes" style="text-decoration: line-through; color: #999; font-size: 14px;">${{ p.precioAntes.toFixed(2) }}</span>
-                            <span style="font-weight: bold; font-size: 18px; color: #333;">${{ p.precio.toFixed(2) }}</span>
-                        </div>
-                    </div>
+              </div>
+              <div class="producto-info">
+                <h4 class="producto-nombre">{{ p.nombre.toUpperCase() }}</h4>
+                <div class="precios">
+                  <span v-if="p.precioAntes" class="precio-antes">${{ p.precioAntes.toFixed(2) }}</span>
+                  <span class="precio-actual">${{ p.precio.toFixed(2) }}</span>
                 </div>
-                <p class="sin-resultados" v-else style="text-align: center; padding: 40px; color: #666; font-size: 18px;">😕 No se encontraron resultados con esos filtros</p>
+              </div>
             </div>
+          </div>
 
-            <!-- Grid de PROVEEDORES -->
-            <div v-show="currentTab === 'proveedores'">
-                <div class="providers-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
-                    <div class="provider-card" v-for="prov in proveedores" :key="prov.id" @click="$router.push('/perfil-proveedor')" style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); cursor: pointer;">
-                        <div class="provider-top" :style="{ background: prov.color, height: '100px', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', paddingBottom: '10px' }">
-                            <!-- Avatar Placeholder -->
-                            <div style="width: 60px; height: 60px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; transform: translateY(50%); border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                                <span style="font-size: 24px;">🏪</span>
-                            </div>
-                        </div>
-                        <div class="provider-body" style="padding: 40px 20px 20px; text-align: center;">
-                            <h3 style="margin: 0 0 5px 0;">{{ prov.nombre }}</h3>
-                            <p style="margin: 0 0 15px 0; color: #666; font-size: 14px;">{{ prov.cat }}</p>
-                            <button style="width: 100%; padding: 10px; background: #f8f8f8; border: 1px solid #eee; border-radius: 5px; cursor: pointer; color: #333;">Ver Productos →</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+          <p class="sin-resultados" v-if="productosFiltrados.length === 0">
+            😕 No se encontraron productos.
+          </p>
         </div>
+      </div>
     </div>
+    <transition name="slide-in">
+        <div v-if="notificacion" class="notificacion-carrito">
+            {{ notificacion }}
+        </div>
+    </transition>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import carneImg from '@/assets/img/carne_1.png'
 import carne3Img from '@/assets/img/carne_3.jpg'
 
-const currentTab = ref('productos')
+const route = useRoute()
+const searchQuery = ref(route.query.q || '')
 
-// Filtros state
-const categoriasFiltro = ref([])
-const proveedoresFiltro = ref([])
-const precioMax = ref(50)
-const soloOfertas = ref(false)
+// Actualiza cuando cambia la URL
+watch(() => route.query.q, (nuevoQuery) => {
+  searchQuery.value = nuevoQuery || ''
+})
+
 const orden = ref('default')
+const listaCategorias = ['Pollos', 'Pavos', 'Cordero', 'Cerdo', 'Embutidos']
+const categoriaActiva = ref('INICIO')
+const notificacion = ref('')
 
-// Mock Data
+const filtrarPorCategoria = (cat) => {
+  categoriaActiva.value = cat
+  if (cat === 'INICIO') searchQuery.value = ''
+}
+
+const agregarAlCarrito = (nombre) => {
+  notificacion.value = `✓ "${nombre}" añadido al carrito`
+  setTimeout(() => {
+    notificacion.value = ''
+  }, 2500)
+}
+
 const productos = ref([
-    { nombre: 'Lomo de Res', proveedor: '7 Pozo', proveedorId: '7pozo', categoria: 'carnes', imagen: carneImg, precio: 18, precioAntes: 22, descuento: true },
-    { nombre: 'Costilla de Res', proveedor: '7 Pozo', proveedorId: '7pozo', categoria: 'carnes', imagen: carne3Img, precio: 14, precioAntes: null, descuento: false },
-    { nombre: 'Pechuga Entera', proveedor: 'Pechugón', proveedorId: 'pechugon', categoria: 'pollos', imagen: carne3Img, precio: 5.5, precioAntes: 8, descuento: true },
-    { nombre: 'Alas de Pollo x kg', proveedor: 'Pechugón', proveedorId: 'pechugon', categoria: 'pollos', imagen: carne3Img, precio: 4, precioAntes: 6, descuento: true },
-])
-
-const proveedores = ref([
-    { nombre: '7 Pozo', id: '7pozo', cat: '🥩 Carne de Res', color: 'linear-gradient(135deg, #8B2E2E, #C0392B)' },
-    { nombre: 'Pechugón', id: 'pechugon', cat: '🐔 Pollos al Por Mayor', color: 'linear-gradient(135deg, #B7950B, #D4AC0D)' },
-    { nombre: 'Carnes Ñuble', id: 'verdecampo', cat: '🐓 Distribuidora cárnica general', color: 'linear-gradient(135deg, #1A5E20, #2E7D32)' },
+  { nombre: 'Lomo fino de chancho und', categoria: 'Cerdo', imagen: carneImg, precio: 18.50, precioAntes: 21.00 },
+  { nombre: 'Carne de cerdo foodpacking', categoria: 'Cerdo', imagen: carne3Img, precio: 12.00, precioAntes: null },
 ])
 
 const productosFiltrados = computed(() => {
-    let result = productos.value.filter(p => {
-        if (categoriasFiltro.value.length > 0 && !categoriasFiltro.value.includes(p.categoria)) return false
-        if (proveedoresFiltro.value.length > 0 && !proveedoresFiltro.value.includes(p.proveedorId)) return false
-        if (p.precio > precioMax.value) return false
-        if (soloOfertas.value && !p.descuento) return false
-        return true
-    })
+  let result = [...productos.value]
 
-    if (orden.value === 'precio-asc') result.sort((a, b) => a.precio - b.precio)
-    if (orden.value === 'precio-desc') result.sort((a, b) => b.precio - a.precio)
-    if (orden.value === 'descuento') result.sort((a, b) => (b.descuento ? 1 : 0) - (a.descuento ? 1 : 0))
+  if (searchQuery.value.trim()) {
+    result = result.filter(p =>
+      p.nombre.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      p.categoria.toLowerCase().includes(searchQuery.value.toLowerCase())
+    )
+  }
 
-    return result
+  if (categoriaActiva.value !== 'INICIO') {
+    result = result.filter(p => p.categoria === categoriaActiva.value)
+  }
+
+  if (orden.value === 'precio-asc') result.sort((a, b) => a.precio - b.precio)
+  if (orden.value === 'precio-desc') result.sort((a, b) => b.precio - a.precio)
+
+  return result
 })
-
-const limpiarFiltros = () => {
-    categoriasFiltro.value = []
-    proveedoresFiltro.value = []
-    precioMax.value = 50
-    soloOfertas.value = false
-    orden.value = 'default'
-}
 </script>
 
 <style scoped>
-/* Scoped styles */
-.tab-resultado.active {
-    background: #e63946 !important;
-    color: white !important;
+.btn-limpiar {
+  margin-left: 10px;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  color: #666;
+}
+.btn-limpiar:hover {
+  background: #F05A22;
+  color: white;
+  border-color: #F05A22;
+}
+.notificacion-carrito {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #1B4332;
+  color: white;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 9999;
+}
+
+.slide-in-enter-active, .slide-in-leave-active {
+  transition: all 0.3s ease;
+}
+.slide-in-enter-from, .slide-in-leave-to {
+  transform: translateX(100%);
+  opacity: 0;
+}
+.resultados-view {
+  background-color: #fcfcfc;
+  font-family: 'Arial', sans-serif;
+  min-height: 100vh;
+}
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+.breadcrumbs {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 30px;
+}
+.layout-principal {
+  display: flex;
+  gap: 40px;
+}
+.sidebar-categorias {
+  width: 240px;
+  flex-shrink: 0;
+}
+.lista-categorias {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #eee;
+  background: white;
+}
+.categoria-item {
+  padding: 12px 20px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  font-size: 13px;
+  color: #333;
+  transition: background 0.2s;
+}
+.categoria-item:hover {
+  background: #f9f9f9;
+  color: #F05A22;
+}
+.categoria-item.active {
+  background: #f2f2f2;
+  font-weight: bold;
+}
+.titulo-seccion {
+  font-size: 24px;
+  margin-bottom: 30px;
+}
+.resultados-barra {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 30px;
+}
+.barra-izquierda {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.conteo { color: #666; font-size: 14px; margin: 0; }
+.select-orden {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+}
+.resultados-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 30px;
+}
+.producto-card {
+  background: white;
+  transition: transform 0.2s;
+}
+.producto-card:hover {
+  transform: translateY(-5px);
+}
+.producto-imagen-wrapper {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  margin-bottom: 15px;
+}
+.producto-imagen-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.producto-hover-acciones {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  flex-direction: column;
+  display: flex;
+  gap: 10px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.producto-imagen-wrapper:hover .producto-hover-acciones {
+  opacity: 1;
+}
+.hover-btn {
+  background: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  transition: transform 0.2s, background 0.2s;
+}
+.hover-btn:hover {
+  background: #F05A22;
+  transform: scale(1.1);
+}
+.producto-nombre {
+  font-size: 14px;
+  color: #444;
+  margin-bottom: 10px;
+  height: 40px;
+}
+.precio-actual {
+  font-weight: bold;
+  font-size: 18px;
+  color: #333;
+}
+.precio-antes {
+  text-decoration: line-through;
+  color: #999;
+  margin-right: 10px;
+  font-size: 14px;
 }
 </style>

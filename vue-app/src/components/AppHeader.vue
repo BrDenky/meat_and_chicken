@@ -1,9 +1,8 @@
 <template>
   <div>
     <!-- MODAL LOGIN -->
-    <div v-show="isLoginVisible" class="login-overlay" @click="cerrarLogin"></div>
-
-    <div v-show="isLoginVisible" class="login-modal" id="loginModal">
+    <div class="login-overlay" :class="{ active: isLoginVisible }" @click="cerrarLogin"></div>
+    <div class="login-modal" :class="{ active: isLoginVisible }" id="loginModal">
       <button class="login-cerrar" @click="cerrarLogin">✕</button>
 
       <!-- Tabs Cliente / Proveedor -->
@@ -84,7 +83,13 @@
         </router-link>
 
         <div class="header-search">
-          <input type="text" id="searchInput" placeholder="Buscar proveedor o producto...">
+          <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="Buscar proveedor o producto..."
+            v-model="searchQuery"
+            @keydown.enter="buscar"
+          >
         </div>
 
         <div class="header-actions">
@@ -110,6 +115,16 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const searchQuery = ref('')
+
+const buscar = () => {
+  if (searchQuery.value.trim()) {
+    router.push('/resultados?q=' + encodeURIComponent(searchQuery.value.trim()))
+  }
+}
 
 const isLoginVisible = ref(false)
 const currentTab = ref('cliente')
@@ -148,5 +163,26 @@ const togglePuntos = () => {
 </script>
 
 <style scoped>
-/* Any required component-specific styles over styles.css could go here */
+
+.login-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1100;
+}
+
+.login-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  width: 420px;
+  max-width: 90vw;
+  z-index: 1200;
+  max-height: 90vh;
+  overflow-y: auto;
+}
 </style>
