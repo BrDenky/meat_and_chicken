@@ -79,6 +79,7 @@
     <header id="header">
       <div class="header-inner">
         <router-link to="/" class="header-brand">
+          <img src="@/assets/img/logo.png" alt="Logo">
           <span class="brand-text">Meat & Chicken Fast</span>
         </router-link>
 
@@ -87,22 +88,23 @@
         </div>
 
         <div class="header-actions">
-          <div class="puntos-dropdown-wrapper">
-            <button class="action-btn" @click="togglePuntos">⭐ <span>1,240 pts</span></button>
-            <div class="puntos-dropdown" :class="{ show: isPuntosVisible }">
-              <p class="puntos-dropdown-title">💎 Mis Puntos</p>
-              <p class="puntos-dropdown-valor">1,240 pts</p>
-              <div class="puntos-barra">
-                <div class="puntos-barra-fill"></div>
-              </div>
-              <p class="puntos-dropdown-next">760 pts para tu próximo canje</p>
-            </div>
-          </div>
-          <router-link to="/carrito" class="action-btn">🛒 <span>Carrito</span></router-link>
-          <button class="action-btn" @click="abrirLogin">🔐 <span>Login</span></button>
+
+          <router-link to="/carrito" class="action-btn">🛒 <span> Mi carrito</span></router-link>
+          <button class="action-btn" @click="abrirLogin">👤<span>Mi cuenta</span></button>
         </div>
       </div>
     </header>
+
+    <!-- BARRA DE NAVEGACIÓN SECUNDARIA -->
+    <nav class="secondary-nav">
+      <div class="container secondary-nav-inner">
+        <a href="/#productos" class="secondary-nav-link">Proveedores</a>
+        <a href="/resultados" class="secondary-nav-link">Productos</a>
+        <a href="/registro" class="secondary-nav-link">Trabaja con Nosotros</a>
+        <a href="/sobre_nosotros" class="secondary-nav-link">Sobre Nosotros</a>
+        <a href="/noticias" class="secondary-nav-link">Noticias</a>
+      </div>
+    </nav>
   </div>
 </template>
 

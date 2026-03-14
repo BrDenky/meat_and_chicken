@@ -1,25 +1,5 @@
 <template>
   <div>
-    <!-- Checkout Steps -->
-    <div class="checkout-steps">
-        <div class="container">
-            <div class="steps-container">
-                <div class="step completed">
-                    <div class="step-number">✓</div>
-                    <div class="step-label">Carrito</div>
-                </div>
-                <div class="step active">
-                    <div class="step-number">2</div>
-                    <div class="step-label">Datos de Envío</div>
-                </div>
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <div class="step-label">Confirmación</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <main>
         <div class="container">
             <div class="page-title">
@@ -30,8 +10,8 @@
                 <div class="checkout-container">
                     <!-- Checkout Form -->
                     <div class="checkout-form">
-                        <!-- Datos de Contacto -->
-                        <h2 class="section-title">📧 Datos de Contacto</h2>
+                        <!-- Datos Personales -->
+                        <h2 class="section-title">1. Datos Personales</h2>
                         
                         <div class="form-row">
                             <div class="form-group">
@@ -57,7 +37,7 @@
                         </div>
 
                         <!-- Datos de Envío -->
-                        <h2 class="section-title" style="margin-top: 40px;">🚚 Dirección de Envío</h2>
+                        <h2 class="section-title" style="margin-top: 40px;">2. Dirección de Envío</h2>
                         
                         <div class="form-row">
                             <div class="form-group">
@@ -113,14 +93,14 @@
                         </div>
 
                         <!-- Método de Pago -->
-                        <h2 class="section-title" style="margin-top: 40px;">💳 Método de Pago</h2>
+                        <h2 class="section-title" style="margin-top: 40px;">3. Método de Pago</h2>
                         
                         <div class="payment-methods">
                             <!-- Opción 1: Tarjeta de Crédito/Débito -->
                             <div class="payment-option" :class="{ selected: selectedPayment === 'card' }" @click="selectPayment('card')">
-                                <input type="radio" v-model="selectedPayment" value="card" required>
+                                <input type="radio" :checked="selectedPayment === 'card'" name="paymentType" style="pointer-events: none;">
                                 <div class="payment-header">
-                                    <div class="payment-icon">💳</div>
+                                    <div class="payment-icon"><i class="fa-solid fa-dollar-sign"></i></div>
                                     <div class="payment-info">
                                         <h4>Tarjeta de Crédito/Débito</h4>
                                         <p>Pago seguro con tarjetas de bancos ecuatorianos</p>
@@ -177,9 +157,9 @@
 
                             <!-- Opción 2: Pago por WhatsApp -->
                             <div class="payment-option" :class="{ selected: selectedPayment === 'whatsapp' }" @click="selectPayment('whatsapp')">
-                                <input type="radio" v-model="selectedPayment" value="whatsapp" required>
+                                <input type="radio" :checked="selectedPayment === 'whatsapp'" name="paymentType" style="pointer-events: none;">
                                 <div class="payment-header">
-                                    <div class="payment-icon">💬</div>
+                                    <div class="payment-icon"><i class="fa-brands fa-whatsapp"></i></div>
                                     <div class="payment-info">
                                         <h4>Pago por WhatsApp</h4>
                                         <p>Nuestro equipo te contactará para coordinar el pago</p>
@@ -217,8 +197,8 @@
                             </button>
 
                             <div class="security-badge">
-                                <span class="icon">🔒</span>
-                                Pago 100% seguro y protegido
+                                <span class="icon"><i class="fa-solid fa-lock"></i></span>
+                                <span class="text">Compra 100% segura. Tus datos están protegidos.</span>
                             </div>
                         </div>
                     </div>
@@ -254,11 +234,11 @@
     <!-- Modal de Confirmación -->
     <div class="modal" :class="{ active: isConfirmed }" id="confirmation-modal">
         <div class="modal-content">
-            <div class="modal-icon">✅</div>
+            <div class="modal-icon"><i class="fa-regular fa-circle-check"></i></div>
             <h2>¡Pedido Confirmado!</h2>
             <p v-html="confirmationMessage"></p>
             <div class="modal-buttons">
-                <router-link to="/" class="btn-primary" style="display:inline-block">Volver al Inicio</router-link>
+                <router-link to="/" class="btn btn-primary" style="display:inline-block">Volver al Inicio</router-link>
             </div>
         </div>
     </div>
@@ -301,9 +281,13 @@ const cardBrandEmoji = computed(() => {
 })
 
 const selectPayment = (method) => {
-    selectedPayment.value = method
-    if (method === 'whatsapp') {
-        formData.value.whatsappPhone = formData.value.phone
+    if (selectedPayment.value === method) {
+        selectedPayment.value = ''
+    } else {
+        selectedPayment.value = method
+        if (method === 'whatsapp') {
+            formData.value.whatsappPhone = formData.value.phone
+        }
     }
 }
 

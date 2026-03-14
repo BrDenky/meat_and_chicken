@@ -1,5 +1,6 @@
 <template>
   <div class="producto-view">
+    <!--------------------------Revisar si dejar el breadcrumb o no--------------------------------->
     <!-- Breadcrumb -->
     <div class="breadcrumb">
         <div class="container">
@@ -50,7 +51,7 @@
                         <div class="product-price">
                             <span class="price-current">$18.10</span>
                             <span class="price-original">$25.50</span>
-                            <span class="price-save">Ahorra $7.40</span>
+                            <!-- <span class="price-save">Ahorra $7.40</span> -->
                         </div>
                         
                         <div class="product-description">
@@ -62,6 +63,32 @@
                             </p>
                         </div>
                         
+                        <div class="quantity-selector">
+                            <label>Cantidad:</label>
+                            <div class="quantity-controls">
+                                <div class="quantity-input">
+                                    <button @click="decreaseQuantity">-</button>
+                                    <input type="number" v-model.number="quantity" min="1" max="99" readonly>
+                                    <button @click="increaseQuantity">+</button>
+                                </div>
+                                <span class="stock-info">✓ 247 disponibles en inventario</span>
+                                <div class="product-actions">
+                                    <button class="btn btn-primary" @click="addToCart">
+                                        <span class="btn-icon">🛒</span>
+                                        Añadir al carrito
+                                    </button>
+                                    <button class="btn btn-secondary" @click="addToWishlist">
+                                        <span class="btn-icon">❤️</span>
+                                    </button>
+                                    <!-- <button class="btn btn-secondary" @click="shareProduct">
+                                        <span class="btn-icon">📤</span>
+                                    </button> -->
+                                </div>
+                            </div>
+                        </div>
+                        
+
+
                         <div class="product-features">
                             <div class="feature-item">
                                 <span class="feature-icon">✓</span>
@@ -80,95 +107,30 @@
                                 <span class="feature-text">Certificación Sanitaria</span>
                             </div>
                         </div>
-                        
-                        <div class="quantity-selector">
-                            <label>Cantidad:</label>
-                            <div class="quantity-controls">
-                                <div class="quantity-input">
-                                    <button @click="decreaseQuantity">-</button>
-                                    <input type="number" v-model.number="quantity" min="1" max="99" readonly>
-                                    <button @click="increaseQuantity">+</button>
-                                </div>
-                                <span class="stock-info">✓ 247 disponibles en stock</span>
-                            </div>
-                        </div>
-                        
-                        <div class="product-actions">
-                            <button class="btn btn-primary" @click="addToCart">
-                                <span class="btn-icon">🛒</span>
-                                Añadir al carrito
-                            </button>
-                            <button class="btn btn-secondary" @click="addToWishlist">
-                                <span class="btn-icon">❤️</span>
-                            </button>
-                            <button class="btn btn-secondary" @click="shareProduct">
-                                <span class="btn-icon">📤</span>
-                            </button>
-                        </div>
                     </div>
                 </div>
-
+            <!---------- TABS DE INFORMACIÓN DEL PRODUCTO ---------->
             <div class="product-tabs">
                 <div class="tab-buttons">
-                    <button class="tab-button" :class="{ active: currentTab === 0 }" @click="switchTab(0)">Descripción</button>
-                    <button class="tab-button" :class="{ active: currentTab === 1 }" @click="switchTab(1)">Ficha Técnica</button>
-                    <button class="tab-button" :class="{ active: currentTab === 2 }" @click="switchTab(2)">Valoraciones</button>
+                    <button 
+                        v-for="(tab, index) in productoTabs" 
+                        :key="index"
+                        class="tab-button" 
+                        :class="{ active: currentTab === index }" 
+                        @click="switchTab(index)"
+                    >
+                        {{ tab.titulo }}
+                    </button>
                 </div>
 
-                <div class="tab-content" v-show="currentTab === 0">
-                    <h3 style="margin-bottom: 15px;">Detalles del Corte</h3>
-                    <p style="line-height: 1.8; color: #666; margin-bottom: 15px;">
-                        Nuestro corte Premium es seleccionado de ganado joven criado en pastizales
-                        naturales, garantizando una textura tierna y un marmoleo excepcional.
-                        Cada pieza es procesada bajo estrictos estándares de higiene para asegurar
-                        que llegue a tu mesa con toda su jugosidad y sabor original.
-                    </p>
-                    <p style="line-height: 1.8; color: #666; margin-bottom: 15px;">
-                        Compromiso de calidad:
-                    </p>
-                    <ul style="line-height: 2; color: #666; margin-left: 20px;">
-                        <li>100% Carne de pastoreo natural</li>
-                        <li>Sin hormonas ni promotores de crecimiento</li>
-                        <li>Corte artesanal realizado por maestros carniceros</li>
-                        <li>Empaque al vacío para mantener la frescura</li>
-                        <li>Cadena de frío monitoreada constantemente</li>
-                    </ul>
-                </div>
-
-                <div class="tab-content" v-show="currentTab === 1">
-                    <h3 style="margin-bottom: 20px;">Especificaciones Técnicas</h3>
-                    <table class="specifications-table">
-                        <tr><td>Origen</td><td>Haciendas Locales (Ecuador)</td></tr>
-                        <tr><td>Tipo de Ganado</td><td>Angus / Brangus seleccionado</td></tr>
-                        <tr><td>Maduración</td><td>14 - 21 días (Wet Aged)</td></tr>
-                        <tr><td>Presentación</td><td>Corte individual empacado al vacío</td></tr>
-                        <tr><td>Peso Aprox.</td><td>500g - 800g por unidad</td></tr>
-                        <tr><td>Vida Útil</td><td>30 días en refrigeración / 6 meses congelado</td></tr>
-                        <tr><td>Temperatura de Almacenamiento</td><td>0°C a 4°C</td></tr>
-                        <tr><td>Alimentación</td><td>Pastura natural y granos seleccionados</td></tr>
-                        <tr><td>Certificaciones</td><td>AGROCALIDAD, BPM (Buenas Prácticas de Manufactura)</td></tr>
-                    </table>
-                </div>
-
-                <div class="tab-content" v-show="currentTab === 2">
-                    <h3 style="margin-bottom: 20px;">Opiniones de Parrilleros</h3>
-                    <!-- Dummy reviews extracted from original code -->
-                    <div style="background: #f8f8f8; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                            <div>
-                                <strong style="font-size: 18px;">Ricardo Peña</strong>
-                                <div class="stars" style="color: #ffc107; font-size: 14px;">★★★★★</div>
-                            </div>
-                            <span style="color: #999; font-size: 14px;">Hace 2 días</span>
-                        </div>
-                        <p style="color: #666; line-height: 1.6;">
-                            La suavidad de la carne es de otro nivel. El marmoleo estaba perfecto y
-                            el empaque llegó muy frío, se nota el cuidado en el transporte.
-                        </p>
-                    </div>
-
-                    <!-- Omitting the rest of reviews for brevity, maintaining structure -->
-                </div>
+                <template v-for="(tab, index) in productoTabs" :key="'tab-data-' + index">
+                    <div 
+                        v-if="currentTab === index"
+                        class="tab-panel" 
+                        style="animation: fadeIn 0.3s;"
+                        v-html="tab.contenido"
+                    ></div>
+                </template>
             </div>
 
             <!-- Productos Relacionados -->
@@ -216,6 +178,72 @@ const currentImageIndex = ref(0)
 const quantity = ref(1)
 const currentTab = ref(0)
 const notificationMessage = ref('')
+
+// Objeto de información de las pestañas del producto
+const productoTabs = ref([
+    {
+        titulo: 'Descripción',
+        contenido: `
+            <div class="tab-details">
+                <h3>Detalles del Corte</h3>
+                <p>
+                    Nuestro corte Premium es seleccionado de ganado joven criado en pastizales
+                    naturales, garantizando una textura tierna y un marmoleo excepcional.
+                    Cada pieza es procesada bajo estrictos estándares de higiene para asegurar
+                    que llegue a tu mesa con toda su jugosidad y sabor original.
+                </p>
+                <p>Compromiso de calidad:</p>
+                <ul class="quality-list">
+                    <li>100% Carne de pastoreo natural</li>
+                    <li>Sin hormonas ni promotores de crecimiento</li>
+                    <li>Corte artesanal realizado por maestros carniceros</li>
+                    <li>Empaque al vacío para mantener la frescura</li>
+                    <li>Cadena de frío monitoreada constantemente</li>
+                </ul>
+            </div>
+        `
+    },
+    {
+        titulo: 'Ficha Técnica',
+        contenido: `
+            <div class="tab-details">
+                <h3>Especificaciones Técnicas</h3>
+                <table class="specifications-table">
+                    <tr><th>Origen</th><td>Haciendas Locales (Ecuador)</td></tr>
+                    <tr><th>Tipo de Ganado</th><td>Angus / Brangus seleccionado</td></tr>
+                    <tr><th>Maduración</th><td>14 - 21 días (Wet Aged)</td></tr>
+                    <tr><th>Presentación</th><td>Corte individual empacado al vacío</td></tr>
+                    <tr><th>Peso Aprox.</th><td>500g - 800g por unidad</td></tr>
+                    <tr><th>Vida Útil</th><td>30 días en refrigeración / 6 meses congelado</td></tr>
+                    <tr><th>Temp. de Almacenamiento</th><td>0°C a 4°C</td></tr>
+                    <tr><th>Alimentación</th><td>Pastura natural y granos seleccionados</td></tr>
+                    <tr><th>Certificaciones</th><td>AGROCALIDAD, BPM</td></tr>
+                </table>
+            </div>
+        `
+    },
+    {
+        titulo: 'Valoraciones',
+        contenido: `
+            <div class="tab-details">
+                <h3>Opiniones de Parrilleros</h3>
+                <div class="tab-review">
+                    <div class="review-header">
+                        <div>
+                            <strong>Ricardo Peña</strong>
+                            <div class="stars">★★★★★</div>
+                        </div>
+                        <span class="review-date">Hace 2 días</span>
+                    </div>
+                    <p class="review-text">
+                        La suavidad de la carne es de otro nivel. El marmoleo estaba perfecto y
+                        el empaque llegó muy frío, se nota el cuidado en el transporte.
+                    </p>
+                </div>
+            </div>
+        `
+    }
+])
 
 const activeImage = computed(() => images[currentImageIndex.value])
 

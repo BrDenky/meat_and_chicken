@@ -1,6 +1,7 @@
 <template>
   <div>
-    <!-- SECCIÓN HERO -->
+
+    <!-- SECCIÓN HERO
     <section class="hero">
         <div class="hero-content">
             <p class="hero-eyebrow">Innovación Tecnológica</p>
@@ -27,15 +28,18 @@
                 <img src="@/assets/img/logo.png">
             </div>
         </div>
-    </section>
+    </section> -->
+
+
+
 
     <!-- CONTENIDO PRINCIPAL -->
     <main>
         
-        <!------------------------------------ Ofertas del Día ------------------------------------>
-        <div class="ofertas-section">
+        <!------------------------------------ Ofertas de la semana ------------------------------------>
+        <div class="ofertas-section" id="ofertas">
             <div class="container">
-                <h2 class="products-section-title">Ofertas del Día</h2>
+                <h2 class="products-section-title">Ofertas de la semana</h2>
                 <p class="ofertas-subtitle">Productos frescos disponibles hoy de nuestros proveedores</p>
 
                 <div class="ofertas-carrusel-wrapper">
@@ -71,7 +75,6 @@
                             </button>
                         </div>
                     </div>
-
                     <button class="carrusel-btn der" @click="moverCarrusel(1)">&#8594;</button>
                 </div>
             </div>
@@ -105,47 +108,78 @@
                 
                         <button 
                             class="provider-btn" 
-                            @click.stop="$router.push({ name: 'resultados', query: { proveedor: prov.slug } })">
-                            Ver Productos →
+                            @click.stop="$router.push({ name: 'perfil-proveedor', query: { proveedor: prov.slug } })">
+                            Ver Proveedor
                         </button>
                     </div>
                 </div>
             </div>
         </div>
-                
-        <!-- Servicios -->
-        <!-- Code omitted for brevity from the original, assuming full copy is needed later,
-             but doing a partial literal copy here to save processing time while ensuring functionality -->
-        <div class="container">
-            <div class="service-area">
-                <div class="service-fourth">
-                    <div class="service-icon">🚚</div>
-                    <div class="service-heading">Envío Gratis</div>
-                    <div class="service-description">En pedidos mayores a $50</div>
+
+                <!-- Puntos Acumulados -->
+        <div class="puntos-section" id="puntos">
+            <div class="container">
+                <div class="puntos-header">
+                    <h2>Acumula puntos en cada compra</h2>
+                    <p>Los mejores precios con todos nuestros proveedores</p>
                 </div>
-                <div class="service-fourth">
-                    <div class="service-icon">🏪</div>
-                    <div class="service-heading">14 Sucursales</div>
-                    <div class="service-description">En toda la ciudad</div>
+
+                <div class="puntos-steps">
+                    <div class="puntos-step">
+                        <div class="step-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+                        <div class="step-content">
+                            <h3>1. Compra</h3>
+                            <p>Gana 1 punto por cada $1 en tus pedidos.</p>
+                        </div>
+                    </div>
+                    <div class="puntos-step">
+                        <div class="step-icon"><i class="fa-solid fa-gem"></i></div>
+                        <div class="step-content">
+                            <h3>2. Acumula</h3>
+                            <p>Se suman automáticamente a tu cuenta.</p>
+                        </div>
+                    </div>
+                    <div class="puntos-step">
+                        <div class="step-icon"><i class="fa-solid fa-tag"></i></div>
+                        <div class="step-content">
+                            <h3>3. Canjea</h3>
+                            <p>Ahorra dinero en cualquier proveedor.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Puntos Acumulados -->
-        <div class="puntos-section" id="puntos">
-            <div class="container">
-                <div class="puntos-banner">
-                    <div class="puntos-info">
-                        <p class="puntos-eyebrow">💎 Programa de Lealtad</p>
-                        <h2>Acumula puntos<br>en cada compra</h2>
-                        <p>Canjea tus puntos por descuentos exclusivos en cualquier proveedor del marketplace.</p>
+        
+        <!-- Servicios -->
+        <div class="container service-section">
+            <div class="service-grid">
+                <div class="service-item">
+                    <div class="service-icon"><i class="fa-solid fa-paper-plane"></i></div>
+                    <div class="service-text">
+                        <h3 class="highlight">Envío A Domicilio</h3>
+                        <p>Para la ciudad de Quito</p>
                     </div>
-                    <div class="puntos-card">
-                        <p class="puntos-card-label">Mis Puntos</p>
-                        <p class="puntos-card-valor">1,240 <span>pts</span></p>
-                        <div class="puntos-barra">
-                            <div class="puntos-barra-fill"></div>
-                        </div>
+                </div>
+                <div class="service-item">
+                    <div class="service-icon"><i class="fa-solid fa-store"></i></div>
+                    <div class="service-text">
+                        <h3>14 Sucursales</h3>
+                        <p>En la ciudad de Quito</p>
+                    </div>
+                </div>
+                <div class="service-item">
+                    <div class="service-icon"><i class="fa-solid fa-wallet"></i></div>
+                    <div class="service-text">
+                        <h3>Compra 100% Segura</h3>
+                        <p>Pago con transferencia o depósito</p>
+                    </div>
+                </div>
+                <div class="service-item">
+                    <div class="service-icon"><i class="fa-solid fa-headset"></i></div>
+                    <div class="service-text">
+                        <h3>Asesoría Personalizada</h3>
+                        <p>Te ayudamos en tu pedido</p>
                     </div>
                 </div>
             </div>
@@ -171,7 +205,7 @@
 <script setup>
 import { ref } from 'vue'
 
-// Agreamos lista de ofertas del día
+// Agreamos lista de ofertas de la semana
 const productosEnOferta = ref([
     {
         id: 1,
@@ -180,7 +214,7 @@ const productosEnOferta = ref([
         precioAhora: 18.00,
         precioAntes: 22.00,
         descuento: '-18%',
-        badge: '🥩 7 Pozo',
+        badge: '7 Pozo',
         img: 'lomo.png',
         icono: '🥩'
     },
@@ -191,7 +225,7 @@ const productosEnOferta = ref([
         precioAhora: 5.50,
         precioAntes: 8.00,
         descuento: '-31%',
-        badge: '🐔 Pechugón',
+        badge: 'Pechugón',
         img: 'pechuga.png',
         icono: '🍗'
     },
@@ -202,7 +236,7 @@ const productosEnOferta = ref([
         precioAhora: 8.52,
         precioAntes: 12.00,
         descuento: '-29%',
-        badge: '🐓 Carnes Ñuble S.A.',
+        badge: 'Carnes Ñuble S.A.',
         img: 'lomo_liso.jpg',
         icono: '🐓'
     },
@@ -213,7 +247,7 @@ const productosEnOferta = ref([
         precioAhora: 7.00,
         precioAntes: 9.00,
         descuento: '-22%',
-        badge: '🐖 Quirocarne',
+        badge: 'Quirocarne',
         img: 'iberico.jpg',
         icono: '🐖'
     },
@@ -224,7 +258,7 @@ const productosEnOferta = ref([
         precioAhora: 4.50,
         precioAntes: 6.00,
         descuento: '-25%',
-        badge: '🐔 Bachoco',
+        badge: 'Bachoco',
         img: 'pechuga.png',
         icono: '🐔'
     },
@@ -235,7 +269,7 @@ const productosEnOferta = ref([
         precioAhora: 2.50,
         precioAntes: 4.00,
         descuento: '-38%',
-        badge: '🍔 Cárnicas Ismael',
+        badge: 'Cárnicas Ismael',
         img: 'hamburguesas.jpg',
         icono: '🍔'
     },
@@ -246,7 +280,7 @@ const productosEnOferta = ref([
         precioAhora: 5.00,
         precioAntes: 7.00,
         descuento: '-28%',
-        badge: '🍖 Grupo Jorge',
+        badge: 'Grupo Jorge',
         img: 'images.jpg',
         icono: '🍖'
     }
@@ -258,7 +292,7 @@ const listaProveedores = ref([
     {
         id: 1,
         nombre: '7 Pozo',
-        categoria: '🥩 Carne de Res',
+        categoria: 'Carne de Res',
         descripcion: 'Carne de res de primera calidad, criada en campo abierto.',
         img: 'provedor_1.png',
         slug: '7pozo',
@@ -267,7 +301,7 @@ const listaProveedores = ref([
     {
         id: 2,
         nombre: 'Pechugón',
-        categoria: '🐔 Pollos al Por Mayor',
+        categoria: 'Pollos al Por Mayor',
         descripcion: 'Distribuidor líder de pollo fresco directo desde granja.',
         img: 'provedor_1.png',
         slug: 'pechugon',
@@ -276,7 +310,7 @@ const listaProveedores = ref([
     {
         id: 3,
         nombre: 'Carnes Ñuble S.A',
-        categoria: '🐓 Distribuidora cárnica general',
+        categoria: 'Distribuidora cárnica general',
         descripcion: 'Distribuidor líder en cortes premium con cinco generaciones de historia.',
         img: 'provedor_1.png',
         slug: 'verdecampo',
@@ -285,7 +319,7 @@ const listaProveedores = ref([
     {
         id: 4,
         nombre: 'Quirocarne',
-        categoria: '🐖 Tradición ibérica desde Madrid',
+        categoria: 'Tradición ibérica desde Madrid',
         descripcion: 'Distribuidora cárnica especializada en productos para hostelería.',
         img: 'provedor_1.png',
         slug: 'marabierto',
@@ -294,7 +328,7 @@ const listaProveedores = ref([
     {
         id: 5,
         nombre: 'Bachoco',
-        categoria: '🐔 Líder multiproteínas',
+        categoria: 'Líder multiproteínas',
         descripcion: 'Producción y comercialización de pollo, cerdo, pavo y huevo.',
         img: 'provedor_1.png',
         slug: 'paramo',
@@ -303,7 +337,7 @@ const listaProveedores = ref([
     {
         id: 6,
         nombre: 'Cárnicas Ismael',
-        categoria: '🍔 Hamburguesas gourmet y carne fresca',
+        categoria: 'Hamburguesas gourmet y carne fresca',
         descripcion: 'Mayorista con elaboración artesana.',
         img: 'provedor_1.png',
         slug: 'granosdelsur',
@@ -312,7 +346,7 @@ const listaProveedores = ref([
     {
         id: 7,
         nombre: 'Grupo Jorge',
-        categoria: '🍖 Gigante del porcino',
+        categoria: 'Gigante del porcino',
         descripcion: 'Producción y exportación de productos porcinos.',
         img: 'provedor_1.png',
         slug: 'frutiexpress',
@@ -321,7 +355,7 @@ const listaProveedores = ref([
     {
         id: 8,
         nombre: 'Ecosancho',
-        categoria: '👩‍🌾 Avicultura ecológica',
+        categoria: 'Avicultura ecológica',
         descripcion: 'Cría y distribución de pollo, gallina, pularda y capón ecológicos.',
         img: 'provedor_1.png',
         slug: 'dulcetierra',

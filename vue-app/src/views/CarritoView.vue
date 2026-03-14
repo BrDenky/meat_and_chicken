@@ -14,7 +14,7 @@
     <main>
         <div class="container">
             <div class="page-title">
-                <h1>🛒 Carrito de Compras</h1>
+                <h1>Carrito de Compras</h1>
                 <p id="cart-count">Tienes <strong>{{ itemsCount }} producto{{ itemsCount !== 1 ? 's' : '' }}</strong> en tu carrito</p>
             </div>
 
@@ -61,7 +61,7 @@
                     </div>
 
                     <div class="continue-shopping">
-                        <router-link to="/resultados">← Continuar comprando</router-link>
+                        <router-link to="/resultados">Continuar comprando</router-link>
                     </div>
                 </div>
 
@@ -125,16 +125,28 @@
                     <div class="payment-methods">
                         <h4>Métodos de Pago Aceptados</h4>
                         <div class="payment-icons">
-                            <div class="payment-icon">💳</div>
-                            <div class="payment-icon">🏧</div>
-                            <div class="payment-icon">📱</div>
-                            <div class="payment-icon">💵</div>
+                            <div class="payment-method-badge">
+                                <i class="fa-solid fa-money-bill-wave"></i>
+                                <span>Efectivo</span>
+                            </div>
+                            <div class="payment-method-badge">
+                                <i class="fa-solid fa-credit-card"></i>
+                                <span>Tarjeta</span>
+                            </div>
+                            <div class="payment-method-badge">
+                                <i class="fa-solid fa-building-columns"></i>
+                                <span>Transferencia</span>
+                            </div>
+                            <div class="payment-method-badge">
+                                <i class="fa-solid fa-qrcode"></i>
+                                <span>Pago QR</span>
+                            </div>
                         </div>
                     </div>
                     
                     <!-- Security -->
                     <div class="security-badge">
-                        <span class="icon">🔒</span>
+                        <span class="icon"><i class="fa-solid fa-lock"></i></span>
                         <span class="text">Compra 100% segura. Tus datos están protegidos.</span>
                     </div>
                 </div>
@@ -147,6 +159,9 @@
 <script setup>
 import { ref, computed } from 'vue'
 
+
+
+/*--------------- AQUÍ VAMOS AÑADIENDO DE FORMA ORDENADA LOS PRODUCTOS DEL CARRITO ---------------*/
 const cart = ref([
     { id: 1, name: 'Lomo Fino Premium', sku: 'CAR-LF001', weight: '500g', cut: 'Medallón', price: 18.10, originalPrice: 25.50, qty: 2, image: 'corte_1.png' },
     { id: 2, name: 'Lomo Fino Premium', sku: 'CAR-LF001', weight: '500g', cut: 'Medallón', price: 4.50, originalPrice: null, qty: 1, image: 'corte_2.png' },
