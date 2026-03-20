@@ -148,7 +148,11 @@ const cambiarSubtab = (subtab) => {
 }
 
 const iniciarSesion = (tipo) => {
-  alert('Iniciando sesión como ' + tipo)
+  if (tipo === 'proveedor') {
+    router.push('/proveedor')
+  } else {
+    router.push('/perfil')
+  }
   cerrarLogin()
 }
 

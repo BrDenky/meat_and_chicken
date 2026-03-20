@@ -5,7 +5,7 @@
         <!-- SIDEBAR DE PERFIL -->
         <div class="perfil-sidebar">
             <div class="perfil-header">
-                <div class="perfil-avatar">👤</div>
+                <div class="perfil-avatar"><i class="fa-regular fa-user"></i></div>
                 <div class="perfil-nombre">Hola, Stalyn</div>
                 <div class="perfil-email">stalin@ejemplo.com</div>
             </div>
@@ -13,49 +13,49 @@
             <ul class="perfil-menu">
                 <li class="perfil-menu-item">
                     <a href="#" class="perfil-menu-link" :class="{ active: currentSection === 'pedidos' }" @click.prevent="cambiarSeccion('pedidos')">
-                        <span class="perfil-menu-icon">🍴</span>
+                        <span class="perfil-menu-icon"><i class="fa-solid fa-utensils"></i></span>
                         <span>Pedidos</span>
                     </a>
                 </li>
                 <li class="perfil-menu-item">
                     <a href="#" class="perfil-menu-link" :class="{ active: currentSection === 'facturacion' }" @click.prevent="cambiarSeccion('facturacion')">
-                        <span class="perfil-menu-icon">🧾</span>
+                        <span class="perfil-menu-icon"><i class="fa-solid fa-receipt"></i></span>
                         <span>Datos de facturación</span>
                     </a>
                 </li>
                 <li class="perfil-menu-item">
                     <a href="#" class="perfil-menu-link" :class="{ active: currentSection === 'direccion' }" @click.prevent="cambiarSeccion('direccion')">
-                        <span class="perfil-menu-icon">📍</span>
+                        <span class="perfil-menu-icon"><i class="fa-solid fa-location-arrow"></i></span>
                         <span>Dirección de entrega</span>
                     </a>
                 </li>
                 <li class="perfil-menu-item">
                     <a href="#" class="perfil-menu-link" :class="{ active: currentSection === 'notificaciones' }" @click.prevent="cambiarSeccion('notificaciones')">
-                        <span class="perfil-menu-icon">🔔</span>
+                        <span class="perfil-menu-icon"><i class="fa-regular fa-bell"></i></span>
                         <span>Notificaciones</span>
                     </a>
                 </li>
                 <li class="perfil-menu-item">
                     <a href="#" class="perfil-menu-link" :class="{ active: currentSection === 'cuenta' }" @click.prevent="cambiarSeccion('cuenta')">
-                        <span class="perfil-menu-icon">⚙️</span>
+                        <span class="perfil-menu-icon"><i class="fa-solid fa-gear"></i></span>
                         <span>Cuenta</span>
                     </a>
                 </li>
                 <li class="perfil-menu-item">
                     <a href="#" class="perfil-menu-link" :class="{ active: currentSection === 'privacidad' }" @click.prevent="cambiarSeccion('privacidad')">
-                        <span class="perfil-menu-icon">🔒</span>
+                        <span class="perfil-menu-icon"><i class="fa-solid fa-lock"></i></span>
                         <span>Políticas de privacidad</span>
                     </a>
                 </li>
                 <li class="perfil-menu-item">
                     <a href="#" class="perfil-menu-link" :class="{ active: currentSection === 'contactos' }" @click.prevent="cambiarSeccion('contactos')">
-                        <span class="perfil-menu-icon">🎧</span>
+                        <span class="perfil-menu-icon"><i class="fa-solid fa-address-book"></i></span>
                         <span>Contactos</span>
                     </a>
                 </li>
                 <li class="perfil-menu-item">
                     <a href="#" class="perfil-menu-link" :class="{ active: currentSection === 'terminos' }" @click.prevent="cambiarSeccion('terminos')">
-                        <span class="perfil-menu-icon">📄</span>
+                        <span class="perfil-menu-icon"><i class="fa-solid fa-gavel"></i></span>
                         <span>Términos legales</span>
                     </a>
                 </li>
@@ -63,7 +63,7 @@
 
             <div class="perfil-menu-cerrar">
                 <a href="#" class="perfil-menu-link" @click.prevent="cerrarSesion">
-                    <span class="perfil-menu-icon">🚪</span>
+                    <span class="perfil-menu-icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
                     <span>Cerrar sesión</span>
                 </a>
             </div>
@@ -373,7 +373,6 @@ const router = useRouter()
 
 const cambiarSeccion = (seccion) => {
     currentSection.value = seccion
-    window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 const cerrarSesion = () => {

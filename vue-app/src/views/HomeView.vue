@@ -55,7 +55,7 @@
                             <div class="oferta-badge">{{ item.badge }}</div>
 
                             <div class="oferta-img">
-                                <img :src="`/src/assets/img/ofertas/${item.img}`" :alt="item.nombre">
+                                <img :src="`/img/ofertas/${item.img}`" :alt="item.nombre">
                             </div>
                     
                             <h4>{{ item.nombre }}</h4>
@@ -80,6 +80,39 @@
             </div>
         </div>
 
+        <!------------------------------------ Productos Más Vendidos ------------------------------------>
+        <div class="vendidos-section">
+            <div class="container">
+                <h2 class="products-section-title">Productos Más Vendidos</h2>
+                <div class="vendidos-grid">
+                    <div 
+                        v-for="p in productosMasVendidos" 
+                        :key="p.id" 
+                        class="vendido-card"
+                        @click="$router.push('/producto')">
+                        
+                        <div class="vendido-img">
+                            <img :src="p.img" :alt="p.nombre">
+                        </div>
+                        <div class="vendido-info">
+                            <span class="vendido-cat">{{ p.categoria }}</span>
+                            <h3>{{ p.nombre }}</h3>
+                            <div class="vendido-footer">
+                                <span class="vendido-precio">${{ p.precio.toFixed(2) }}</span>
+                            </div>
+                            <button class="oferta-btn" @click.stop="agregarAlCarrito(p.nombre, p.precio, '🥩')">
+                                Añadir al carrito
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="ver-todo-wrapper">
+                    <router-link to="/resultados" class="btn-ver-todo">
+                        Ver todos los productos <i class="fa-solid fa-arrow-right"></i>
+                    </router-link>
+                </div>
+            </div>
+        </div>
 
 
       
@@ -199,11 +232,18 @@
         </div>
 
     </main>
+    <transition name="slide-in">
+        <div v-if="notificacion" class="notificacion-carrito">
+            {{ notificacion }}
+        </div>
+    </transition>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+
+const notificacion = ref('')
 
 // Agreamos lista de ofertas de la semana
 const productosEnOferta = ref([
@@ -284,6 +324,22 @@ const productosEnOferta = ref([
         img: 'images.jpg',
         icono: '🍖'
     }
+]);
+
+// Lista de productos más vendidos (12 unidades para red 4x3)
+const productosMasVendidos = ref([
+    { id: 1, nombre: 'Lomo de Res Premium', categoria: 'Res', precio: 12.50, img: '/img/carne_1.png' },
+    { id: 2, nombre: 'Pechuga de Pollo x 1kg', categoria: 'Aves', precio: 5.80, img: '/img/carne_3.jpg' },
+    { id: 3, nombre: 'Chuleta de Cerdo Extra', categoria: 'Cerdo', precio: 4.50, img: '/img/carne_4.jpg' },
+    { id: 4, nombre: 'Carne Molida Especial', categoria: 'Res', precio: 6.20, img: '/img/carne_5.jpg' },
+    { id: 5, nombre: 'Alitas de Pollo x 12', categoria: 'Aves', precio: 7.50, img: '/img/carne_2.jpg' },
+    { id: 6, nombre: 'Costilla Ahumada', categoria: 'Cerdo', precio: 8.90, img: '/img/carne_4.jpg' },
+    { id: 7, nombre: 'Hamburguesa Artesanal', categoria: 'Procesados', precio: 2.50, img: '/img/carne_3.jpg' },
+    { id: 8, nombre: 'Chorizo Santarrosano', categoria: 'Embutidos', precio: 10.00, img: '/img/carne_5.jpg' },
+    { id: 9, nombre: 'Sobrebarriga Gruesa', categoria: 'Res', precio: 9.40, img: '/img/carne_1.png' },
+    { id: 10, nombre: 'Muslo de Pollo x 4', categoria: 'Aves', precio: 3.20, img: '/img/carne_2.jpg' },
+    { id: 11, nombre: 'Tocino Ahumado', categoria: 'Cerdo', precio: 6.50, img: '/img/carne_4.jpg' },
+    { id: 12, nombre: 'Lomo Fino de Chancho', categoria: 'Cerdo', precio: 18.50, img: '/img/carne_1.png' }
 ]);
 
 
@@ -389,7 +445,10 @@ const moverCarrusel = (dir) => {
 };
 
 const agregarAlCarrito = (nombre, precio, icono) => {
-  alert(`Agregado al carrito: ${icono} ${nombre} por $${precio}`)
+  notificacion.value = `${icono} "${nombre}" añadido al carrito ($${precio})`
+  setTimeout(() => {
+    notificacion.value = ''
+  }, 2500)
 }
 
 const suscribir = () => {
@@ -398,5 +457,163 @@ const suscribir = () => {
 </script>
 
 <style scoped>
-/* Specific view styles if necessary */
+.vendidos-section {
+    padding: 20px 0 60px 0;
+    background: #fff;
+}
+
+.vendidos-section .products-section-title {
+    margin-top: 30px;
+}
+
+.vendidos-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.vendido-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid #f0f0f0;
+    cursor: pointer;
+}
+
+.vendido-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    border-color: #F05A22;
+}
+
+.vendido-img {
+    height: 180px;
+    background: #f9f9f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.vendido-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.vendido-info {
+    padding: 15px;
+}
+
+.vendido-cat {
+    font-size: 0.75rem;
+    color: #F05A22;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.vendido-card h3 {
+    font-size: 1rem;
+    color: #212121;
+    margin-bottom: 12px;
+    height: 2.4em;
+    overflow: hidden;
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.vendido-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.vendido-precio {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #212121;
+}
+
+.add-btn-small {
+    background: #F05A22;
+    color: white;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+}
+
+.add-btn-small:hover {
+    background: #212121;
+}
+
+.ver-todo-wrapper {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.btn-ver-todo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #212121;
+    color: white;
+    padding: 14px 28px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s;
+}
+
+.btn-ver-todo:hover {
+    background: #F05A22;
+    transform: translateX(5px);
+}
+
+/* Revertir estilos de botones de compra */
+.oferta-btn {
+    width: 100%;
+    background: #F05A22;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 10px;
+}
+
+.oferta-btn:hover {
+    background: #212121;
+}
+
+@media (max-width: 1024px) {
+    .vendidos-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .vendidos-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .vendidos-grid {
+        grid-template-columns: 1fr;
+    }
+}
 </style>

@@ -4,16 +4,16 @@
         <!-- Proveedor Welcome -->
         <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
             <div style="display: flex; align-items: center; gap: 20px;">
-                <img src="@/assets/img/proveedores/provedor_1.png" alt="7 Pozo" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
+                <img src="@/assets/img/proveedores/provedor_1.png" alt="7 Pozo" style="width: 80px; height: 80px; object-fit: cover;">
                 <div>
                     <h1 style="margin: 0; font-size: 24px;">Panel Proveedor - 7 Pozo</h1>
-                    <p style="margin: 5px 0 0; color: #666;">25 años de experiencia | 🥩 Carne de Res</p>
+                    <p style="margin: 5px 0 0; color: #666;">25 años de experiencia | Carne de Res</p>
                 </div>
             </div>
         </div>
 
         <!-- Dashboard Stats -->
-        <h2 class="products-section-title">📊 Dashboard</h2>
+        <h2 class="products-section-title">Estadísticas</h2>
         <div class="dashboard-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px;">
             <div class="stat-card" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
                 <h3 style="color: #666; font-size: 14px; margin: 0 0 10px 0;">Productos Activos</h3>
@@ -43,7 +43,7 @@
         <!-- Gestión de Productos -->
         <div class="productos-tabla" style="background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 20px; margin-bottom: 40px;">
             <div class="tabla-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="margin: 0;">📦 Mis Productos</h2>
+                <h2 style="margin: 0;">Mis Productos</h2>
                 <button class="btn-nuevo" @click="abrirModalProducto" style="background: #e63946; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">+ Nuevo Producto</button>
             </div>
 
@@ -84,12 +84,12 @@
                                     <span><strong>{{ prod.nombre }}</strong></span>
                                 </div>
                             </td>
-                            <td style="padding: 15px;"><span :class="['badge', `badge-${prod.tipo.toLowerCase()}`]" style="padding: 5px 10px; border-radius: 20px; font-size: 12px; background: #eee;">{{ prod.tipo }}</span></td>
+                            <td style="padding: 15px;"><span :class="['badge', `badge-${prod.tipo.toLowerCase()}`]">{{ prod.tipo }}</span></td>
                             <td style="padding: 15px;">{{ prod.fecha }}</td>
                             <td style="padding: 15px;">{{ prod.trazabilidad }}</td>
                             <td style="padding: 15px;">{{ prod.peso }} kg</td>
                             <td style="padding: 15px;"><strong>${{ prod.precio.toFixed(2) }}</strong></td>
-                            <td style="padding: 15px;"><span :class="['badge', `badge-${prod.estado.toLowerCase()}`]" style="padding: 5px 10px; border-radius: 20px; font-size: 12px; background: #e8f5e9; color: #2e7d32;">{{ prod.estado }}</span></td>
+                            <td style="padding: 15px;"><span :class="['badge', `badge-${prod.estado.toLowerCase()}`]">{{ prod.estado }}</span></td>
                             <td style="padding: 15px;">
                                 <button class="acciones-btn btn-editar" @click="editarProducto(prod.id)" style="margin-right: 5px; cursor: pointer; border:none; background:none; font-size: 16px;">✏️</button>
                                 <button class="acciones-btn btn-eliminar" @click="eliminarProducto(prod.id)" style="cursor: pointer; border:none; background:none; font-size: 16px;">🗑️</button>
@@ -108,7 +108,7 @@
     <div class="modal" v-if="isModalOpen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;">
         <div class="modal-content" style="background: white; border-radius: 10px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto;">
             <div class="modal-header" style="position: sticky; top: 0; background: white; padding: 20px; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center;">
-                <h2 style="margin:0;">📦 {{ modalMode === 'create' ? 'Nuevo Producto' : 'Editar Producto' }}</h2>
+                <h2 style="margin:0;">{{ modalMode === 'create' ? 'Nuevo Producto' : 'Editar Producto' }}</h2>
                 <button class="modal-close" @click="cerrarModalProducto" style="background: none; border: none; font-size: 24px; cursor: pointer;">×</button>
             </div>
 
@@ -158,7 +158,7 @@
 
                 <div class="form-actions" style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
                     <button type="button" @click="cerrarModalProducto" style="padding: 10px 20px; border: 1px solid #ddd; background: white; border-radius: 5px; cursor: pointer;">Cancelar</button>
-                    <button type="submit" style="padding: 10px 20px; border: none; background: #e63946; color: white; border-radius: 5px; cursor: pointer; font-weight: bold;">💾 Guardar Producto</button>
+                    <button type="submit" style="padding: 10px 20px; border: none; background: #e63946; color: white; border-radius: 5px; cursor: pointer; font-weight: bold;">Guardar Producto</button>
                 </div>
             </form>
         </div>
@@ -245,5 +245,52 @@ const eliminarProducto = (id) => {
 </script>
 
 <style scoped>
-/* Scoped overrides if needed */
+/* Badges genericos */
+.badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+/* Tipos de corte */
+.badge-premium {
+    background: #fff8e1;
+    color: #ff8f00;
+    border: 1px solid #ffecb3;
+}
+
+.badge-especial {
+    background: #e3f2fd;
+    color: #1565c0;
+    border: 1px solid #bbdefb;
+}
+
+.badge-normal {
+    background: #f5f5f5;
+    color: #616161;
+    border: 1px solid #e0e0e0;
+}
+
+/* Estados */
+.badge-disponible {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+}
+
+.badge-agotado {
+    background: #ffebee;
+    color: #c62828;
+    border: 1px solid #ffcdd2;
+}
+
+.acciones-btn {
+    transition: transform 0.2s;
+}
+
+.acciones-btn:hover {
+    transform: scale(1.2);
+}
 </style>

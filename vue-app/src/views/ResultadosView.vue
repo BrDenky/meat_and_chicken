@@ -1,10 +1,6 @@
 <template>
   <div class="resultados-view">
     <div class="container">
-      <nav class="breadcrumbs">
-        <span>Casa</span> | <span>Resultados de la búsqueda</span>
-      </nav>
-
       <div class="layout-principal">
         <aside class="sidebar-categorias">
             <ul class="lista-categorias">
@@ -30,7 +26,6 @@
           
           <div class="resultados-barra">
             <div class="barra-izquierda">
-              <span class="grid-icon">▤ ☰</span>
               <p class="conteo">
                 <span v-if="searchQuery">Resultados para "<strong>{{ searchQuery }}</strong>": </span>
                 {{ productosFiltrados.length }} producto(s)
