@@ -20,8 +20,8 @@
         <div>
           <h3>Información</h3>
           <ul>
-            <li><a href="#">Sobre Nosotros</a></li>
-            <li><a href="#">Trabaja con Nosotros</a></li>
+            <li><router-link to="/sobrenosotros">Sobre Nosotros</router-link></li>
+            <li><router-link to="/registro">Trabaja con Nosotros</router-link></li>
             <li><a href="#">Términos y Condiciones</a></li>
             <li><a href="#">Preguntas Frecuentes</a></li>
           </ul>

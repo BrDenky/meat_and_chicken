@@ -7,8 +7,8 @@
 
       <!-- Tabs Cliente / Proveedor -->
       <div class="login-tabs">
-        <button class="login-tab" :class="{ active: currentTab === 'cliente' }" @click="cambiarLoginTab('cliente')">🛒 Cliente</button>
-        <button class="login-tab" :class="{ active: currentTab === 'proveedor' }" @click="cambiarLoginTab('proveedor')">🏪 Proveedor</button>
+        <button class="login-tab" :class="{ active: currentTab === 'cliente' }" @click="cambiarLoginTab('cliente')"><i class="fa-solid fa-cart-shopping"></i> Cliente</button>
+        <button class="login-tab" :class="{ active: currentTab === 'proveedor' }" @click="cambiarLoginTab('proveedor')"><i class="fa-solid fa-store"></i> Proveedor</button>
       </div>
 
       <!-- CLIENTE -->
@@ -21,7 +21,7 @@
 
         <!-- Formulario Login Cliente -->
         <div v-show="currentSubtab === 'login-form'">
-          <h3>Bienvenido de nuevo 👋</h3>
+          <h3>Bienvenido</h3>
           <div class="login-campo">
             <label>Correo electrónico</label>
             <input type="email" placeholder="tu@correo.com">
@@ -36,7 +36,7 @@
 
         <!-- Formulario Registro Cliente -->
         <div v-show="currentSubtab === 'registro-form'">
-          <h3>Crear cuenta 🎉</h3>
+          <h3>Crear cuenta</h3>
           <div class="login-campo">
             <label>Nombre completo</label>
             <input type="text" placeholder="Tu nombre">
@@ -59,7 +59,7 @@
 
       <!-- PROVEEDOR -->
       <div class="login-content" v-show="currentTab === 'proveedor'">
-        <h3>Acceso Proveedores 🏪</h3>
+        <h3>Acceso Proveedores</h3>
         <p class="login-subtitulo">¿Aún no eres proveedor? <a href="#">Trabaja con nosotros</a></p>
         <div class="login-campo">
           <label>Correo electrónico</label>
@@ -94,8 +94,8 @@
 
         <div class="header-actions">
 
-          <router-link to="/carrito" class="action-btn">🛒 <span> Mi carrito</span></router-link>
-          <button class="action-btn" @click="abrirLogin">👤<span>Mi cuenta</span></button>
+          <router-link to="/carrito" class="action-btn"><i class="fa-solid fa-cart-shopping"></i> <span> Mi carrito</span></router-link>
+          <button class="action-btn" @click="abrirLogin"><i class="fa-regular fa-user"></i><span>Mi cuenta</span></button>
         </div>
       </div>
     </header>
@@ -103,11 +103,11 @@
     <!-- BARRA DE NAVEGACIÓN SECUNDARIA -->
     <nav class="secondary-nav">
       <div class="container secondary-nav-inner">
-        <a href="/#productos" class="secondary-nav-link">Proveedores</a>
-        <a href="/resultados" class="secondary-nav-link">Productos</a>
-        <a href="/registro" class="secondary-nav-link">Trabaja con Nosotros</a>
-        <a href="/sobre_nosotros" class="secondary-nav-link">Sobre Nosotros</a>
-        <a href="/noticias" class="secondary-nav-link">Noticias</a>
+        <router-link to="/#productos" class="secondary-nav-link">Proveedores</router-link>
+        <router-link to="/resultados" class="secondary-nav-link">Productos</router-link>
+        <router-link to="/registro" class="secondary-nav-link">Trabaja con Nosotros</router-link>
+        <router-link to="/sobrenosotros" class="secondary-nav-link">Sobre Nosotros</router-link>
+        <router-link to="/noticias" class="secondary-nav-link">Noticias</router-link>
       </div>
     </nav>
   </div>
@@ -184,5 +184,9 @@ const togglePuntos = () => {
   z-index: 1200;
   max-height: 90vh;
   overflow-y: auto;
+}
+
+.login-modal h3{
+  text-align: center;
 }
 </style>

@@ -43,6 +43,21 @@ const router = createRouter({
             path: '/resultados',
             name: 'resultados',
             component: () => import('../views/ResultadosView.vue')
+        },
+        {
+            path: '/sobrenosotros',
+            name: 'sobrenosotros',
+            component: () => import('../views/sobrenosotros.vue')
+        },
+        {
+            path: '/noticias',
+            name: 'noticias',
+            component: () => import('../views/NoticiasView.vue')
+        },
+        {
+            path: '/registro',
+            name: 'registro',
+            component: () => import('../views/TrabajaView.vue')
         }
     ],
     scrollBehavior(to, from, savedPosition) {
