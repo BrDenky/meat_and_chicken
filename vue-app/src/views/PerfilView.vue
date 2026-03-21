@@ -6,8 +6,8 @@
         <div class="perfil-sidebar">
             <div class="perfil-header">
                 <div class="perfil-avatar"><i class="fa-regular fa-user"></i></div>
-                <div class="perfil-nombre">Hola, Stalyn</div>
-                <div class="perfil-email">stalin@ejemplo.com</div>
+                <div class="perfil-nombre">Hola, {{ formFacturacion.nombre || 'Usuario' }}</div>
+                <div class="perfil-email">{{ formFacturacion.email || '...' }}</div>
             </div>
 
             <ul class="perfil-menu">
@@ -78,7 +78,7 @@
 
             <!-- SECCIÓN PEDIDOS -->
             <div class="seccion-contenido" v-show="currentSection === 'pedidos'">
-                <h1 class="perfil-titulo">HOLA, STALYN</h1>
+                <h1 class="perfil-titulo">HOLA, {{ formFacturacion.nombre ? formFacturacion.nombre.toUpperCase() : 'USUARIO' }}</h1>
                 
                 <div class="estado-vacio">
                     <div class="estado-vacio-icon">🍴</div>
@@ -364,38 +364,62 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { supabase } from '../supabase'
 import '../assets/css/perfil.css' // Import correct css that was in the <head>
 
 const currentSection = ref('pedidos')
 const router = useRouter()
+const isLoading = ref(true)
 
 const cambiarSeccion = (seccion) => {
     currentSection.value = seccion
 }
 
-const cerrarSesion = () => {
+const cerrarSesion = async () => {
     if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+        await supabase.auth.signOut()
         alert('Sesión cerrada. Redirigiendo...')
         router.push('/')
     }
 }
 
-const guardarFormulario = () => {
-    alert('✅ Cambios guardados exitosamente')
+const guardarFormulario = async () => {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) return
+
+    const { error } = await supabase.from('profiles').update({
+        first_name: formFacturacion.value.nombre,
+        last_name: formFacturacion.value.apellido,
+        id_number: formFacturacion.value.cedula,
+        phone: formFacturacion.value.telefono,
+        province: formFacturacion.value.provincia,
+        city: formFacturacion.value.ciudad,
+        full_address: formFacturacion.value.direccion,
+        notif_offers: formNotificaciones.value.ofertas,
+        notif_orders: formNotificaciones.value.pedidos,
+        notif_providers: formNotificaciones.value.proveedores,
+        notif_newsletter: formNotificaciones.value.newsletter
+    }).eq('id', session.user.id)
+
+    if (error) {
+        alert('❌ Error al guardar: ' + error.message)
+    } else {
+        alert('✅ Cambios guardados en la base de datos de manera definitiva')
+    }
 }
 
 // Data models
 const formFacturacion = ref({
-    nombre: 'Mateo',
-    apellido: 'González',
-    cedula: '1234567890',
-    telefono: '0999999999',
-    email: 'mateo@ejemplo.com',
+    nombre: '',
+    apellido: '',
+    cedula: '',
+    telefono: '',
+    email: '',
     provincia: 'Pichincha',
     ciudad: 'Quito',
-    direccion: 'Av. Amazonas N24-123 y República'
+    direccion: ''
 })
 
 const formNotificaciones = ref({
@@ -403,6 +427,48 @@ const formNotificaciones = ref({
     pedidos: true,
     proveedores: false,
     newsletter: true
+})
+
+onMounted(async () => {
+    // 1. Obtener al usuario autenticado
+    const { data: { session }, error } = await supabase.auth.getSession()
+    
+    if (error || !session) {
+        // Redirige silenciosamente si intenta entrar al perfil sin loguearse
+        router.push('/')
+        return
+    }
+
+    const userId = session.user.id
+
+    // 2. Traer el perfil
+    const { data: perfil } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single()
+
+    if (perfil) {
+        // Reaccionará automáticamente en los inputs de HTML
+        formFacturacion.value = {
+            nombre: perfil.first_name || '',
+            apellido: perfil.last_name || '',
+            cedula: perfil.id_number || '',
+            telefono: perfil.phone || '',
+            email: perfil.email || '',
+            provincia: perfil.province || 'Pichincha',
+            ciudad: perfil.city || 'Quito',
+            direccion: perfil.full_address || ''
+        }
+        
+        formNotificaciones.value = {
+            ofertas: perfil.notif_offers ?? true,
+            pedidos: perfil.notif_orders ?? true,
+            proveedores: perfil.notif_providers ?? false,
+            newsletter: perfil.notif_newsletter ?? true
+        }
+    }
+    isLoading.value = false
 })
 </script>
 

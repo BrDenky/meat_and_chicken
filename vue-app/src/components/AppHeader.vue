@@ -1,78 +1,7 @@
 <template>
   <div>
-    <!-- MODAL LOGIN -->
-    <div class="login-overlay" :class="{ active: isLoginVisible }" @click="cerrarLogin"></div>
-    <div class="login-modal" :class="{ active: isLoginVisible }" id="loginModal">
-      <button class="login-cerrar" @click="cerrarLogin">✕</button>
-
-      <!-- Tabs Cliente / Proveedor -->
-      <div class="login-tabs">
-        <button class="login-tab" :class="{ active: currentTab === 'cliente' }" @click="cambiarLoginTab('cliente')"><i class="fa-solid fa-cart-shopping"></i> Cliente</button>
-        <button class="login-tab" :class="{ active: currentTab === 'proveedor' }" @click="cambiarLoginTab('proveedor')"><i class="fa-solid fa-store"></i> Proveedor</button>
-      </div>
-
-      <!-- CLIENTE -->
-      <div class="login-content" v-show="currentTab === 'cliente'">
-        <!-- Subtabs Login / Registro -->
-        <div class="login-subtabs">
-          <button class="login-subtab" :class="{ active: currentSubtab === 'login-form' }" @click="cambiarSubtab('login-form')">Iniciar Sesión</button>
-          <button class="login-subtab" :class="{ active: currentSubtab === 'registro-form' }" @click="cambiarSubtab('registro-form')">Registrarse</button>
-        </div>
-
-        <!-- Formulario Login Cliente -->
-        <div v-show="currentSubtab === 'login-form'">
-          <h3>Bienvenido</h3>
-          <div class="login-campo">
-            <label>Correo electrónico</label>
-            <input type="email" placeholder="tu@correo.com">
-          </div>
-          <div class="login-campo">
-            <label>Contraseña</label>
-            <input type="password" placeholder="••••••••">
-          </div>
-          <a href="#" class="login-olvide">¿Olvidaste tu contraseña?</a>
-          <button class="login-btn" @click="iniciarSesion('cliente')">Iniciar Sesión</button>
-        </div>
-
-        <!-- Formulario Registro Cliente -->
-        <div v-show="currentSubtab === 'registro-form'">
-          <h3>Crear cuenta</h3>
-          <div class="login-campo">
-            <label>Nombre completo</label>
-            <input type="text" placeholder="Tu nombre">
-          </div>
-          <div class="login-campo">
-            <label>Correo electrónico</label>
-            <input type="email" placeholder="tu@correo.com">
-          </div>
-          <div class="login-campo">
-            <label>Contraseña</label>
-            <input type="password" placeholder="••••••••">
-          </div>
-          <div class="login-campo">
-            <label>Confirmar contraseña</label>
-            <input type="password" placeholder="••••••••">
-          </div>
-          <button class="login-btn" @click="registrarse">Crear Cuenta</button>
-        </div>
-      </div>
-
-      <!-- PROVEEDOR -->
-      <div class="login-content" v-show="currentTab === 'proveedor'">
-        <h3>Acceso Proveedores</h3>
-        <p class="login-subtitulo">¿Aún no eres proveedor? <a href="#">Trabaja con nosotros</a></p>
-        <div class="login-campo">
-          <label>Correo electrónico</label>
-          <input type="email" placeholder="proveedor@correo.com">
-        </div>
-        <div class="login-campo">
-          <label>Contraseña</label>
-          <input type="password" placeholder="••••••••">
-        </div>
-        <a href="#" class="login-olvide">¿Olvidaste tu contraseña?</a>
-        <button class="login-btn" @click="iniciarSesion('proveedor')">Iniciar Sesión</button>
-      </div>
-    </div>
+    <!-- MODAL LOGIN EXTERNALIZADO -->
+    <AuthModal :isVisible="isLoginVisible" @close="cerrarLogin" @notify="showNotification" />
 
     <!-- HEADER -->
     <header id="header">
@@ -95,7 +24,18 @@
         <div class="header-actions">
 
           <router-link to="/carrito" class="action-btn"><i class="fa-solid fa-cart-shopping"></i> <span> Mi carrito</span></router-link>
-          <button class="action-btn" @click="abrirLogin"><i class="fa-regular fa-user"></i><span>Mi cuenta</span></button>
+          
+          <!-- Si NO hay usuario logueado -->
+          <button v-if="!user" class="action-btn" @click="abrirLogin">
+            <i class="fa-regular fa-user"></i><span>Mi cuenta</span>
+          </button>
+
+          <!-- Si SÍ hay usuario logueado -->
+          <template v-else>
+            <router-link to="/perfil" class="action-btn">
+              <i class="fa-solid fa-user"></i><span>Hola, {{ userName }}</span>
+            </router-link>
+          </template>
         </div>
       </div>
     </header>
@@ -110,15 +50,27 @@
         <router-link to="/noticias" class="secondary-nav-link">Noticias</router-link>
       </div>
     </nav>
+    <!-- SISTEMA DE NOTIFICACIONES ELEGANTE -->
+    <transition name="slide-in">
+      <div v-if="notificationMessage" class="notification-toast" :class="notificationType">
+        {{ notificationMessage }}
+      </div>
+    </transition>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { supabase } from '../supabase' // Importamos el cliente de Supabase
+import AuthModal from './AuthModal.vue'
 
 const router = useRouter()
 const searchQuery = ref('')
+
+// Variables para el usuario
+const user = ref(null)
+const userName = ref('')
 
 const buscar = () => {
   if (searchQuery.value.trim()) {
@@ -127,9 +79,18 @@ const buscar = () => {
 }
 
 const isLoginVisible = ref(false)
-const currentTab = ref('cliente')
-const currentSubtab = ref('login-form')
-const isPuntosVisible = ref(false)
+
+// Estado para notificaciones
+const notificationMessage = ref('')
+const notificationType = ref('success') // 'success' o 'error'
+
+const showNotification = (message, type = 'success') => {
+  notificationMessage.value = message
+  notificationType.value = type
+  setTimeout(() => {
+    notificationMessage.value = ''
+  }, 3500)
+}
 
 const abrirLogin = () => {
   isLoginVisible.value = true
@@ -139,58 +100,73 @@ const cerrarLogin = () => {
   isLoginVisible.value = false
 }
 
-const cambiarLoginTab = (tab) => {
-  currentTab.value = tab
-}
+// LOGICA DE SESIÓN CON SUPABASE
+onMounted(async () => {
+  // 1. Obtener la sesión actual al cargar
+  const { data: { session } } = await supabase.auth.getSession()
+  actualizarUsuario(session)
 
-const cambiarSubtab = (subtab) => {
-  currentSubtab.value = subtab
-}
+  // 2. Escuchar cambios (login, logout, etc.)
+  supabase.auth.onAuthStateChange((_event, session) => {
+    actualizarUsuario(session)
+  })
+})
 
-const iniciarSesion = (tipo) => {
-  if (tipo === 'proveedor') {
-    router.push('/proveedor')
+const actualizarUsuario = (session) => {
+  if (session && session.user) {
+    user.value = session.user
+    // Supabase guarda el full_name en el user_metadata por defecto (si lo enviaste)
+    // O puedes sacar su correo si no hay nombre
+    userName.value = session.user.user_metadata?.full_name?.split(' ')[0] || session.user.email.split('@')[0]
   } else {
-    router.push('/perfil')
+    user.value = null
+    userName.value = ''
   }
-  cerrarLogin()
 }
 
-const registrarse = () => {
-  alert('Cuenta creada exitosamente')
-  cerrarLogin()
-}
-
-const togglePuntos = () => {
-  isPuntosVisible.value = !isPuntosVisible.value
+const cerrarSesion = async () => {
+  const { error } = await supabase.auth.signOut()
+  if (error) {
+    showNotification('Error al cerrar sesión', 'error')
+  } else {
+    showNotification('Sesión cerrada con éxito', 'success')
+    router.push('/')
+  }
 }
 </script>
 
 <style scoped>
 
-.login-overlay {
+/* ESTILOS DEL TOAST NOTIFICATION MANEJO DE INICIO DE SESIÓN Y REGISTRO */
+.notification-toast {
   position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 1100;
+  bottom: 24px;
+  right: 24px;
+  padding: 16px 24px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
 }
 
-.login-modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: white;
-  border-radius: 16px;
-  padding: 32px;
-  width: 420px;
-  max-width: 90vw;
-  z-index: 1200;
-  max-height: 90vh;
-  overflow-y: auto;
+.notification-toast.success {
+  background-color: #2e7d32;
+  border-left: 6px solid #1b5e20;
 }
 
-.login-modal h3{
-  text-align: center;
+.notification-toast.error {
+  background-color: #d32f2f;
+  border-left: 6px solid #b71c1c;
+}
+
+.slide-in-enter-active, .slide-in-leave-active {
+  transition: all 0.3s ease;
+}
+.slide-in-enter-from, .slide-in-leave-to {
+  transform: translateX(100%);
+  opacity: 0;
 }
 </style>
