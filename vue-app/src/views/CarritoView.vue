@@ -35,7 +35,7 @@
                         <div class="item-product">
                             <div class="item-image">
                                 <!-- using dynamic image resolution or a placeholder since they might be varied -->
-                                <img :src="`/src/assets/img/${item.image}`" alt="Producto Cárnico" class="related-img">
+                                <img :src="`/img/${item.image}`" alt="Producto Cárnico" class="related-img">
                             </div>
                             <div class="item-details">
                                 <h3>{{ item.name }}</h3>

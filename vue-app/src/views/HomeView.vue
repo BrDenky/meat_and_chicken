@@ -38,17 +38,64 @@
         
         <!------------------------------------ Ofertas de la semana ------------------------------------>
         <div class="ofertas-section" id="ofertas">
+            <div class="home-layout-full">
+                
+                <aside class="categorias-sidebar">
+                    <div class="categorias-header">
+                        <i class="fa-solid fa-bars"></i> Compra Por Categoría
+                    </div>
+                    <ul class="categorias-list">
+                        <li v-for="(cat, index) in categoriasMenu" :key="index">
+                            <a href="#"><i class="fa-solid fa-arrow-right" style="font-size: 0.8em; margin-right: 15px; opacity: 0.7;"></i> {{ cat }}</a>
+                        </li>
+                    </ul>
+                </aside>
+
+                <div class="ofertas-content">
+                    <h2 class="products-section-title" style="margin-top: 30px;">Productos Más Vendidos</h2>
+                    <div class="vendidos-grid">
+                        <div 
+                            v-for="p in productosMasVendidos" 
+                            :key="p.id" 
+                            class="vendido-card"
+                            @click="$router.push('/producto')">
+                            
+                            <div class="vendido-img">
+                                <img :src="p.img" :alt="p.nombre">
+                            </div>
+                            <div class="vendido-info">
+                                <span class="vendido-cat">{{ p.categoria }}</span>
+                                <h3>{{ p.nombre }}</h3>
+                                <div class="vendido-footer">
+                                    <span class="vendido-precio">${{ p.precio.toFixed(2) }}</span>
+                                </div>
+                                <button class="oferta-btn" @click.stop="agregarAlCarrito(p.nombre, p.precio, '🥩')">
+                                    Añadir al carrito
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ver-todo-wrapper">
+                        <router-link to="/resultados" class="btn-ver-todo">
+                            Ver todos los productos <i class="fa-solid fa-arrow-right"></i>
+                        </router-link>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!------------------------------------ Ofertas de la Semana ------------------------------------>
+        <div class="vendidos-section" id="ofertas-semana">
             <div class="container">
                 <h2 class="products-section-title">Ofertas de la semana</h2>
-                <p class="ofertas-subtitle">Productos frescos disponibles hoy de nuestros proveedores</p>
 
-                <div class="ofertas-carrusel-wrapper">
+                <div class="ofertas-carrusel-wrapper" @mouseenter="detenerAutoScroll" @mouseleave="iniciarAutoScroll">
                     <button class="carrusel-btn izq" @click="moverCarrusel(-1)">&#8592;</button>
 
                     <div class="ofertas-carrusel" id="ofertasCarrusel" ref="carruselRef">
                         <div 
-                            v-for="item in productosEnOferta" 
-                            :key="item.id" 
+                            v-for="(item, index) in productosCarrusel" 
+                            :key="index" 
                             class="oferta-card" 
                             @click="$router.push('/producto')">
 
@@ -80,40 +127,38 @@
             </div>
         </div>
 
-        <!------------------------------------ Productos Más Vendidos ------------------------------------>
-        <div class="vendidos-section">
+
+        <!------------------------------------ Noticias ------------------------------------>
+        <div class="news-section">
             <div class="container">
-                <h2 class="products-section-title">Productos Más Vendidos</h2>
-                <div class="vendidos-grid">
+                <h2 class="products-section-title">Novedades y Noticias</h2>
+                <div class="news-grid">
                     <div 
-                        v-for="p in productosMasVendidos" 
-                        :key="p.id" 
-                        class="vendido-card"
-                        @click="$router.push('/producto')">
+                        v-for="noticia in noticiasRecientes" 
+                        :key="noticia.id" 
+                        class="news-card"
+                        @click="$router.push('/noticias')">
                         
-                        <div class="vendido-img">
-                            <img :src="p.img" :alt="p.nombre">
+                        <div class="news-img">
+                            <img :src="noticia.img" :alt="noticia.titulo" onerror="this.src='/img/ofertas/lomo.png'">
                         </div>
-                        <div class="vendido-info">
-                            <span class="vendido-cat">{{ p.categoria }}</span>
-                            <h3>{{ p.nombre }}</h3>
-                            <div class="vendido-footer">
-                                <span class="vendido-precio">${{ p.precio.toFixed(2) }}</span>
-                            </div>
-                            <button class="oferta-btn" @click.stop="agregarAlCarrito(p.nombre, p.precio, '🥩')">
-                                Añadir al carrito
-                            </button>
+                        <div class="news-info">
+                            <span class="news-date">{{ noticia.fecha }}</span>
+                            <h3>{{ noticia.titulo }}</h3>
+                            <p>{{ noticia.resumen }}</p>
+                            <router-link to="/noticias" class="news-read-more">
+                                Leer nota completa <i class="fa-solid fa-arrow-right"></i>
+                            </router-link>
                         </div>
                     </div>
                 </div>
-                <div class="ver-todo-wrapper">
-                    <router-link to="/resultados" class="btn-ver-todo">
-                        Ver todos los productos <i class="fa-solid fa-arrow-right"></i>
+                <div class="ver-todo-wrapper" style="margin-bottom: 10px;">
+                    <router-link to="/noticias" class="btn-ver-todo">
+                        Ver todas las noticias <i class="fa-solid fa-arrow-right"></i>
                     </router-link>
                 </div>
             </div>
         </div>
-
 
       
         <!------------------------------------ Proveedores ------------------------------------>
@@ -130,7 +175,7 @@
                 >
                     <div class="provider-top" :style="{ background: prov.colorFondo }">
                         <div class="provider-avatar">
-                            <img :src="`/src/assets/img/proveedores/${prov.img}`" :alt="prov.nombre">
+                            <img :src="`/img/proveedores/${prov.img}`" :alt="prov.nombre">
                         </div>
                     </div>
             
@@ -241,9 +286,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 const notificacion = ref('')
+
+const categoriasMenu = ref([
+    'RES', 'POLLOS', 'PAVOS', 'CORDERO', 'CERDO', 'EMBUTIDOS'
+]);
 
 // Agreamos lista de ofertas de la semana
 const productosEnOferta = ref([
@@ -326,7 +375,9 @@ const productosEnOferta = ref([
     }
 ]);
 
-// Lista de productos más vendidos (12 unidades para red 4x3)
+const productosCarrusel = ref([...productosEnOferta.value, ...productosEnOferta.value]);
+
+// Lista de productos más vendidos (8 unidades)
 const productosMasVendidos = ref([
     { id: 1, nombre: 'Lomo de Res Premium', categoria: 'Res', precio: 12.50, img: '/img/carne_1.png' },
     { id: 2, nombre: 'Pechuga de Pollo x 1kg', categoria: 'Aves', precio: 5.80, img: '/img/carne_3.jpg' },
@@ -335,11 +386,7 @@ const productosMasVendidos = ref([
     { id: 5, nombre: 'Alitas de Pollo x 12', categoria: 'Aves', precio: 7.50, img: '/img/carne_2.jpg' },
     { id: 6, nombre: 'Costilla Ahumada', categoria: 'Cerdo', precio: 8.90, img: '/img/carne_4.jpg' },
     { id: 7, nombre: 'Hamburguesa Artesanal', categoria: 'Procesados', precio: 2.50, img: '/img/carne_3.jpg' },
-    { id: 8, nombre: 'Chorizo Santarrosano', categoria: 'Embutidos', precio: 10.00, img: '/img/carne_5.jpg' },
-    { id: 9, nombre: 'Sobrebarriga Gruesa', categoria: 'Res', precio: 9.40, img: '/img/carne_1.png' },
-    { id: 10, nombre: 'Muslo de Pollo x 4', categoria: 'Aves', precio: 3.20, img: '/img/carne_2.jpg' },
-    { id: 11, nombre: 'Tocino Ahumado', categoria: 'Cerdo', precio: 6.50, img: '/img/carne_4.jpg' },
-    { id: 12, nombre: 'Lomo Fino de Chancho', categoria: 'Cerdo', precio: 18.50, img: '/img/carne_1.png' }
+    { id: 8, nombre: 'Chorizo Santarrosano', categoria: 'Embutidos', precio: 10.00, img: '/img/carne_5.jpg' }
 ]);
 
 
@@ -420,6 +467,31 @@ const listaProveedores = ref([
 ]);
 
 
+// Lista de noticias dinámicas
+const noticiasRecientes = ref([
+  {
+    id: 1,
+    titulo: 'Nuevos cortes madurados',
+    fecha: '15 de Octubre, 2026',
+    resumen: 'Conoce los nuevos cortes de res madurados durante 45 días para una máxima experiencia de sabor.',
+    img: '/img/noticia_1.jpg' 
+  },
+  {
+    id: 2,
+    titulo: 'Recetas para tu parrillada',
+    fecha: '10 de Octubre, 2026',
+    resumen: 'Te damos los mejores tips y recetas de cocción para que sorprendas a tus invitados.',
+    img: '/img/noticia_2.jpg'
+  },
+  {
+    id: 3,
+    titulo: 'Alianza local sostenible',
+    fecha: '02 de Octubre, 2026',
+    resumen: 'Fortalecemos lazos con proveedores de Pintag para asegurar máxima calidad y bienestar.',
+    img: '/img/noticia_3.jpg'
+  }
+]);
+
 const isMtVisible = ref(false)
 
 const toggleMisionVision = () => {
@@ -441,8 +513,38 @@ const moverCarrusel = (dir) => {
             left: dir * scrollAmount, 
             behavior: 'smooth' 
         });
+
+        // Efecto infinito dinámico: se clonan más productos si llegamos al borde
+        if (dir === 1) {
+            setTimeout(() => {
+                const c = carruselRef.value;
+                if (c && c.scrollLeft + c.clientWidth >= c.scrollWidth - (scrollAmount * 2)) {
+                    productosCarrusel.value.push(...productosEnOferta.value);
+                }
+            }, 500);
+        }
     }
 };
+
+let autoScrollTimer = null;
+
+const iniciarAutoScroll = () => {
+    autoScrollTimer = setInterval(() => {
+        moverCarrusel(1);
+    }, 2000); // 2 segundos
+};
+
+const detenerAutoScroll = () => {
+    if (autoScrollTimer) clearInterval(autoScrollTimer);
+};
+
+onMounted(() => {
+    iniciarAutoScroll();
+});
+
+onUnmounted(() => {
+    detenerAutoScroll();
+});
 
 const agregarAlCarrito = (nombre, precio, icono) => {
   notificacion.value = `${icono} "${nombre}" añadido al carrito ($${precio})`
@@ -457,6 +559,80 @@ const suscribir = () => {
 </script>
 
 <style scoped>
+.home-layout-full {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    padding-right: 20px;
+}
+
+.categorias-sidebar {
+    width: 270px;
+    background: #E15E2D; /* Ajustado al naranja de la imagen */
+    color: white;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    flex-shrink: 0;
+    box-shadow: 4px 4px 15px rgba(0,0,0,0.1);
+}
+
+.categorias-header {
+    background: #D95324; 
+    padding: 18px 20px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-top-right-radius: 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+.categorias-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.categorias-list li {
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+.categorias-list li:last-child {
+    border-bottom: none;
+}
+
+.categorias-list li a {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background 0.3s;
+}
+
+.categorias-list li a:hover {
+    background: rgba(0,0,0,0.08); /* Hover effect */
+}
+
+.ofertas-content {
+    flex: 1;
+    min-width: 0; /* Mantiene el carrusel en su contenedor si colapsa */
+}
+
+@media (max-width: 1024px) {
+    .home-layout-full {
+        flex-direction: column;
+        padding-right: 0;
+    }
+    .categorias-sidebar {
+        width: 100%;
+        border-radius: 0;
+    }
+}
+
 .vendidos-section {
     padding: 20px 0 60px 0;
     background: #fff;
@@ -469,8 +645,8 @@ const suscribir = () => {
 .vendidos-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 30px;
-    margin-top: 40px;
+    gap: 20px;
+    margin-top: 35px;
 }
 
 .vendido-card {
@@ -489,7 +665,7 @@ const suscribir = () => {
 }
 
 .vendido-img {
-    height: 180px;
+    height: 130px;
     background: #f9f9f9;
     display: flex;
     align-items: center;
@@ -504,22 +680,22 @@ const suscribir = () => {
 }
 
 .vendido-info {
-    padding: 15px;
+    padding: 12px;
 }
 
 .vendido-cat {
-    font-size: 0.75rem;
+    font-size: 0.70rem;
     color: #F05A22;
     text-transform: uppercase;
     font-weight: 700;
-    margin-bottom: 5px;
+    margin-bottom: 3px;
     display: block;
 }
 
 .vendido-card h3 {
-    font-size: 1rem;
+    font-size: 0.95rem;
     color: #212121;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     height: 2.4em;
     overflow: hidden;
     display: -webkit-box;
@@ -535,7 +711,7 @@ const suscribir = () => {
 }
 
 .vendido-precio {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: 800;
     color: #212121;
 }
@@ -561,6 +737,7 @@ const suscribir = () => {
 .ver-todo-wrapper {
     text-align: center;
     margin-top: 50px;
+    margin-bottom: 35px;
 }
 
 .btn-ver-todo {
@@ -587,21 +764,115 @@ const suscribir = () => {
     background: #F05A22;
     color: white;
     border: none;
-    padding: 12px;
-    border-radius: 8px;
+    padding: 8px;
+    font-size: 0.9rem;
+    border-radius: 6px;
     font-weight: 700;
     cursor: pointer;
     transition: background 0.3s;
-    margin-top: 10px;
+    margin-top: 8px;
 }
 
 .oferta-btn:hover {
     background: #212121;
 }
 
+/* Noticias Section */
+.news-section {
+    padding: 20px 0 60px 0;
+    background: #fff;
+}
+
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.news-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid #f0f0f0;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+}
+
+.news-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    border-color: #F05A22;
+}
+
+.news-img {
+    height: 180px;
+    background: #f9f9f9;
+    overflow: hidden;
+}
+
+.news-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.news-card:hover .news-img img {
+    transform: scale(1.05);
+}
+
+.news-info {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.news-date {
+    font-size: 0.75rem;
+    color: #F05A22;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.news-card h3 {
+    font-size: 1.1rem;
+    color: #212121;
+    margin-bottom: 8px;
+    line-height: 1.3;
+}
+
+.news-card p {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 15px;
+    flex: 1;
+}
+
+.news-read-more {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #212121;
+    text-decoration: none;
+    transition: color 0.3s;
+    align-self: flex-start;
+}
+
+.news-card:hover .news-read-more {
+    color: #F05A22;
+}
+
 @media (max-width: 1024px) {
     .vendidos-grid {
         grid-template-columns: repeat(3, 1fr);
+    }
+    .news-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
@@ -612,7 +883,7 @@ const suscribir = () => {
 }
 
 @media (max-width: 480px) {
-    .vendidos-grid {
+    .vendidos-grid, .news-grid {
         grid-template-columns: 1fr;
     }
 }
