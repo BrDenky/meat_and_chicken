@@ -40,19 +40,25 @@
         <div class="ofertas-section" id="ofertas">
             <div class="home-layout-full">
                 
-                <aside class="categorias-sidebar">
+                <button class="mobile-cat-btn" @click="toggleCategorias">
+                    <i class="fa-solid fa-bars"></i> {{ isCategoriasVisible ? 'Ocultar Categorías' : 'Ver Categorías' }}
+                </button>
+
+                <aside class="categorias-sidebar" v-show="!esMovil || isCategoriasVisible">
                     <div class="categorias-header">
-                        <i class="fa-solid fa-bars"></i> Compra Por Categoría
+                        <span><i class="fa-solid fa-bars"></i> Compra Por Categoría</span>
                     </div>
                     <ul class="categorias-list">
                         <li v-for="(cat, index) in categoriasMenu" :key="index">
-                            <a href="#"><i class="fa-solid fa-arrow-right" style="font-size: 0.8em; margin-right: 15px; opacity: 0.7;"></i> {{ cat }}</a>
+                            <a href="#">
+                                <i class="fa-solid fa-arrow-right" style="font-size: 0.8em; margin-right: 15px; opacity: 0.7;"></i> {{ cat }}
+                            </a>
                         </li>
                     </ul>
                 </aside>
 
                 <div class="ofertas-content">
-                    <h2 class="products-section-title" style="margin-top: 30px;">Productos Más Vendidos</h2>
+                    <h2 class="products-section-title">Productos Más Vendidos</h2>
                     <div class="vendidos-grid">
                         <div 
                             v-for="p in productosMasVendidos" 
@@ -74,11 +80,6 @@
                                 </button>
                             </div>
                         </div>
-                    </div>
-                    <div class="ver-todo-wrapper">
-                        <router-link to="/resultados" class="btn-ver-todo">
-                            Ver todos los productos <i class="fa-solid fa-arrow-right"></i>
-                        </router-link>
                     </div>
                 </div>
             </div>
@@ -288,13 +289,36 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 
+// === TUS VARIABLES ===
 const notificacion = ref('')
 
+const isCategoriasVisible = ref(false);
+const esMovil = ref(false);
+
+// === FUNCIONES DEL MENÚ MÓVIL ===
+const toggleCategorias = () => {
+    isCategoriasVisible.value = !isCategoriasVisible.value;
+};
+
+const checkScreenSize = () => {
+    esMovil.value = window.innerWidth <= 1024;
+};
+
+// === CICLOS DE VIDA DE VUE ===
+onMounted(() => {
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+});
+
+onUnmounted(() => {
+    window.removeEventListener('resize', checkScreenSize);
+});
+
+// === TUS DATOS ===
 const categoriasMenu = ref([
     'RES', 'POLLOS', 'PAVOS', 'CORDERO', 'CERDO', 'EMBUTIDOS'
 ]);
 
-// Agreamos lista de ofertas de la semana
 const productosEnOferta = ref([
     {
         id: 1,
@@ -885,6 +909,75 @@ const suscribir = () => {
 @media (max-width: 480px) {
     .vendidos-grid, .news-grid {
         grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================
+   REGLAS PARA ARREGLAR EL LAYOUT Y MÓVIL
+   ========================================= */
+
+
+.vendido-img img {
+    max-width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+/* El contenedor principal en PC */
+.home-layout-full {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start; /* Evita que el menú crezca deforme */
+    margin-top: 20px;
+}
+
+/* El menú lateral en PC */
+.categorias-sidebar {
+    width: 250px;
+    flex-shrink: 0; /* Evita que el menú se aplaste */
+}
+
+/* El botón móvil oculto en PC */
+.mobile-cat-btn {
+    display: none;
+}
+
+/* ===== VISTA CELULAR Y TABLET ===== */
+@media (max-width: 1024px) {
+    .home-layout-full {
+        flex-direction: column; /* Apila el menú arriba y los productos abajo */
+    }
+    
+    .categorias-sidebar {
+        width: 100%; /* El menú ocupa todo el ancho */
+        margin-bottom: 20px;
+    }
+
+    /* Mostramos el botón */
+    .mobile-cat-btn {
+        display: block;
+        width: 100%;
+        background-color: #F05A22;
+        color: white;
+        border: none;
+        padding: 15px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        text-align: left;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        cursor: pointer;
+    }
+
+    .vendidos-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 productos por fila en celular */
+        gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .vendidos-grid {
+        grid-template-columns: 1fr; /* 1 producto por fila en celulares muy chicos */
     }
 }
 </style>
