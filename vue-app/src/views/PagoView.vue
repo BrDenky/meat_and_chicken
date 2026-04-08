@@ -1,5 +1,17 @@
 <template>
   <div>
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="container">
+            <ul>
+                <li><router-link to="/">Inicio</router-link></li>
+                <li>→</li>
+                <li><router-link to="/carrito">Carrito de Compras</router-link></li>
+                <li>→</li>
+                <li><span>Finalizar Compra</span></li>
+            </ul>
+        </div>
+    </div>
     <main>
         <div class="container">
             <div class="page-title">
@@ -107,15 +119,15 @@
                                     </div>
                                 </div>
                                 
-                                <div class="payment-details" v-if="selectedPayment === 'card'">
+                                <div class="payment-details" v-if="selectedPayment === 'card'" @click.stop>
                                     <h5 style="margin-bottom: 15px; color: #333;">Selecciona tu banco:</h5>
                                     <div class="banks-grid">
-                                        <label class="bank-option" :class="{ selected: formData.bank === 'pichincha' }">
+                                        <label class="bank-option" :class="{ selected: formData.bank === 'pichincha' }" @click.stop>
                                             <input type="radio" v-model="formData.bank" value="pichincha">
                                             <div class="bank-logo">🏦</div>
                                             <div class="bank-name">Banco Pichincha</div>
                                         </label>
-                                        <label class="bank-option" :class="{ selected: formData.bank === 'guayaquil' }">
+                                        <label class="bank-option" :class="{ selected: formData.bank === 'guayaquil' }" @click.stop>
                                             <input type="radio" v-model="formData.bank" value="guayaquil">
                                             <div class="bank-logo">🏦</div>
                                             <div class="bank-name">Banco Guayaquil</div>
@@ -147,7 +159,6 @@
                                             <label>CVV <span class="required">*</span></label>
                                             <input type="text" v-model="formData.cardCVV" placeholder="123" maxlength="4" style="max-width: 150px;">
                                             <div class="cvv-info">
-                                                <span>ℹ️</span>
                                                 <span>3 o 4 dígitos en el reverso de tu tarjeta</span>
                                             </div>
                                         </div>
@@ -166,7 +177,7 @@
                                     </div>
                                 </div>
                                 
-                                <div class="payment-details" v-if="selectedPayment === 'whatsapp'">
+                                <div class="payment-details" v-if="selectedPayment === 'whatsapp'" @click.stop>
                                     <div class="whatsapp-info">
                                         <h5>📱 ¿Cómo funciona?</h5>
                                         <ul>
@@ -232,7 +243,7 @@
     </main>
 
     <!-- Modal de Confirmación -->
-    <div class="modal" :class="{ active: isConfirmed }" id="confirmation-modal">
+    <div class="modal" :class="{ active: isConfirmed }" id="confirmation-modal" @click.self="isConfirmed = false">
         <div class="modal-content">
             <div class="modal-icon"><i class="fa-regular fa-circle-check"></i></div>
             <h2>¡Pedido Confirmado!</h2>

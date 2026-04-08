@@ -191,7 +191,7 @@ const productosFiltrados = computed(() => {
 .categoria-item.active {
   background: #f2f2f2;
   font-weight: bold;
-  border-left: 4px solid #1B4332;
+  border-left: 4px solid #F05A22; /* Cambiado de verde a naranja */
 }
 .titulo-seccion {
   font-size: 24px;
@@ -330,7 +330,7 @@ const productosFiltrados = computed(() => {
 .precio-actual {
   font-weight: 800;
   font-size: 18px;
-  color: #1B4332;
+  color: #F05A22; /* Cambiado de verde a naranja */
 }
 .precio-antes {
   text-decoration: line-through;
@@ -348,7 +348,7 @@ const productosFiltrados = computed(() => {
 .btn-limpiar-vacio {
   margin-top: 15px;
   padding: 10px 20px;
-  background: #1B4332;
+  background: #F05A22; /* Cambiado de verde a naranja */
   color: white;
   border: none;
   border-radius: 20px;
@@ -359,7 +359,7 @@ const productosFiltrados = computed(() => {
   position: fixed;
   top: 20px;
   right: 20px;
-  background: #1B4332;
+  background: #F05A22; /* Cambiado de verde a naranja */
   color: white;
   padding: 14px 20px;
   border-radius: 10px;
@@ -418,9 +418,9 @@ const productosFiltrados = computed(() => {
   }
   
   .categoria-item.active {
-    background: #1B4332;
+    background: #F05A22; /* Cambiado de verde a naranja */
     color: white;
-    border-color: #1B4332;
+    border-color: #F05A22;
   }
 
   /* Ocultar título redundante en móvil para ahorrar espacio */

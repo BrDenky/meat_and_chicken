@@ -29,44 +29,7 @@
                         <span>Dirección de entrega</span>
                     </a>
                 </li>
-                <li class="perfil-menu-item">
-                    <a href="#" class="perfil-menu-link" :class="{ active: currentSection === 'notificaciones' }" @click.prevent="cambiarSeccion('notificaciones')">
-                        <span class="perfil-menu-icon"><i class="fa-regular fa-bell"></i></span>
-                        <span>Notificaciones</span>
-                    </a>
-                </li>
-                <li class="perfil-menu-item">
-                    <a href="#" class="perfil-menu-link" :class="{ active: currentSection === 'cuenta' }" @click.prevent="cambiarSeccion('cuenta')">
-                        <span class="perfil-menu-icon"><i class="fa-solid fa-gear"></i></span>
-                        <span>Cuenta</span>
-                    </a>
-                </li>
-                <li class="perfil-menu-item">
-                    <a href="#" class="perfil-menu-link" :class="{ active: currentSection === 'privacidad' }" @click.prevent="cambiarSeccion('privacidad')">
-                        <span class="perfil-menu-icon"><i class="fa-solid fa-lock"></i></span>
-                        <span>Políticas de privacidad</span>
-                    </a>
-                </li>
-                <li class="perfil-menu-item">
-                    <a href="#" class="perfil-menu-link" :class="{ active: currentSection === 'contactos' }" @click.prevent="cambiarSeccion('contactos')">
-                        <span class="perfil-menu-icon"><i class="fa-solid fa-address-book"></i></span>
-                        <span>Contactos</span>
-                    </a>
-                </li>
-                <li class="perfil-menu-item">
-                    <a href="#" class="perfil-menu-link" :class="{ active: currentSection === 'terminos' }" @click.prevent="cambiarSeccion('terminos')">
-                        <span class="perfil-menu-icon"><i class="fa-solid fa-gavel"></i></span>
-                        <span>Términos legales</span>
-                    </a>
-                </li>
             </ul>
-
-            <div class="perfil-menu-cerrar">
-                <a href="#" class="perfil-menu-link" @click.prevent="cerrarSesion">
-                    <span class="perfil-menu-icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
-                    <span>Cerrar sesión</span>
-                </a>
-            </div>
         </div>
 
         <!-- CONTENIDO PRINCIPAL -->

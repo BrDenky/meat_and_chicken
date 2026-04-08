@@ -22,41 +22,55 @@
                 <!-- Cart Items -->
                 <div class="cart-items" id="cart-items" v-if="cart.length > 0">
                     <!-- Header -->
+                    <!-- Header sincronizado con la nueva estructura -->
                     <div class="cart-header">
                         <div>Producto</div>
-                        <div>Precio</div>
                         <div>Cantidad</div>
                         <div>Total</div>
-                        <div></div>
+                        <div style="width: 50px;"></div>
                     </div>
 
                     <!-- Cart Items Rendering -->
                     <div class="cart-item" v-for="item in cart" :key="item.id">
+                        <!-- 1. Producto (Ahora incluye el precio unitario debajo de los detalles) -->
                         <div class="item-product">
                             <div class="item-image">
-                                <!-- using dynamic image resolution or a placeholder since they might be varied -->
-                                <img :src="`/img/${item.image}`" alt="Producto Cárnico" class="related-img">
+                                <img :src="`/img/${item.image}`" alt="Producto Cárnico">
                             </div>
                             <div class="item-details">
                                 <h3>{{ item.name }}</h3>
-                                <p>SKU: {{ item.sku }}</p>
                                 <p>Peso: {{ item.weight }} | Corte: {{ item.cut }}</p>
+                                <div class="item-price" :class="{ discounted: item.originalPrice }">
+                                    <span class="price-label-mobile">Precio: </span>
+                                    ${{ item.price.toFixed(2) }}
+                                    <span class="item-price-original" v-if="item.originalPrice">${{ item.originalPrice.toFixed(2) }}</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="item-price" :class="{ discounted: item.originalPrice }">
-                            ${{ item.price.toFixed(2) }}
-                            <span class="item-price-original" v-if="item.originalPrice">${{ item.originalPrice.toFixed(2) }}</span>
-                        </div>
-                        <div>
-                            <div class="quantity-control">
-                                <button @click="updateQuantity(item.id, -1)">-</button>
-                                <input type="number" :value="item.qty" readonly>
-                                <button @click="updateQuantity(item.id, 1)">+</button>
+
+                        <!-- GRUPO DE CONTROLES (Para manejo flex en móvil y grid en PC) -->
+                        <div class="cart-item-controls-group">
+                            <!-- 2. Cantidad -->
+                            <div class="item-qty-cell">
+                                <div class="quantity-control">
+                                    <button @click="updateQuantity(item.id, -1)">-</button>
+                                    <input type="number" :value="item.qty" readonly>
+                                    <button @click="updateQuantity(item.id, 1)">+</button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="item-total">${{ (item.price * item.qty).toFixed(2) }}</div>
-                        <div>
-                            <button class="item-remove" @click="removeItem(item.id)">×</button>
+
+                            <!-- 3. Total -->
+                            <div class="item-total">
+                                <span class="total-label-mobile">Total: </span>
+                                ${{ (item.price * item.qty).toFixed(2) }}
+                            </div>
+
+                            <!-- 4. Eliminar -->
+                            <div class="item-remove-cell">
+                                <button class="item-remove" @click="removeItem(item.id)" title="Eliminar producto">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -115,9 +129,6 @@
                     <div class="cart-actions">
                         <button class="btn btn-primary" @click="proceedToCheckout" :disabled="cart.length === 0">
                             Proceder al Pago
-                        </button>
-                        <button class="btn btn-secondary" @click="clearCart" :disabled="cart.length === 0">
-                            Vaciar Carrito
                         </button>
                     </div>
                     

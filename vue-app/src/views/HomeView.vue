@@ -40,13 +40,16 @@
         <div class="ofertas-section" id="ofertas">
             <div class="home-layout-full">
                 
-                <button class="mobile-cat-btn" @click="toggleCategorias">
-                    <i class="fa-solid fa-bars"></i> {{ isCategoriasVisible ? 'Ocultar Categorías' : 'Ver Categorías' }}
+                <button v-if="!isCategoriasVisible" class="mobile-cat-btn" @click="toggleCategorias">
+                    <i class="fa-solid fa-bars"></i> Ver Categorías
                 </button>
 
                 <aside class="categorias-sidebar" v-show="!esMovil || isCategoriasVisible">
                     <div class="categorias-header">
                         <span><i class="fa-solid fa-bars"></i> Compra Por Categoría</span>
+                        <button v-if="esMovil" class="close-cat-btn" @click="toggleCategorias">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
                     </div>
                     <ul class="categorias-list">
                         <li v-for="(cat, index) in categoriasMenu" :key="index">
@@ -76,10 +79,16 @@
                                     <span class="vendido-precio">${{ p.precio.toFixed(2) }}</span>
                                 </div>
                                 <button class="oferta-btn" @click.stop="agregarAlCarrito(p.nombre, p.precio, '🥩')">
-                                    Añadir al carrito
+                                    <span class="btn-text">Añadir al carrito</span>
+                                    <i class="fa-solid fa-cart-shopping btn-icon"></i>
                                 </button>
                             </div>
                         </div>
+                    </div>
+                    <div class="ver-todo-wrapper">
+                        <router-link to="/resultados" class="btn-ver-todo">
+                            Ver todos los productos <i class="fa-solid fa-arrow-right"></i>
+                        </router-link>
                     </div>
                 </div>
             </div>
@@ -119,7 +128,8 @@
                             <button 
                                 class="oferta-btn" 
                                 @click.stop="agregarAlCarrito(item.nombre, item.precioAhora, item.icono)">
-                                Añadir al carrito
+                                <span class="btn-text">Añadir al carrito</span>
+                                <i class="fa-solid fa-cart-shopping btn-icon"></i>
                             </button>
                         </div>
                     </div>
@@ -529,9 +539,10 @@ const carruselRef = ref(null);
 
 const moverCarrusel = (dir) => {
     if (carruselRef.value) {
-        // Movimiento basado en el ancho de una tarjeta
+        // Movimiento basado en el ancho de una tarjeta, sin gap en móvil
         const tarjeta = carruselRef.value.querySelector('.oferta-card');
-        const scrollAmount = tarjeta ? tarjeta.offsetWidth + 20 : 300; // 20 es el gap/espacio
+        const gapExtra = esMovil.value ? 0 : 20; 
+        const scrollAmount = tarjeta ? tarjeta.offsetWidth + gapExtra : 300;
 
         carruselRef.value.scrollBy({ 
             left: dir * scrollAmount, 
@@ -585,9 +596,10 @@ const suscribir = () => {
 <style scoped>
 .home-layout-full {
     display: flex;
-    gap: 30px;
+    gap: 15px; /* Reducido de 30px a 15px */
     align-items: flex-start;
     padding-right: 20px;
+    margin-top: 20px;
 }
 
 .categorias-sidebar {
@@ -601,15 +613,31 @@ const suscribir = () => {
 }
 
 .categorias-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     background: #D95324; 
     padding: 18px 20px;
     font-size: 1.1rem;
     font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 15px;
     border-top-right-radius: 6px;
     border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+.close-cat-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.4rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+
+.close-cat-btn:hover {
+    transform: scale(1.1);
 }
 
 .categorias-list {
@@ -658,7 +686,7 @@ const suscribir = () => {
 }
 
 .vendidos-section {
-    padding: 20px 0 60px 0;
+    padding: 20px 0 20px 0;
     background: #fff;
 }
 
@@ -671,20 +699,22 @@ const suscribir = () => {
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
     margin-top: 35px;
+    padding: 0 15px; /* Padding solo para productos */
 }
 
 .vendido-card {
     background: #fff;
-    border-radius: 12px;
+    border-radius: 20px; /* Consistencia de 20px */
     overflow: hidden;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     border: 1px solid #f0f0f0;
     cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
 }
 
 .vendido-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
     border-color: #F05A22;
 }
 
@@ -803,7 +833,7 @@ const suscribir = () => {
 
 /* Noticias Section */
 .news-section {
-    padding: 20px 0 60px 0;
+    padding: 10px 0 60px 0;
     background: #fff;
 }
 
@@ -816,18 +846,19 @@ const suscribir = () => {
 
 .news-card {
     background: #fff;
-    border-radius: 12px;
+    border-radius: 20px; /* Redondeado premium */
     overflow: hidden;
-    transition: all 0.3s ease;
+    transition: all 0.4s ease;
     border: 1px solid #f0f0f0;
     cursor: pointer;
     display: flex;
     flex-direction: column;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
 }
 
 .news-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
     border-color: #F05A22;
 }
 
@@ -927,8 +958,8 @@ const suscribir = () => {
 .home-layout-full {
     display: flex;
     gap: 20px;
-    align-items: flex-start; /* Evita que el menú crezca deforme */
-    margin-top: 20px;
+    align-items: flex-start;
+    margin-top: 0; /* Eliminado el espacio de 20px */
 }
 
 /* El menú lateral en PC */
@@ -950,7 +981,7 @@ const suscribir = () => {
     
     .categorias-sidebar {
         width: 100%; /* El menú ocupa todo el ancho */
-        margin-bottom: 20px;
+        margin-bottom: 10px; /* Reducido de 20px a 10px */
     }
 
     /* Mostramos el botón */
@@ -964,20 +995,52 @@ const suscribir = () => {
         font-size: 1.1rem;
         font-weight: bold;
         text-align: left;
-        border-radius: 5px;
-        margin-bottom: 15px;
+        border-radius: 8px;
+        margin-top: 0; /* Restaurado a pegado arriba */
+        margin-bottom: 10px; /* Reducido de 15px a 10px */
         cursor: pointer;
     }
 
     .vendidos-grid {
-        grid-template-columns: repeat(2, 1fr); /* 2 productos por fila en celular */
-        gap: 10px;
+        grid-template-columns: repeat(2, 1fr); /* 2 productos por fila en celulares */
+        gap: 12px;
+        padding: 0 15px; /* Mantener padding en móvil para productos */
+    }
+
+    .vendido-img {
+        height: 100px; /* Reducido de 130px */
+    }
+
+    .vendido-info h3 {
+        font-size: 0.82rem; /* Títulos más pequeños */
+        height: 2.4em;
+    }
+
+    .vendido-precio {
+        font-size: 0.95rem; /* Precio más compacto */
+    }
+
+    /* Ocultamos Texto y mostramos ICONOS en los botones */
+    .btn-text {
+        display: none;
+    }
+
+    .btn-icon {
+        display: block;
+        font-size: 1.1rem;
+    }
+
+    .oferta-btn {
+        padding: 10px 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 }
 
-@media (max-width: 480px) {
-    .vendidos-grid {
-        grid-template-columns: 1fr; /* 1 producto por fila en celulares muy chicos */
+@media (min-width: 1025px) {
+    .btn-icon {
+        display: none;
     }
 }
 </style>

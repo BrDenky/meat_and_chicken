@@ -15,7 +15,7 @@ body {
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 15px;
+  padding: 0 15px; /* Revertido a 15px para mantener el diseño original */
 }
 
 /* ================================
@@ -183,13 +183,8 @@ body {
 }
 
 @media (max-width: 768px) {
-  .secondary-nav-inner {
-    gap: 15px;
-    flex-wrap: wrap;
-  }
-
-  .secondary-nav-link {
-    font-size: 0.85rem;
+  .secondary-nav {
+    display: none; /* Barra secundaria oculta solo en móviles */
   }
 }
 
@@ -212,13 +207,13 @@ body {
 
 .oferta-card {
   background: #fff;
-  border-radius: 12px;
+  border-radius: 20px; /* Bordes mucho más redondeados */
   padding: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); /* Sombra suave profesional */
   text-align: center;
   position: relative;
-  transition: transform 0.3s, box-shadow 0.3s;
-  border: 1.5px solid #f0e8e4;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
+  border: 1px solid #f0f0f0;
 }
 
 .oferta-badge {
@@ -340,7 +335,7 @@ body {
   gap: 20px;
   overflow: hidden;
   scroll-behavior: smooth;
-  padding: 10px 4px 20px;
+  padding: 10px 15px 20px 15px; /* Aumentado padding lateral a 15px */
   flex: 1;
   scroll-snap-type: x mandatory;
 }
@@ -383,10 +378,34 @@ body {
 }
 
 @media (max-width: 480px) {
+  .ofertas-carrusel {
+    gap: 0 !important; /* Eliminar hueco para centrado perfecto */
+    padding-left: 0;
+    padding-right: 0;
+  }
   .ofertas-carrusel .oferta-card {
-    min-width: 100%;
+    min-width: 100% !important;
+    margin: 0;
+    scroll-snap-align: center;
+    border-radius: 0; /* Opción: estirar a los bordes o mantener redondeado */
+  }
+  
+  .oferta-card h4 {
+    font-size: 1rem;
   }
 }
+
+/* Global button logic for mobile icons */
+@media (max-width: 1024px) {
+  .oferta-btn .btn-text {
+      display: none;
+  }
+  .oferta-btn .btn-icon {
+      display: inline-block !important;
+  }
+}
+.btn-icon { display: none; }
+
 
 
 
@@ -418,7 +437,7 @@ body {
   text-align: center;
   font-size: 32px;
   color: #C62828;
-  margin: 40px 0 30px;
+  margin: 15px 0 25px; /* Reducido de 40px a 15px arriba */
   text-transform: uppercase;
 }
 
@@ -583,8 +602,8 @@ body {
 /* Breadcrumb-------------------------------------- */
 .breadcrumb {
   background: #fff;
-  padding: 15px 0;
-  margin-bottom: 30px;
+  padding: 10px 0; /* Bajado de 15px a 10px */
+  margin-bottom: 10px; /* Bajado de 30px a 10px */
 }
 
 .breadcrumb ul {
@@ -614,7 +633,7 @@ body {
 .product-detail {
   background: #fff;
   border-radius: 15px;
-  padding: 30px;
+  padding: 10px 30px 30px; /* Reducido relleno superior de 30px a 10px */
   margin-bottom: 40px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
@@ -623,7 +642,7 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 50px;
-  margin-bottom: 40px;
+  margin-bottom: 20px; /* Reducido de 40px a 20px */
 }
 
 /* Galería de imágenes */
@@ -675,10 +694,56 @@ body {
   background: #F05A22;
 }
 
+.thumbnails-container-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Espacio reducido entre flechas y miniaturas */
+  margin-top: 15px;
+}
+
 .image-thumbnails {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex !important; /* De Grid a Flex para el carrusel */
+  overflow: hidden;
   gap: 10px;
+  scroll-behavior: smooth;
+  flex: 1;
+  padding: 5px 2px;
+}
+
+.thumb-nav-btn {
+  background: #f8f8f8;
+  border: 1px solid #eee;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+.thumb-nav-btn:hover {
+  background: #F05A22;
+  color: white;
+  border-color: #F05A22;
+}
+
+.thumbnail {
+  background: #ffffff;
+  border: 2px solid transparent;
+  border-radius: 5px;
+  padding: 5px;
+  cursor: pointer;
+  transition: all 0.3s;
+  height: 100px; /* Un poco más grandes para que se luzcan */
+  min-width: calc((100% - 20px) / 3); /* Cálculo exacto para ver 3 miniaturas */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 @media (max-width: 768px) {
@@ -878,6 +943,16 @@ body {
   font-size: 20px;
 }
 
+.fav-icon-style {
+  font-size: 1.2rem;
+  color: #ff4757; /* Un rojo vibrante para el corazón */
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-secondary:hover .fav-icon-style {
+  transform: scale(1.2); /* Animación de latido al pasar el mouse */
+}
+
 /*------- Características -------*/
 .product-features {
   display: grid;
@@ -906,7 +981,7 @@ body {
 
 /*------- Tabs de información -------*/
 .product-tabs {
-  margin-top: 40px;
+  margin-top: 15px; /* Reducido de 40px a 15px arriba */
 }
 
 .tab-buttons {
@@ -914,6 +989,13 @@ body {
   gap: 5px;
   border-bottom: 2px solid #eee;
   margin-bottom: 30px;
+  overflow-x: auto; /* Permitir scroll horizontal */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Edge */
+}
+
+.tab-buttons::-webkit-scrollbar {
+  display: none; /* Chrome y Safari */
 }
 
 .tab-button {
@@ -1149,16 +1231,17 @@ body {
 
 @media (max-width: 480px) {
   .providers-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr); /* 2 columnas también para proveedores */
+    gap: 12px;
   }
 }
 
 .provider-card {
   background: #fff;
-  border-radius: 12px;
+  border-radius: 20px; /* Bordes más redondeados */
   overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transition: transform 0.4s, box-shadow 0.3s;
   cursor: pointer;
 }
 
@@ -1578,6 +1661,13 @@ body {
 
   .tab-buttons {
     overflow-x: auto;
+    white-space: nowrap; /* Evita que las pestañas bajen a otra fila */
+    padding-bottom: 5px;
+    scrollbar-width: none;
+  }
+  
+  .tab-buttons::-webkit-scrollbar {
+    display: none;
   }
 }
 
@@ -2008,14 +2098,14 @@ body {
 /* Cart Items */
 .cart-items {
   background: #fff;
-  border-radius: 10px;
+  border-radius: 20px; /* Consistencia premium */
   padding: 30px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); /* Sombra suave */
 }
 
 .cart-header {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 50px;
+  grid-template-columns: 2.5fr 1fr 1fr 50px; /* Sincronizado a 4 columnas */
   gap: 20px;
   padding-bottom: 15px;
   border-bottom: 2px solid #eee;
@@ -2024,15 +2114,34 @@ body {
   color: #666;
   font-size: 12px;
   text-transform: uppercase;
+  text-align: center;
+}
+
+.cart-header div:first-child {
+  text-align: left;
 }
 
 .cart-item {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 50px;
+  grid-template-columns: 2.5fr 1fr 1fr 50px; /* Sincronizado a 4 columnas */
   gap: 20px;
   padding: 20px 0;
   border-bottom: 1px solid #eee;
   align-items: center;
+  text-align: center;
+}
+
+.cart-item-controls-group {
+  display: contents; /* Truco mágico: el div desaparece pero sus hijos se alinean al grid */
+}
+
+.cart-item .item-product {
+  text-align: left;
+}
+
+.price-label-mobile,
+.total-label-mobile {
+  display: none;
 }
 
 .item-product {
@@ -2112,7 +2221,7 @@ body {
 
 .quantity-control button:hover {
   background: #F05A22;
-  color: #fff;
+  color: white;
 }
 
 .quantity-control input {
@@ -2221,7 +2330,7 @@ body {
   font-size: 24px;
   font-weight: bold;
   color: #333;
-  border-top: 2px solid #F05A22;
+  border-top: none; /* Eliminado para evitar doble línea */
   border-bottom: none;
   margin-top: 10px;
   padding-top: 20px;
@@ -2447,33 +2556,98 @@ body {
 @media (max-width: 992px) {
   .cart-container {
     grid-template-columns: 1fr;
+    gap: 30px;
   }
 
   .cart-summary {
     position: relative;
     top: 0;
+    border-radius: 20px;
   }
 
-  .cart-header {
-    display: none;
-  }
+  .cart-header { display: none; }
 
   .cart-item {
-    grid-template-columns: 1fr;
-    gap: 15px;
+    display: flex;
+    flex-direction: column;
+    padding: 25px 0;
+    text-align: left;
+    border-bottom: 2px solid #f9f9f9;
   }
 
   .item-product {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .quantity-control {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
     width: 100%;
   }
 
-  .quantity-control input {
+  .item-image {
+    width: 110px;
+    height: 110px;
+    background: #fff;
+    border: 1.5px solid #f0f0f0;
+    border-radius: 12px;
+    padding: 10px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .item-details h3 { font-size: 16px; font-weight: 700; margin-bottom: 5px; color: #333; }
+
+  .item-price {
+    margin-top: 5px; /* Reducido de 10px */
+    font-size: 16px;
+    color: #F05A22; /* Vamos a darle el color de marca también al precio unitario para que resalte */
+    font-weight: 700;
+  }
+
+  .price-label-mobile { display: inline; font-size: 14px; font-weight: normal; color: #888; }
+
+  /* Fila inferior de controles (Diseño que te gustó) */
+  .cart-item-controls-group {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 5px; /* Reducido de 15px */
+    padding-top: 0; /* Eliminado */
+    border-top: none; /* Eliminada la línea */
+  }
+
+  .quantity-control {
+    width: 110px;
+    height: 42px;
+  }
+
+  .item-total {
+    font-weight: 800;
+    color: #F05A22;
+    font-size: 1.3rem;
     flex: 1;
+    text-align: center;
+    margin: 0;
+  }
+
+  .item-remove {
+    background: #fdfdfd;
+    border: 1px solid #eee;
+    color: #444;
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+
+  .total-label-mobile {
+    display: none; /* Mantener limpio como el anterior */
   }
 }
 
@@ -2683,7 +2857,7 @@ body {
    SEPARADOR SERVICIOS
    ================================ */
 .service-area {
-  border-top: 3px solid #F05A22;
+  border-top: 1px solid #eee; /* Cambiado a gris suave */
   padding-top: 40px;
   margin-top: 20px;
 }
@@ -2752,7 +2926,7 @@ body {
 /* Page Title */
 .page-title {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 20px; /* Reducido de 40px para un look más compacto */
 }
 
 .page-title h1 {
@@ -3103,7 +3277,7 @@ body {
   font-size: 22px;
   font-weight: bold;
   color: #333;
-  border-top: 2px solid #F05A22;
+  border-top: none; /* Adiós doble línea */
   margin-top: 10px;
   padding-top: 15px;
 }

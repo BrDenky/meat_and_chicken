@@ -29,13 +29,23 @@
                             <img :src="activeImage" alt="Imagen principal">
                         </div>
                         
-                        <div class="image-thumbnails">
-                            <div v-for="(img, index) in images" :key="index" 
-                                 class="thumbnail" 
-                                 :class="{ active: currentImageIndex === index }" 
-                                 @click="changeImage(index)">
-                                <img :src="img" alt="Thumbnail">
+                        <div class="thumbnails-container-wrapper">
+                            <button class="thumb-nav-btn prev" @click="moverMiniaturas(-1)" type="button">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+
+                            <div class="image-thumbnails" ref="miniaturasRef">
+                                <div v-for="(img, index) in images" :key="index" 
+                                     class="thumbnail" 
+                                     :class="{ active: currentImageIndex === index }" 
+                                     @click="changeImage(index)">
+                                    <img :src="img" alt="Thumbnail">
+                                </div>
                             </div>
+
+                            <button class="thumb-nav-btn next" @click="moverMiniaturas(1)" type="button">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
                         </div>
                     </div>
 
@@ -78,7 +88,7 @@
                                         Añadir al carrito
                                     </button>
                                     <button class="btn btn-secondary" @click="addToWishlist">
-                                        <span class="btn-icon">❤️</span>
+                                        <i class="fa-solid fa-heart fav-icon-style"></i>
                                     </button>
                                     <!-- <button class="btn btn-secondary" @click="shareProduct">
                                         <span class="btn-icon">📤</span>
@@ -247,8 +257,21 @@ const productoTabs = ref([
 
 const activeImage = computed(() => images[currentImageIndex.value])
 
+const miniaturasRef = ref(null)
+
 const changeImage = (index) => {
     currentImageIndex.value = index
+}
+
+const moverMiniaturas = (dir) => {
+    if (miniaturasRef.value) {
+        const thumb = miniaturasRef.value.querySelector('.thumbnail');
+        const scrollAmount = thumb ? thumb.offsetWidth + 10 : 100;
+        miniaturasRef.value.scrollBy({ 
+            left: dir * scrollAmount, 
+            behavior: 'smooth' 
+        });
+    }
 }
 
 const increaseQuantity = () => {

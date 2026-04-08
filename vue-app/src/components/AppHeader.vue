@@ -23,7 +23,8 @@
 
         <div class="header-actions">
 
-          <router-link to="/carrito" class="action-btn"><i class="fa-solid fa-cart-shopping"></i> <span> Mi carrito</span></router-link>
+          <!-- Ocultamos el carrito si detectamos que es un proveedor -->
+          <router-link v-if="userRole !== 'proveedor'" to="/carrito" class="action-btn"><i class="fa-solid fa-cart-shopping"></i> <span> Mi carrito</span></router-link>
           
           <!-- Si NO hay usuario logueado -->
           <button v-if="!user" class="action-btn" @click="abrirLogin">
@@ -32,16 +33,21 @@
 
           <!-- Si SÍ hay usuario logueado -->
           <template v-else>
-            <router-link to="/perfil" class="action-btn">
+            <!-- Cambiamos la ruta según el rol del usuario -->
+            <router-link :to="userRole === 'proveedor' ? '/proveedor' : '/perfil'" class="action-btn">
               <i class="fa-solid fa-user"></i><span>Hola, {{ userName }}</span>
             </router-link>
+            <!-- Botón de Cerrar Sesión -->
+            <button class="action-btn" @click="cerrarSesion" title="Cerrar sesión">
+              <i class="fa-solid fa-right-from-bracket" style="color: #F05A22;"></i>
+            </button>
           </template>
         </div>
       </div>
     </header>
 
-    <!-- BARRA DE NAVEGACIÓN SECUNDARIA -->
-    <nav class="secondary-nav">
+    <!-- BARRA DE NAVEGACIÓN SECUNDARIA (Se oculta en el panel de proveedor) -->
+    <nav class="secondary-nav" v-if="showSecondaryNav">
       <div class="container secondary-nav-inner">
         <router-link to="/#productos" class="secondary-nav-link">Proveedores</router-link>
         <router-link to="/resultados" class="secondary-nav-link">Productos</router-link>
@@ -60,17 +66,25 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted, computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { supabase } from '../supabase' // Importamos el cliente de Supabase
 import AuthModal from './AuthModal.vue'
 
 const router = useRouter()
+const route = useRoute()
 const searchQuery = ref('')
+
+// Ocultar barra secundaria en el panel de proveedor
+const showSecondaryNav = computed(() => {
+  const routesToHide = ['/proveedor', '/perfil-proveedor']
+  return !routesToHide.includes(route.path)
+})
 
 // Variables para el usuario
 const user = ref(null)
 const userName = ref('')
+const userRole = ref('') // Servirá para saber si escondemos o no el carrito
 
 const buscar = () => {
   if (searchQuery.value.trim()) {
@@ -112,15 +126,24 @@ onMounted(async () => {
   })
 })
 
-const actualizarUsuario = (session) => {
+const actualizarUsuario = async (session) => {
   if (session && session.user) {
     user.value = session.user
     // Supabase guarda el full_name en el user_metadata por defecto (si lo enviaste)
     // O puedes sacar su correo si no hay nombre
     userName.value = session.user.user_metadata?.full_name?.split(' ')[0] || session.user.email.split('@')[0]
+    
+    // Obtenemos el rol desde la base de datos para restringir acceso al carrito y linkear al panel correcto
+    const { data, error } = await supabase.from('profiles').select('role').eq('id', session.user.id).single()
+    if (data) {
+      userRole.value = data.role
+    } else {
+      userRole.value = 'consumer'
+    }
   } else {
     user.value = null
     userName.value = ''
+    userRole.value = ''
   }
 }
 
