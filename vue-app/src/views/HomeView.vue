@@ -53,8 +53,8 @@
                     </div>
                     <ul class="categorias-list">
                         <li v-for="(cat, index) in categoriasMenu" :key="index">
-                            <a href="#">
-                                <i class="fa-solid fa-arrow-right" style="font-size: 0.8em; margin-right: 15px; opacity: 0.7;"></i> {{ cat }}
+                            <a href="#" @click.prevent="irACategoria(cat)">
+                                <i class="fa-solid fa-arrow-right" style="font-size: 0.8em; margin-right: 15px; opacity: 0.7;"></i> {{ cat.toUpperCase() }}
                             </a>
                         </li>
                     </ul>
@@ -78,7 +78,7 @@
                                 <div class="vendido-footer">
                                     <span class="vendido-precio">${{ p.precio.toFixed(2) }}</span>
                                 </div>
-                                <button class="oferta-btn" @click.stop="agregarAlCarrito(p.nombre, p.precio, '🥩')">
+                                <button class="oferta-btn" @click.stop="agregarAlCarrito(p)">
                                     <span class="btn-text">Añadir al carrito</span>
                                     <i class="fa-solid fa-cart-shopping btn-icon"></i>
                                 </button>
@@ -127,7 +127,7 @@
                     
                             <button 
                                 class="oferta-btn" 
-                                @click.stop="agregarAlCarrito(item.nombre, item.precioAhora, item.icono)">
+                                @click.stop="agregarAlCarrito(item)">
                                 <span class="btn-text">Añadir al carrito</span>
                                 <i class="fa-solid fa-cart-shopping btn-icon"></i>
                             </button>
@@ -298,6 +298,10 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useCartStore } from '../stores/cart'
+
+const cartStore = useCartStore()
 
 // === TUS VARIABLES ===
 const notificacion = ref('')
@@ -308,6 +312,12 @@ const esMovil = ref(false);
 // === FUNCIONES DEL MENÚ MÓVIL ===
 const toggleCategorias = () => {
     isCategoriasVisible.value = !isCategoriasVisible.value;
+};
+
+const router = useRouter();
+
+const irACategoria = (cat) => {
+    router.push({ name: 'resultados', query: { categoria: cat } });
 };
 
 const checkScreenSize = () => {
@@ -326,7 +336,7 @@ onUnmounted(() => {
 
 // === TUS DATOS ===
 const categoriasMenu = ref([
-    'RES', 'POLLOS', 'PAVOS', 'CORDERO', 'CERDO', 'EMBUTIDOS'
+    'Res', 'Pollos', 'Pavos', 'Cordero', 'Cerdo', 'Embutidos'
 ]);
 
 const productosEnOferta = ref([
@@ -581,11 +591,24 @@ onUnmounted(() => {
     detenerAutoScroll();
 });
 
-const agregarAlCarrito = (nombre, precio, icono) => {
-  notificacion.value = `${icono} "${nombre}" añadido al carrito ($${precio})`
-  setTimeout(() => {
-    notificacion.value = ''
-  }, 2500)
+const agregarAlCarrito = (producto) => {
+    // Normalizamos el objeto para el store
+    const itemToAdd = {
+        id: producto.id,
+        name: producto.nombre,
+        price: producto.precioAhora || producto.precio,
+        image: producto.img.replace('/img/', ''), // Limpiamos la ruta si ya la trae
+        weight: producto.peso || '1kg', // Default si no tiene
+        cut: producto.categoria || 'Corte especial',
+        sku: 'SKU-' + producto.id
+    }
+    
+    cartStore.addItem(itemToAdd)
+    
+    notificacion.value = `"${producto.nombre}" añadido al carrito`
+    setTimeout(() => {
+        notificacion.value = ''
+    }, 2500)
 }
 
 const suscribir = () => {
@@ -690,9 +713,6 @@ const suscribir = () => {
     background: #fff;
 }
 
-.vendidos-section .products-section-title {
-    margin-top: 30px;
-}
 
 .vendidos-grid {
     display: grid;

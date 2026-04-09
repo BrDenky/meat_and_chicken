@@ -2,385 +2,238 @@
   <div class="perfil-proveedor-view">
     <!-- HERO DEL PROVEEDOR -->
     <section class="proveedor-hero">
-        <div class="container">
-            <div class="proveedor-hero-content">
-                <div class="proveedor-logo-container">
-                        <div class="provider-avatar">
-                            <img src="@/assets/img/proveedores/provedor_1.png" alt="Logo Proveedor">
-                        </div>
-                    <span class="proveedor-verificado">
-                        ✓ Verificado
-                    </span>
-                </div>
-
-                <div class="proveedor-info-header">
-                    <h1 class="proveedor-nombre">7 Pozo</h1>
-                    <div class="proveedor-categoria">
-                        🥩 Carne de Res Premium
-                    </div>
-                    <div class="proveedor-experiencia">
-                        ⭐ 25-30 años de experiencia en el mercado cárnico
-                    </div>
-
-                    <div class="proveedor-stats">
-                        <div class="stat-box">
-                            <div class="stat-number">150+</div>
-                            <div class="stat-label">Productos</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-number">4.9</div>
-                            <div class="stat-label">Calificación</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-number">5,000+</div>
-                            <div class="stat-label">Clientes</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-number">24/7</div>
-                            <div class="stat-label">Atención</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <div class="hero-overlay"></div>
+      <div class="container hero-content">
+        <div class="hero-info-wrapper">
+          <div class="provider-avatar-circle">
+            <img src="@/assets/img/proveedores/provedor_1.png" alt="Logo Proveedor">
+            <span class="badge-verificado"><i class="fa-solid fa-circle-check"></i></span>
+          </div>
+          <div class="hero-text">
+            <span class="section-tag">Proveedor Destacado</span>
+            <h1 class="proveedor-nombre">7 Pozo</h1>
+            <p class="proveedor-tagline">🥩 Carne de Res Premium con tradición y calidad garantizada.</p>
+          </div>
         </div>
+      </div>
     </section>
 
-    <!-- TABS DE NAVEGACIÓN -->
-    <div class="proveedor-tabs" ref="tabsContainer">
-        <div class="container">
-            <div class="tabs-container">
-                <button class="tab-btn" :class="{ active: currentTab === 'productos' }" @click="cambiarTab('productos')">
-                    📦 Productos
-                </button>
-                <button class="tab-btn" :class="{ active: currentTab === 'sobre' }" @click="cambiarTab('sobre')">
-                    ℹ️ Sobre Nosotros
-                </button>
-                <button class="tab-btn" :class="{ active: currentTab === 'ubicacion' }" @click="cambiarTab('ubicacion')">
-                    📍 Ubicación
-                </button>
-                <button class="tab-btn" :class="{ active: currentTab === 'noticias' }" @click="cambiarTab('noticias')">
-                    📰 Noticias
-                </button>
-                <button class="tab-btn" :class="{ active: currentTab === 'contacto' }" @click="cambiarTab('contacto')">
-                    📞 Contacto
-                </button>
-            </div>
+    <!-- STATS BAR QUICK VIEW -->
+    <div class="stats-bar-wrapper">
+      <div class="container">
+        <div class="stats-bar">
+          <div class="stat-card">
+            <span class="stat-value">150+</span>
+            <span class="stat-label">Productos</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-card">
+            <span class="stat-value">4.9</span>
+            <span class="stat-label">Valoración</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-card">
+            <span class="stat-value">25+</span>
+            <span class="stat-label">Años Exp.</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-card">
+            <span class="stat-value">24/7</span>
+            <span class="stat-label">Atención</span>
+          </div>
         </div>
+      </div>
     </div>
 
-    <!-- CONTENIDO -->
-    <main>
-        
-        <!-- TAB: PRODUCTOS -->
-        <div class="tab-content" v-show="currentTab === 'productos'">
-            <div class="container">
-                <h2 class="section-title">Nuestros Productos</h2>
+    <!-- TABS DE NAVEGACIÓN -->
+    <nav class="proveedor-nav-tabs" ref="tabsContainer">
+      <div class="container">
+        <div class="tabs-list">
+          <button class="nav-tab-btn" :class="{ active: currentTab === 'productos' }" @click="cambiarTab('productos')">
+            <i class="fa-solid fa-box-open"></i> Productos
+          </button>
+          <button class="nav-tab-btn" :class="{ active: currentTab === 'sobre' }" @click="cambiarTab('sobre')">
+            <i class="fa-solid fa-address-card"></i> Nuestra Historia
+          </button>
+          <button class="nav-tab-btn" :class="{ active: currentTab === 'ubicacion' }" @click="cambiarTab('ubicacion')">
+            <i class="fa-solid fa-map-location-dot"></i> Ubicación
+          </button>
+          <button class="nav-tab-btn" :class="{ active: currentTab === 'noticias' }" @click="cambiarTab('noticias')">
+            <i class="fa-solid fa-newspaper"></i> Novedades
+          </button>
+          <button class="nav-tab-btn" :class="{ active: currentTab === 'contacto' }" @click="cambiarTab('contacto')">
+            <i class="fa-solid fa-envelope"></i> Contacto
+          </button>
+        </div>
+      </div>
+    </nav>
 
-                <div class="productos-filtros">
-                    <button class="filtro-btn" :class="{ active: currentFilter === 'Todos' }" @click="currentFilter = 'Todos'">Todos</button>
-                    <button class="filtro-btn" :class="{ active: currentFilter === 'Premium' }" @click="currentFilter = 'Premium'">Premium</button>
-                    <button class="filtro-btn" :class="{ active: currentFilter === 'Cortes Especiales' }" @click="currentFilter = 'Cortes Especiales'">Cortes Especiales</button>
-                    <button class="filtro-btn" :class="{ active: currentFilter === 'Mix Parrillero' }" @click="currentFilter = 'Mix Parrillero'">Mix Parrillero</button>
-                    <button class="filtro-btn" :class="{ active: currentFilter === 'Ofertas' }" @click="currentFilter = 'Ofertas'">Ofertas</button>
-                </div>
-
-                <div class="productos-grid">
-                    <!-- Products rendered via v-for for reactivity with filters -->
-                    <div class="producto-card" v-for="product in filteredProducts" :key="product.id">
-                        <div class="producto-imagen">
-                            <img :src="product.img" :alt="product.name">
-                            <span v-if="product.badge" class="producto-badge">{{ product.badge }}</span>
-                        </div>
-                        <div class="producto-info">
-                            <h3 class="producto-nombre">{{ product.name }}</h3>
-                            <p class="producto-descripcion">{{ product.desc }}</p>
-                            <div class="producto-meta">
-                                <span class="producto-precio">{{ product.price }}</span>
-                                <span class="producto-stock">✓ Disponible</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="profile-main-content">
+      
+      <!-- TAB: PRODUCTOS -->
+      <transition name="fade" mode="out-in">
+        <div class="tab-pane" v-if="currentTab === 'productos'" key="productos">
+          <div class="container">
+            <div class="section-header-centered">
+              <span class="section-tag">Catálogo</span>
+              <h2>Nuestros Mejores Cortes</h2>
             </div>
+
+            <div class="productos-filtros">
+              <button class="filtro-chip" :class="{ active: currentFilter === 'Todos' }" @click="currentFilter = 'Todos'">Todos</button>
+              <button class="filtro-chip" :class="{ active: currentFilter === 'Premium' }" @click="currentFilter = 'Premium'">Premium</button>
+              <button class="filtro-chip" :class="{ active: currentFilter === 'Cortes Especiales' }" @click="currentFilter = 'Cortes Especiales'">Especiales</button>
+              <button class="filtro-chip" :class="{ active: currentFilter === 'Mix Parrillero' }" @click="currentFilter = 'Mix Parrillero'">Parrilleros</button>
+              <button class="filtro-chip" :class="{ active: currentFilter === 'Ofertas' }" @click="currentFilter = 'Ofertas'">Ofertas</button>
+            </div>
+
+            <div class="productos-grid">
+              <div class="producto-card-modern" v-for="product in filteredProducts" :key="product.id">
+                <div class="card-img-wrapper">
+                  <img :src="product.img" :alt="product.name">
+                  <span v-if="product.badge" class="modern-badge">{{ product.badge }}</span>
+                </div>
+                <div class="card-body">
+                  <h3 class="p-name">{{ product.name }}</h3>
+                  <p class="p-desc">{{ product.desc }}</p>
+                  <div class="p-footer">
+                    <span class="p-price">{{ product.price }}</span>
+                    <button class="add-to-cart-simple" title="Añadir al carrito">
+                      <i class="fa-solid fa-plus"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- TAB: SOBRE NOSOTROS -->
-        <div class="tab-content" v-show="currentTab === 'sobre'">
-            <div class="container">
-                <h2 class="section-title">Sobre Nosotros</h2>
-
-                <div class="sobre-grid">
-                    <div class="info-box">
-                        <h3>🎯 Nuestra Misión</h3>
-                        <p>
-                            Proveer carne de res de la más alta calidad a nuestros clientes, garantizando frescura,
-                            trazabilidad y excelencia en cada corte. Nos comprometemos a mantener los más altos
-                            estándares de calidad desde la granja hasta su mesa, apoyando a productores locales
-                            y promoviendo prácticas sostenibles.
-                        </p>
-                    </div>
-
-                    <div class="info-box">
-                        <h3>🔭 Nuestra Visión</h3>
-                        <p>
-                            Ser el proveedor líder de carne de res premium en Ecuador, reconocidos por nuestra
-                            calidad excepcional, innovación en procesos de trazabilidad y compromiso con la
-                            satisfacción del cliente. Aspiramos a expandir nuestra red de distribución mientras
-                            mantenemos nuestros valores de calidad y servicio.
-                        </p>
-                    </div>
+        <div class="tab-pane" v-else-if="currentTab === 'sobre'" key="sobre">
+          <!-- HISTORIA -->
+          <section class="container history-section">
+            <div class="history-grid">
+              <div class="history-content">
+                <span class="section-tag">Desde 2001</span>
+                <h2>Más de 25 años de tradición cárnica</h2>
+                <p>
+                  7 Pozo comenzó como un sueño familiar en las faldas de la cordillera, buscando llevar la mejor selección de carne de res a las mesas ecuatorianas. Con el tiempo, nos hemos convertido en un referente de <strong>trazabilidad y calidad</strong>.
+                </p>
+                <p>
+                  Nuestra pasión por el campo se refleja en cada uno de nuestros procesos. Trabajamos con ganadería responsable, asegurando que cada animal sea criado en las mejores condiciones para garantizar un producto final excepcional.
+                </p>
+              </div>
+              <div class="history-visual">
+                <div class="visual-deco-card">
+                  <i class="fa-solid fa-award"></i>
+                  <span>Líderes en Calidad Premium</span>
                 </div>
-
-                <div class="info-box" style="margin-bottom: 40px;">
-                    <h3>📖 Nuestra Historia</h3>
-                    <p style="line-height: 2;">
-                        Con más de <strong>25 años de experiencia</strong> en el mercado cárnico ecuatoriano, 7 Pozo
-                        comenzó como un pequeño negocio familiar dedicado a la distribución de carne de res de calidad.
-                        A lo largo de los años, hemos crecido hasta convertirnos en uno de los principales proveedores
-                        de carne premium en el país.
-                        <br><br>
-                        Nuestra pasión por la excelencia nos ha llevado a implementar sistemas de trazabilidad de
-                        última generación, garantizando que cada corte pueda rastrearse desde su origen hasta el
-                        consumidor final. Trabajamos directamente con ganaderos locales que comparten nuestros valores
-                        de calidad y sostenibilidad.
-                    </p>
-                </div>
-
-                <div class="info-box">
-                    <h3>💎 Nuestros Valores</h3>
-                    <ul class="valores-list">
-                        <li>
-                            <span class="valor-icon">✓</span>
-                            <div>
-                                <strong>Calidad</strong><br>
-                                Seleccionamos únicamente los mejores cortes de carne de res criada en condiciones óptimas.
-                            </div>
-                        </li>
-                        <li>
-                            <span class="valor-icon">🔍</span>
-                            <div>
-                                <strong>Trazabilidad</strong><br>
-                                Sistema completo de seguimiento desde la granja hasta el consumidor final.
-                            </div>
-                        </li>
-                        <li>
-                            <span class="valor-icon">🌱</span>
-                            <div>
-                                <strong>Sostenibilidad</strong><br>
-                                Prácticas responsables que cuidan el medio ambiente y apoyan a productores locales.
-                            </div>
-                        </li>
-                        <li>
-                            <span class="valor-icon">🤝</span>
-                            <div>
-                                <strong>Confianza</strong><br>
-                                Transparencia total en nuestros procesos y compromiso con la satisfacción del cliente.
-                            </div>
-                        </li>
-                        <li>
-                            <span class="valor-icon">⚡</span>
-                            <div>
-                                <strong>Frescura</strong><br>
-                                Productos frescos diariamente, manteniendo la cadena de frío en todo momento.
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-
-                <h3 style="font-size: 28px; margin: 60px 0 30px; color: #333;">🏆 Certificaciones y Estándares</h3>
-                <div class="certificaciones-grid">
-                    <div class="certificacion-card">
-                        <div class="certificacion-icon">✓</div>
-                        <div class="certificacion-nombre">ISO 22000</div>
-                    </div>
-                    <div class="certificacion-card">
-                        <div class="certificacion-icon">🥩</div>
-                        <div class="certificacion-nombre">HACCP</div>
-                    </div>
-                    <div class="certificacion-card">
-                        <div class="certificacion-icon">🌿</div>
-                        <div class="certificacion-nombre">Orgánico</div>
-                    </div>
-                    <div class="certificacion-card">
-                        <div class="certificacion-icon">🏅</div>
-                        <div class="certificacion-nombre">Calidad Premium</div>
-                    </div>
-                </div>
+              </div>
             </div>
+          </section>
+
         </div>
 
         <!-- TAB: UBICACIÓN -->
-        <div class="tab-content" v-show="currentTab === 'ubicacion'">
-            <div class="container">
-                <h2 class="section-title">Nuestra Ubicación</h2>
-
-                <div class="ubicacion-container">
-                    <div class="mapa-container">
-                        <div class="mapa-placeholder">
-                            <div>🗺️</div>
-                            <p style="font-size: 18px; margin-top: 20px; color: #666;">Mapa interactivo</p>
-                            <p style="font-size: 14px; color: #999;">Calle Principal 123, Quito, Ecuador</p>
-                        </div>
-                    </div>
-
-                    <div class="direccion-info">
-                        <div class="direccion-item">
-                            <div class="direccion-icon">📍</div>
-                            <div class="direccion-text">
-                                <h4>Dirección Principal</h4>
-                                <p>
-                                    Calle Principal 123<br>
-                                    Sector Norte, Quito<br>
-                                    Pichincha, Ecuador
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="direccion-item">
-                            <div class="direccion-icon">📞</div>
-                            <div class="direccion-text">
-                                <h4>Teléfonos</h4>
-                                <p>
-                                    (+593) 2 234 5678<br>
-                                    (+593) 980 377 358<br>
-                                    WhatsApp disponible
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="direccion-item">
-                            <div class="direccion-icon">🕐</div>
-                            <div class="direccion-text">
-                                <h4>Horario de Atención</h4>
-                                <p>
-                                    Lunes a Viernes: 7:00 AM - 7:00 PM<br>
-                                    Sábados: 7:00 AM - 5:00 PM<br>
-                                    Domingos: 8:00 AM - 2:00 PM
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="direccion-item">
-                            <div class="direccion-icon">✉️</div>
-                            <div class="direccion-text">
-                                <h4>Correo Electrónico</h4>
-                                <p>
-                                    info@7pozo.com<br>
-                                    ventas@7pozo.com<br>
-                                    soporte@7pozo.com
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+        <div class="tab-pane" v-else-if="currentTab === 'ubicacion'" key="ubicacion">
+          <div class="container">
+            <div class="location-layout">
+              <div class="location-map">
+                <div class="map-frame">
+                  <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31918.069115712165!2d-78.4891124!3d-0.170624!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x91d59a72dcf97ec1%3A0x130ef1492ba68735!2sSector%20Norte%2C%20Quito!5e0!3m2!1ses!2sec!4v1712615419022!5m2!1ses!2sec" 
+                    width="100%" 
+                    height="500" 
+                    style="border:0; border-radius: 30px;" 
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade">
+                  </iframe>
                 </div>
+              </div>
+              <div class="location-details">
+                <span class="section-tag">Encuéntranos</span>
+                <h2>Nuestras Instalaciones</h2>
+                <div class="contact-methods-list">
+                  <div class="method-item">
+                    <div class="m-icon"><i class="fa-solid fa-location-dot"></i></div>
+                    <div class="m-info">
+                      <h4>Matriz Principal</h4>
+                      <p>Calle Principal 123, Sector Norte, Quito - Ecuador</p>
+                    </div>
+                  </div>
+                  <div class="method-item">
+                    <div class="m-icon"><i class="fa-solid fa-clock"></i></div>
+                    <div class="m-info">
+                      <h4>Horarios</h4>
+                      <p>Lun - Sáb: 07:00 AM - 07:00 PM<br>Dom: 08:00 AM - 02:00 PM</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
         </div>
 
         <!-- TAB: NOTICIAS -->
-        <div class="tab-content" v-show="currentTab === 'noticias'">
-            <div class="container">
-                <h2 class="section-title">Noticias y Novedades</h2>
-
-                <div class="noticias-grid">
-                    <div class="noticia-card">
-                        <div class="noticia-imagen">📰</div>
-                        <div class="noticia-contenido">
-                            <div class="noticia-fecha">5 de Marzo, 2026</div>
-                            <h3 class="noticia-titulo">Nuevos Cortes Premium Disponibles</h3>
-                            <p class="noticia-extracto">
-                                Ampliamos nuestra línea de cortes premium con nuevas opciones importadas
-                                directamente de las mejores ganaderías del país.
-                            </p>
-                            <a href="#" class="noticia-leer" @click.prevent>Leer más →</a>
-                        </div>
-                    </div>
-                    <!-- (Aditional news omitted for brevity, simplified logic) -->
-                </div>
+        <div class="tab-pane" v-else-if="currentTab === 'noticias'" key="noticias">
+          <div class="container">
+            <div class="section-header-centered">
+              <span class="section-tag">Blog</span>
+              <h2>Novedades y Recetas</h2>
             </div>
+            <div class="news-modern-grid">
+              <div class="news-card-minimal">
+                <div class="news-img-box">📰</div>
+                <div class="news-body">
+                  <span class="news-date">05 Mar 2026</span>
+                  <h3>Nuevos Cortes de Exportación</h3>
+                  <p>Descubre nuestra nueva línea de cortes madurados con procesos europeos...</p>
+                  <a href="#" class="read-more-link">Leer más <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- TAB: CONTACTO -->
-        <div class="tab-content" v-show="currentTab === 'contacto'">
-            <div class="container">
-                <h2 class="section-title">Contáctanos</h2>
-
-                <div class="contacto-grid">
-                    <div class="contacto-form">
-                        <h3 style="margin-bottom: 25px; color: #333;">Envíanos un Mensaje</h3>
-                        
-                        <form @submit.prevent="enviarContacto">
-                            <div class="form-group">
-                                <label class="form-label">Nombre Completo</label>
-                                <input type="text" class="form-input" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Correo Electrónico</label>
-                                <input type="email" class="form-input" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Teléfono</label>
-                                <input type="tel" class="form-input" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Asunto</label>
-                                <input type="text" class="form-input" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Mensaje</label>
-                                <textarea class="form-input" required></textarea>
-                            </div>
-
-                            <button type="submit" class="btn-enviar">Enviar Mensaje</button>
-                        </form>
-                    </div>
-
-                    <div class="contacto-info">
-                        <h3 style="margin-bottom: 25px; color: #333;">Información de Contacto</h3>
-
-                        <div class="contacto-metodo">
-                            <h4>📞 Llámanos</h4>
-                            <p>
-                                (+593) 2 234 5678<br>
-                                (+593) 980 377 358<br>
-                                Lun-Vie: 7:00 AM - 7:00 PM
-                            </p>
-                        </div>
-
-                        <div class="contacto-metodo">
-                            <h4>💬 WhatsApp</h4>
-                            <p>
-                                (+593) 980 377 358<br>
-                                Atención inmediata<br>
-                                Disponible 24/7
-                            </p>
-                        </div>
-
-                        <div class="contacto-metodo">
-                            <h4>✉️ Email</h4>
-                            <p>
-                                info@7pozo.com<br>
-                                ventas@7pozo.com<br>
-                                Respuesta en 24 horas
-                            </p>
-                        </div>
-
-                        <div class="contacto-metodo">
-                            <h4>🌐 Redes Sociales</h4>
-                            <div class="social-links">
-                                <a href="#" @click.prevent class="social-btn">📘</a>
-                                <a href="#" @click.prevent class="social-btn">📸</a>
-                                <a href="#" @click.prevent class="social-btn">🐦</a>
-                                <a href="#" @click.prevent class="social-btn">💬</a>
-                            </div>
-                        </div>
-                    </div>
+        <div class="tab-pane" v-else-if="currentTab === 'contacto'" key="contacto">
+          <div class="container">
+            <div class="contact-modern-grid">
+              <div class="form-wrapper">
+                <h3>Envíanos un mensaje</h3>
+                <form @submit.prevent="enviarContacto" class="modern-form">
+                  <div class="form-row">
+                    <input type="text" placeholder="Nombre" required>
+                    <input type="email" placeholder="Email" required>
+                  </div>
+                  <input type="text" placeholder="Asunto" required>
+                  <textarea placeholder="¿En qué podemos ayudarte?" required></textarea>
+                  <button type="submit" class="btn-primary-gradient">Enviar Mensaje</button>
+                </form>
+              </div>
+              <div class="info-sidebar">
+                <div class="sidebar-box">
+                  <h4>Canales Directos</h4>
+                  <div class="direct-link">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    <span>+593 980 377 358</span>
+                  </div>
+                  <div class="direct-link">
+                    <i class="fa-solid fa-phone"></i>
+                    <span>(02) 234 5678</span>
+                  </div>
+                  <div class="direct-link">
+                    <i class="fa-solid fa-envelope"></i>
+                    <span>ventas@7pozo.com</span>
+                  </div>
                 </div>
+              </div>
             </div>
+          </div>
         </div>
+      </transition>
 
     </main>
   </div>

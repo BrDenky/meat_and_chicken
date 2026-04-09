@@ -204,7 +204,7 @@
                             </div>
 
                             <button type="submit" class="btn-submit">
-                                Confirmar Pedido - $78.60
+                                Confirmar Pedido - ${{ cartStore.subtotal.toFixed(2) }}
                             </button>
 
                             <div class="security-badge">
@@ -217,23 +217,23 @@
                     <!-- Order Summary -->
                     <div class="order-summary">
                         <h2>Resumen del Pedido</h2>
-                        <!-- Simplified summary for testing -->
-                        <div class="summary-item">
+                        
+                        <div class="summary-item" v-for="item in cartStore.items" :key="item.id">
                             <div class="summary-item-info">
-                                <div class="summary-item-name">Lomo de Res Premium</div>
-                                <div class="summary-item-qty">Cantidad: 2</div>
+                                <div class="summary-item-name">{{ item.name }}</div>
+                                <div class="summary-item-qty">Cantidad: {{ item.qty }}</div>
                             </div>
-                            <div class="summary-item-price">$36.20</div>
+                            <div class="summary-item-price">${{ (item.price * item.qty).toFixed(2) }}</div>
                         </div>
 
                         <div class="summary-totals">
                             <div class="summary-row">
                                 <span>Subtotal</span>
-                                <span>$78.60</span>
+                                <span>${{ cartStore.subtotal.toFixed(2) }}</span>
                             </div>
                             <div class="summary-row total">
                                 <span>Total</span>
-                                <span class="price">$78.60</span>
+                                <span class="price">${{ cartStore.subtotal.toFixed(2) }}</span>
                             </div>
                         </div>
                     </div>
@@ -257,7 +257,38 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useCartStore } from '../stores/cart'
+import { supabase } from '../supabase'
+
+const router = useRouter()
+const cartStore = useCartStore()
+
+onMounted(async () => {
+    // Usamos watch para observar el estado del carrito de forma reactiva
+    // Si terminó de cargar (isLoading: false) y el carrito está vacío, lo expulsamos
+    watch(() => cartStore.isLoading, (isLoading) => {
+        if (!isLoading && cartStore.totalItems === 0) {
+            alert("Tu carrito está vacío. Agrega productos antes de pagar.")
+            router.push('/resultados')
+        }
+    }, { immediate: true })
+
+    // Auto-completado de Datos de Usuario si ha iniciado sesión
+    const { data: { session } } = await supabase.auth.getSession()
+    if (session && session.user) {
+        formData.value.email = session.user.email
+        
+        // Extracción de nombre desde user_metadata (si existe de GitHub o email signup)
+        const fullName = session.user.user_metadata?.full_name
+        if (fullName) {
+            const parts = fullName.split(' ')
+            formData.value.firstName = parts[0] || ''
+            formData.value.lastName = parts.slice(1).join(' ') || ''
+        }
+    }
+})
 
 const formData = ref({
     firstName: '',
@@ -364,6 +395,9 @@ const submitForm = () => {
         alert('Debes aceptar los términos y condiciones')
         return
     }
+
+    // ¡Éxito! Vaciar los productos del carrito (también los borrará de supabase)
+    cartStore.clearCart()
 
     isConfirmed.value = true
 }

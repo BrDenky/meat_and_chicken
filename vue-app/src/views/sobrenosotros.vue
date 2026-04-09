@@ -46,20 +46,20 @@
         <div class="mv-grid">
           <div class="mv-card mission">
             <div class="mv-icon">
-              <i class="fa-solid fa-bullseye"></i>
+              <i class="fa-solid fa-flag-checkered"></i>
             </div>
             <h3>Nuestra Misión</h3>
             <p>
-              Conectar directamente a proveedores responsables con consumidores y negocios mediante un modelo logístico flexible, herramientas digitales y protocolos sanitarios certificados, garantizando calidad, inocuidad y atención personalizada en cada pedido
+              Conectar directamente a proveedores responsables con consumidores y negocios mediante un modelo logístico flexible, herramientas digitales y protocolos sanitarios certificados, garantizando calidad, inocuidad y atención personalizada en cada pedido.
             </p>
           </div>
           <div class="mv-card vision">
             <div class="mv-icon">
-              <i class="fa-regular fa-eye"></i>
+              <i class="fa-solid fa-rocket"></i>
             </div>
             <h3>Nuestra Visión</h3>
             <p>
-              Ser la red de distribución cárnica más confiable, eficiente y personalizada del sector de Pintag y sus alrededores, integrando tecnología, trazabilidad y compromiso comunitario para impulsar el desarrollo sostenible del comercio local. aliqua. 
+              Ser la red de distribución cárnica más confiable, eficiente y personalizada del sector de Pintag y sus alrededores, integrando tecnología, trazabilidad y compromiso comunitario para impulsar el desarrollo sostenible del comercio local.
             </p>
           </div>
         </div>
@@ -120,11 +120,11 @@
   height: 450px;
   background-image: url('../assets/img/about-hero.png');
   background-size: cover;
-  background-position: center;
+  background-position: center 25%;
   display: flex;
   align-items: center;
   color: white;
-  margin-bottom: 60px;
+  margin-bottom: 30px;
 }
 
 .hero-overlay {
@@ -153,7 +153,7 @@
 
 /* QUIENES SOMOS */
 .quienes-somos {
-  margin-bottom: 100px;
+  margin-bottom: 60px;
 }
 
 .about-grid {
@@ -230,13 +230,10 @@
 
 /* MISIÓN Y VISIÓN */
 .mv-section {
-  background: #212121;
-  padding: 100px 0;
-  color: white;
-  margin-bottom: 100px;
-  border-radius: 40px;
-  margin-left: 20px;
-  margin-right: 20px;
+  background: #fffaf8; /* Crema cálido acorde a la marca */
+  padding: 60px 0;
+  color: #333;
+  margin-bottom: 60px;
 }
 
 .mv-grid {
@@ -246,50 +243,55 @@
 }
 
 .mv-card {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 50px;
+  background: white;
+  padding: 40px;
   border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: transform 0.3s ease;
+  border: 1px solid #f0efeb;
+  box-shadow: 0 10px 30px rgba(240, 90, 34, 0.05);
+  transition: all 0.3s ease;
+  text-align: center;
 }
 
 .mv-card:hover {
-  transform: translateY(-10px);
-  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-8px);
+  box-shadow: 0 15px 40px rgba(240, 90, 34, 0.12);
+  border-color: #F05A22;
 }
 
 .mv-icon {
-  width: 60px;
-  height: 60px;
-  background: #F05A22;
-  border-radius: 15px;
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, #F05A22 0%, #ff8a5c 100%);
+  border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
-  margin-bottom: 25px;
+  font-size: 1.8rem;
+  margin: 0 auto 25px;
+  color: white;
+  box-shadow: 0 8px 20px rgba(240, 90, 34, 0.25);
 }
 
 .mv-card h3 {
-  font-size: 1.75rem;
+  font-size: 1.6rem;
   margin-bottom: 1.25rem;
-  color: #F05A22;
+  color: #212121;
 }
 
 .mv-card p {
-  font-size: 1.1rem;
-  line-height: 1.8;
-  opacity: 0.8;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #666;
 }
 
 /* VALORES */
 .valores-section {
-  margin-bottom: 100px;
+  margin-bottom: 60px;
 }
 
 .section-header {
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 30px;
 }
 
 .section-header h2 {

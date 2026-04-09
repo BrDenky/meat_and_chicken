@@ -48,7 +48,7 @@
                 <img :src="p.imagen" :alt="`Fotografía de ${p.nombre}`">
                 <div class="producto-hover-acciones">
                   <button class="hover-btn" title="Ver producto" :aria-label="`Ver detalles de ${p.nombre}`" @click="$router.push('/producto')">👁️‍🗨️</button>
-                  <button class="hover-btn" title="Agregar al carrito" :aria-label="`Agregar ${p.nombre} al carrito`" @click="agregarAlCarrito(p.nombre)">🛒</button>
+                  <button class="hover-btn" title="Agregar al carrito" :aria-label="`Agregar ${p.nombre} al carrito`" @click="HandleAgregarAlCarrito(p)">🛒</button>
                 </div>
               </div>
               <div class="producto-info">
@@ -80,19 +80,21 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useCartStore } from '../stores/cart'
 import carneImg from '@/assets/img/carne_1.png'
 import carne3Img from '@/assets/img/carne_3.jpg'
 
 const route = useRoute()
 const router = useRouter()
 const searchQuery = ref(route.query.q || '')
+const cartStore = useCartStore()
 
 watch(() => route.query.q, (nuevoQuery) => {
   searchQuery.value = nuevoQuery || ''
 })
 
 const orden = ref('default')
-const listaCategorias = ['Pollos', 'Pavos', 'Cordero', 'Cerdo', 'Embutidos']
+const listaCategorias = ['Res', 'Pollos', 'Pavos', 'Cordero', 'Cerdo', 'Embutidos']
 const categoriaActiva = ref(route.query.categoria || 'INICIO')
 const notificacion = ref('')
 
@@ -112,8 +114,20 @@ const limpiarBusqueda = () => {
   router.push({ query: {} })
 }
 
-const agregarAlCarrito = (nombre) => {
-  notificacion.value = `✓ "${nombre}" añadido al carrito`
+const HandleAgregarAlCarrito = (producto) => {
+  const itemToAdd = {
+    id: producto.nombre.replace(/\s+/g, '-').toLowerCase(), // ID único basado en nombre si no hay ID real
+    name: producto.nombre,
+    price: producto.precio,
+    image: producto.imagen.split('/').pop(),
+    weight: '1kg',
+    cut: producto.categoria,
+    sku: 'SKU-' + Math.floor(Math.random() * 1000)
+  }
+  
+  cartStore.addItem(itemToAdd)
+  
+  notificacion.value = `✓ "${producto.nombre}" añadido al carrito`
   setTimeout(() => {
     notificacion.value = ''
   }, 2500)

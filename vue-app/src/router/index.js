@@ -61,6 +61,13 @@ const router = createRouter({
         }
     ],
     scrollBehavior(to, from, savedPosition) {
+        if (to.hash) {
+            return {
+                el: to.hash,
+                top: 150, // Aumentado para dar más aire entre el header y el título
+                behavior: 'auto',
+            }
+        }
         if (savedPosition) {
             return savedPosition
         } else {

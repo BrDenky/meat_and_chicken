@@ -169,52 +169,37 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { useCartStore } from '../stores/cart'
+
+const cartStore = useCartStore()
+const cart = computed(() => cartStore.items)
 
 
 
-/*--------------- AQUÍ VAMOS AÑADIENDO DE FORMA ORDENADA LOS PRODUCTOS DEL CARRITO ---------------*/
-const cart = ref([
-    { id: 1, name: 'Lomo Fino Premium', sku: 'CAR-LF001', weight: '500g', cut: 'Medallón', price: 18.10, originalPrice: 25.50, qty: 2, image: 'corte_1.png' },
-    { id: 2, name: 'Lomo Fino Premium', sku: 'CAR-LF001', weight: '500g', cut: 'Medallón', price: 4.50, originalPrice: null, qty: 1, image: 'corte_2.png' },
-    { id: 3, name: 'Lomo Fino Premium', sku: 'CAR-LF001', weight: '500g', cut: 'Medallón', price: 10.70, originalPrice: null, qty: 3, image: 'corte_3.png' },
-    { id: 4, name: 'Lomo Fino Premium', sku: 'CAR-LF001', weight: '500g', cut: 'Medallón', price: 5.80, originalPrice: null, qty: 1, image: 'corte_4.png' }
-])
+// El carrito ahora viene del store global
 
 const couponInput = ref('')
 const appliedDiscount = ref(0)
 const appliedCode = ref('')
 
-const itemsCount = computed(() => cart.value.reduce((acc, item) => acc + item.qty, 0))
-const subtotal = computed(() => cart.value.reduce((acc, item) => acc + (item.price * item.qty), 0))
+const itemsCount = computed(() => cartStore.totalItems)
+const subtotal = computed(() => cartStore.subtotal)
 const discountAmount = computed(() => subtotal.value * appliedDiscount.value)
 const total = computed(() => subtotal.value - discountAmount.value)
 
 const updateQuantity = (id, change) => {
-    const item = cart.value.find(i => i.id === id)
-    if (!item) return
-    
-    const newQty = item.qty + change
-    if (newQty < 1) {
-        if (confirm('¿Deseas eliminar este producto del carrito?')) {
-            removeItem(id)
-        }
-        return
-    }
-    if (newQty > 99) {
-        alert('Cantidad máxima: 99 unidades')
-        return
-    }
-    
-    item.qty = newQty
+    cartStore.updateQuantity(id, change)
 }
 
 const removeItem = (id) => {
-    cart.value = cart.value.filter(i => i.id !== id)
+    if (confirm('¿Deseas eliminar este producto del carrito?')) {
+        cartStore.removeItem(id)
+    }
 }
 
 const clearCart = () => {
     if (confirm('¿Estás seguro de que deseas vaciar el carrito?')) {
-        cart.value = []
+        cartStore.clearCart()
     }
 }
 

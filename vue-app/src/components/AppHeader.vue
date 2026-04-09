@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="main-header-wrapper" :class="{ 'header-hidden': !isVisible, 'no-behavior': !isBehaviorEnabled }">
     <!-- MODAL LOGIN EXTERNALIZADO -->
     <AuthModal :isVisible="isLoginVisible" @close="cerrarLogin" @notify="showNotification" />
 
@@ -24,7 +24,13 @@
         <div class="header-actions">
 
           <!-- Ocultamos el carrito si detectamos que es un proveedor -->
-          <router-link v-if="userRole !== 'proveedor'" to="/carrito" class="action-btn"><i class="fa-solid fa-cart-shopping"></i> <span> Mi carrito</span></router-link>
+          <router-link v-if="userRole !== 'proveedor'" to="/carrito" class="action-btn cart-btn-header">
+            <div class="cart-icon-wrapper">
+              <i class="fa-solid fa-cart-shopping"></i>
+              <span v-if="cartStore.totalItems > 0" class="cart-badge">{{ cartStore.totalItems }}</span>
+            </div>
+            <span> Mi carrito</span>
+          </router-link>
           
           <!-- Si NO hay usuario logueado -->
           <button v-if="!user" class="action-btn" @click="abrirLogin">
@@ -49,35 +55,69 @@
     <!-- BARRA DE NAVEGACIÓN SECUNDARIA (Se oculta en el panel de proveedor) -->
     <nav class="secondary-nav" v-if="showSecondaryNav">
       <div class="container secondary-nav-inner">
-        <router-link to="/#productos" class="secondary-nav-link">Proveedores</router-link>
         <router-link to="/resultados" class="secondary-nav-link">Productos</router-link>
+        <router-link to="/#productos" class="secondary-nav-link">Proveedores</router-link>
         <router-link to="/registro" class="secondary-nav-link">Trabaja con Nosotros</router-link>
         <router-link to="/sobrenosotros" class="secondary-nav-link">Sobre Nosotros</router-link>
         <router-link to="/noticias" class="secondary-nav-link">Noticias</router-link>
       </div>
     </nav>
-    <!-- SISTEMA DE NOTIFICACIONES ELEGANTE -->
-    <transition name="slide-in">
-      <div v-if="notificationMessage" class="notification-toast" :class="notificationType">
-        {{ notificationMessage }}
-      </div>
-    </transition>
   </div>
+
+  <!-- ESPACIADOR: Solo se muestra si el header es fijo (behavior enabled) -->
+  <div v-if="isBehaviorEnabled" class="header-placeholder" :class="{ 'with-secondary': showSecondaryNav }"></div>
+
+  <!-- SISTEMA DE NOTIFICACIONES ELEGANTE -->
+  <transition name="slide-in">
+    <div v-if="notificationMessage" class="notification-toast" :class="notificationType">
+      {{ notificationMessage }}
+    </div>
+  </transition>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useCartStore } from '../stores/cart'
 import { supabase } from '../supabase' // Importamos el cliente de Supabase
 import AuthModal from './AuthModal.vue'
 
 const router = useRouter()
 const route = useRoute()
+const cartStore = useCartStore()
+
+// Determinar si el comportamiento dinámico del header está habilitado para esta vista
+const isBehaviorEnabled = computed(() => {
+  const disabledRoutes = ['/carrito', '/pago']
+  return !disabledRoutes.includes(route.path)
+})
+
+// Lógica de visibilidad al hacer scroll con bloqueo para navegación
+const isVisible = ref(true)
+const skipScroll = ref(false)
+let lastScrollY = window.scrollY
+
+const handleScroll = () => {
+  if (!isBehaviorEnabled.value) {
+    isVisible.value = true
+    return
+  }
+  if (skipScroll.value) return 
+  
+  const currentScrollY = window.scrollY
+  if (currentScrollY > lastScrollY && currentScrollY > 150) {
+    isVisible.value = false
+  } else if (currentScrollY < lastScrollY) {
+    isVisible.value = true
+  }
+  lastScrollY = currentScrollY
+}
+
 const searchQuery = ref('')
 
 // Ocultar barra secundaria en el panel de proveedor
 const showSecondaryNav = computed(() => {
-  const routesToHide = ['/proveedor', '/perfil-proveedor']
+  const routesToHide = ['/proveedor']
   return !routesToHide.includes(route.path)
 })
 
@@ -106,13 +146,22 @@ const showNotification = (message, type = 'success') => {
   }, 3500)
 }
 
-const abrirLogin = () => {
-  isLoginVisible.value = true
-}
+const abrirLogin = () => isLoginVisible.value = true
+const cerrarLogin = () => isLoginVisible.value = false
 
-const cerrarLogin = () => {
-  isLoginVisible.value = false
-}
+// Forzamos que el header aparezca al cambiar de ruta o usar anclas
+watch(() => route.fullPath, () => {
+    if (!isBehaviorEnabled.value) {
+        isVisible.value = true
+        return
+    }
+    isVisible.value = true
+    skipScroll.value = true
+    setTimeout(() => {
+        lastScrollY = window.scrollY
+        skipScroll.value = false
+    }, 250)
+})
 
 // LOGICA DE SESIÓN CON SUPABASE
 onMounted(async () => {
@@ -124,6 +173,13 @@ onMounted(async () => {
   supabase.auth.onAuthStateChange((_event, session) => {
     actualizarUsuario(session)
   })
+
+  // 3. Listener de scroll (solo si está habilitado)
+  window.addEventListener('scroll', handleScroll)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
 })
 
 const actualizarUsuario = async (session) => {
@@ -140,10 +196,16 @@ const actualizarUsuario = async (session) => {
     } else {
       userRole.value = 'consumer'
     }
+
+    // Inicializamos carrito híbrido con Supabase si no es un proveedor
+    if (userRole.value !== 'proveedor') {
+      cartStore.initUserCart(session.user.id)
+    }
   } else {
     user.value = null
     userName.value = ''
     userRole.value = ''
+    cartStore.initUserCart(null) // Revertimos al local storage
   }
 }
 
@@ -159,6 +221,42 @@ const cerrarSesion = async () => {
 </script>
 
 <style scoped>
+.main-header-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  transition: none;
+  background: white; /* Asegura que el fondo sea sólido al fijarse */
+}
+
+.header-hidden {
+  transform: translateY(-100%);
+}
+
+.no-behavior {
+  position: relative !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+.header-placeholder {
+  height: 90px; /* Altura del header principal reducido */
+}
+
+.header-placeholder.with-secondary {
+  height: 130px; /* Altura del header + nav secundaria reducido */
+}
+
+@media (max-width: 768px) {
+  .header-placeholder {
+    height: 90px;
+  }
+  .header-placeholder.with-secondary {
+    height: 140px; /* Aumentado de 130px para dar más aire */
+  }
+}
 
 /* ESTILOS DEL TOAST NOTIFICATION MANEJO DE INICIO DE SESIÓN Y REGISTRO */
 .notification-toast {
@@ -191,5 +289,39 @@ const cerrarSesion = async () => {
 .slide-in-enter-from, .slide-in-leave-to {
   transform: translateX(100%);
   opacity: 0;
+}
+
+/* ESTILOS PARA EL BADGE DEL CARRITO */
+.cart-btn-header {
+  position: relative;
+}
+
+.cart-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #212121;
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+  border-radius: 20px;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.cart-btn-header:hover .cart-badge {
+  background-color: #F05A22;
 }
 </style>

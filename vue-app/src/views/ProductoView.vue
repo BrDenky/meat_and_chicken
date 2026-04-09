@@ -173,6 +173,9 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { useCartStore } from '../stores/cart'
+
+const cartStore = useCartStore()
 
 // Import relevant styles previously injected globally
 import '../assets/css/shapes.css'
@@ -298,6 +301,20 @@ const showNotification = (message) => {
 }
 
 const addToCart = () => {
+    // Para simplificar en esta vista estática, creamos el objeto producto
+    const itemToAdd = {
+        id: 'producto-premium-1',
+        name: 'Producto Premium 1',
+        price: 18.10,
+        image: 'carne_1.png',
+        weight: '800g',
+        cut: 'Corte Especial',
+        sku: 'CAR-PR-001'
+    }
+    
+    // Si la cantidad es > 1, lo añadimos directamente pasando la cantidad
+    cartStore.addItem(itemToAdd, quantity.value)
+    
     showNotification(`✓ ${quantity.value} unidad(es) añadida(s) al carrito`)
 }
 

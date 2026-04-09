@@ -6,7 +6,7 @@
       <div class="container hero-content">
         <h1 class="hero-title">Impulsa tu Negocio con Nosotros</h1>
         <p class="hero-subtitle">Únete a la red de distribución cárnica líder en la región y lleva tus productos a más hogares y negocios.</p>
-        <a href="#formulario-registro" class="hero-btn">Empezar Solicitud</a>
+        <router-link to="#formulario-registro" class="hero-btn">Empezar Solicitud</router-link>
       </div>
     </section>
 
@@ -101,17 +101,17 @@
         <form @submit.prevent="enviarSolicitud" class="registro-form">
           <div class="form-grid">
             <div class="form-group">
-              <label>Nombre del Negocio o Marca</label>
+              <label>Nombre del Negocio / Marca</label>
               <input type="text" v-model="formData.nombreNegocio" required placeholder="Ej: Carnes del Valle">
             </div>
             <div class="form-group">
               <label>Categoría Principal</label>
               <select v-model="formData.categoria" required>
-                <option value="" disabled selected>Selecciona una opción</option>
+                <option value="" disabled selected>Seleccionar</option>
                 <option value="res">Carne de Res</option>
                 <option value="pollo">Pollo / Aves</option>
                 <option value="cerdo">Cerdo</option>
-                <option value="embutidos">Embutidos / Procesados</option>
+                <option value="embutidos">Embutidos</option>
                 <option value="otros">Otros</option>
               </select>
             </div>
@@ -123,13 +123,13 @@
               <label>Teléfono / WhatsApp</label>
               <input type="tel" v-model="formData.telefono" required placeholder="09XXXXXXXX">
             </div>
-            <div class="form-group full-width">
+            <div class="form-group">
               <label>Correo Electrónico</label>
               <input type="email" v-model="formData.email" required placeholder="tu@correo.com">
             </div>
             <div class="form-group full-width">
               <label>Cuéntanos sobre tus productos (Origen, certificaciones, etc.)</label>
-              <textarea v-model="formData.mensaje" rows="4" placeholder="Escribe aquí..."></textarea>
+              <textarea v-model="formData.mensaje" rows="3" placeholder="Escribe aquí..."></textarea>
             </div>
           </div>
           <button type="submit" class="submit-btn" :disabled="enviando">
@@ -181,11 +181,11 @@ const enviarSolicitud = () => {
   height: 500px;
   background-image: url('../assets/img/trabaja-hero.png');
   background-size: cover;
-  background-position: center;
+  background-position: center 20%;
   display: flex;
   align-items: center;
   color: white;
-  margin-bottom: 80px;
+  margin-bottom: 40px;
 }
 
 .hero-overlay {
@@ -233,12 +233,12 @@ const enviarSolicitud = () => {
 
 /* BENEFICIOS */
 .beneficios-section {
-  margin-bottom: 100px;
+  margin-bottom: 60px;
 }
 
 .section-header {
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 30px;
 }
 
 .section-header h2 {
@@ -296,8 +296,8 @@ const enviarSolicitud = () => {
 /* REQUISITOS */
 .requisitos-section {
   background: #fdfdfb;
-  padding: 100px 0;
-  margin-bottom: 100px;
+  padding: 60px 0;
+  margin-bottom: 60px;
 }
 
 .requisitos-content {
@@ -347,7 +347,7 @@ const enviarSolicitud = () => {
 
 /* PROCESO */
 .proceso-section {
-  margin-bottom: 100px;
+  margin-bottom: 60px;
 }
 
 .proceso-steps {
@@ -391,14 +391,14 @@ const enviarSolicitud = () => {
 
 /* FORMULARIO */
 .form-section {
-  margin-bottom: 100px;
+  margin-bottom: 60px;
 }
 
 .form-wrapper {
   background: white;
   border-radius: 30px;
-  padding: 60px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+  padding: 40px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.06);
   border: 1px solid #f0f0f0;
 }
 
@@ -414,18 +414,26 @@ const enviarSolicitud = () => {
 
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 25px;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 20px;
 }
 
 .form-group {
+  grid-column: span 3;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.form-group.full-width {
+/* Campos de 1/3 de ancho en la segunda fila */
+.form-group:nth-child(3),
+.form-group:nth-child(4),
+.form-group:nth-child(5) {
   grid-column: span 2;
+}
+
+.form-group.full-width {
+  grid-column: span 6;
 }
 
 .form-group label {
@@ -483,6 +491,10 @@ const enviarSolicitud = () => {
   
   .form-grid {
     grid-template-columns: 1fr;
+  }
+  
+  .form-group, .form-group:nth-child(3), .form-group:nth-child(4), .form-group:nth-child(5) {
+    grid-column: auto;
   }
   
   .form-group.full-width {
