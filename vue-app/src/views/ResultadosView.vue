@@ -47,7 +47,7 @@
               <div class="producto-imagen-wrapper">
                 <img :src="p.imagen" :alt="`Fotografía de ${p.nombre}`">
                 <div class="producto-hover-acciones">
-                  <button class="hover-btn" title="Ver producto" :aria-label="`Ver detalles de ${p.nombre}`" @click="$router.push('/producto')">👁️‍🗨️</button>
+                  <button class="hover-btn" title="Ver producto" :aria-label="`Ver detalles de ${p.nombre}`" @click="$router.push('/producto/' + p.id)">👁️‍🗨️</button>
                   <button class="hover-btn" title="Agregar al carrito" :aria-label="`Agregar ${p.nombre} al carrito`" @click="HandleAgregarAlCarrito(p)">🛒</button>
                 </div>
               </div>
@@ -78,11 +78,11 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useCartStore } from '../stores/cart'
 import carneImg from '@/assets/img/carne_1.png'
-import carne3Img from '@/assets/img/carne_3.jpg'
+import { supabase } from '../supabase'
 
 const route = useRoute()
 const router = useRouter()
@@ -116,13 +116,14 @@ const limpiarBusqueda = () => {
 
 const HandleAgregarAlCarrito = (producto) => {
   const itemToAdd = {
-    id: producto.nombre.replace(/\s+/g, '-').toLowerCase(), // ID único basado en nombre si no hay ID real
+    id: producto.id || producto.nombre.replace(/\s+/g, '-').toLowerCase(), // Si tiene ID de DB lo usa
     name: producto.nombre,
     price: producto.precio,
-    image: producto.imagen.split('/').pop(),
+    image: (producto.imagen || '').split('/').pop() || 'carne_1.png',
     weight: '1kg',
     cut: producto.categoria,
-    sku: 'SKU-' + Math.floor(Math.random() * 1000)
+    sku: 'SKU-' + (producto.id || Math.floor(Math.random() * 1000)),
+    proveedor_id: producto.proveedor_id
   }
   
   cartStore.addItem(itemToAdd)
@@ -133,10 +134,36 @@ const HandleAgregarAlCarrito = (producto) => {
   }, 2500)
 }
 
-const productos = ref([
-  { nombre: 'Lomo fino de chancho und', categoria: 'Cerdo', imagen: carneImg, precio: 18.50, precioAntes: 21.00 },
-  { nombre: 'Carne de cerdo foodpacking', categoria: 'Cerdo', imagen: carne3Img, precio: 12.00, precioAntes: null },
-])
+const productos = ref([])
+
+const cargarProductosDesdeSupabase = async () => {
+  try {
+    const { data, error } = await supabase
+      .from('productos')
+      .select('*')
+      .eq('estado', 'disponible') // Sólo mostramos productos con stock/disponibles
+      
+    if (error) throw error
+
+    if (data) {
+      productos.value = data.map(p => ({
+        id: p.id,
+        nombre: p.nombre,
+        categoria: p.categoria || 'Res',
+        precio: p.precio,
+        precioAntes: null, // Dejamos esto en null (por si en un futuro añades descuentos a tu base)
+        imagen: p.imagen_url || carneImg, // Imagen por defecto
+        proveedor_id: p.proveedor_id
+      }))
+    }
+  } catch (err) {
+    console.error('Error cargando el catálogo global de productos:', err)
+  }
+}
+
+onMounted(() => {
+  cargarProductosDesdeSupabase()
+})
 
 const productosFiltrados = computed(() => {
   let result = [...productos.value]
@@ -149,7 +176,21 @@ const productosFiltrados = computed(() => {
   }
 
   if (categoriaActiva.value !== 'INICIO') {
-    result = result.filter(p => p.categoria === categoriaActiva.value)
+    const catFiltro = categoriaActiva.value.toLowerCase()
+    
+    // Normalizar a singular (ej: pollos -> pollo) para tener más aciertos
+    let terminoSingular = catFiltro
+    if (catFiltro.endsWith('s') && catFiltro !== 'res') {
+      terminoSingular = catFiltro.slice(0, -1)
+    }
+
+    result = result.filter(p => {
+      const catProd = (p.categoria || '').toLowerCase()
+      const nomProd = (p.nombre || '').toLowerCase()
+      return catProd === catFiltro || 
+             catProd.includes(terminoSingular) || 
+             nomProd.includes(terminoSingular)
+    })
   }
 
   if (orden.value === 'precio-asc') result.sort((a, b) => a.precio - b.precio)

@@ -6,12 +6,12 @@
       <div class="container hero-content">
         <div class="hero-info-wrapper">
           <div class="provider-avatar-circle">
-            <img src="@/assets/img/proveedores/provedor_1.png" alt="Logo Proveedor">
+            <img :src="proveedorInfo.logo || defaultProviderImg" alt="Logo Proveedor">
             <span class="badge-verificado"><i class="fa-solid fa-circle-check"></i></span>
           </div>
           <div class="hero-text">
             <span class="section-tag">Proveedor Destacado</span>
-            <h1 class="proveedor-nombre">7 Pozo</h1>
+            <h1 class="proveedor-nombre">{{ proveedorInfo.nombre }}</h1>
             <p class="proveedor-tagline">🥩 Carne de Res Premium con tradición y calidad garantizada.</p>
           </div>
         </div>
@@ -118,7 +118,7 @@
                 <span class="section-tag">Desde 2001</span>
                 <h2>Más de 25 años de tradición cárnica</h2>
                 <p>
-                  7 Pozo comenzó como un sueño familiar en las faldas de la cordillera, buscando llevar la mejor selección de carne de res a las mesas ecuatorianas. Con el tiempo, nos hemos convertido en un referente de <strong>trazabilidad y calidad</strong>.
+                  {{ proveedorInfo.nombre }} comenzó como un sueño familiar en las faldas de la cordillera, buscando llevar la mejor selección de carne a las mesas ecuatorianas. Con el tiempo, nos hemos convertido en un referente de <strong>trazabilidad y calidad</strong>.
                 </p>
                 <p>
                   Nuestra pasión por el campo se refleja en cada uno de nuestros procesos. Trabajamos con ganadería responsable, asegurando que cada animal sea criado en las mejores condiciones para garantizar un producto final excepcional.
@@ -226,7 +226,7 @@
                   </div>
                   <div class="direct-link">
                     <i class="fa-solid fa-envelope"></i>
-                    <span>ventas@7pozo.com</span>
+                    <span>{{ proveedorInfo.correo || 'ventas@ejemplo.com' }}</span>
                   </div>
                 </div>
               </div>
@@ -240,9 +240,20 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import { supabase } from '../supabase'
 import lomoImg from '@/assets/img/ofertas/lomo.png'
+import defaultProviderImg from '@/assets/img/proveedores/provedor_1.png'
 import '../assets/css/perfil_proveedor.css'
+
+const route = useRoute()
+
+const proveedorInfo = ref({
+    nombre: 'Cargando...',
+    correo: '',
+    logo: null
+})
 
 const currentTab = ref('productos')
 const currentFilter = ref('Todos')
@@ -263,19 +274,57 @@ const enviarContacto = (e) => {
     e.target.reset()
 }
 
-// Reactivity for products
-const allProducts = [
+const realProducts = ref([
     { id: 1, name: 'Lomo de Res Premium', desc: 'Corte premium, fresco del día. Criado en campo abierto.', price: '$18.00', badge: 'Premium', img: lomoImg, category: 'Premium' },
     { id: 2, name: 'Costilla de Res', desc: 'Perfecta para parrilla. Trazabilidad garantizada.', price: '$15.50', badge: 'Especial', img: lomoImg, category: 'Cortes Especiales' },
     { id: 3, name: 'Mix Parrillero Especial', desc: 'Combinación perfecta de cortes premium para parrilla.', price: '$45.00', badge: 'Mix', img: lomoImg, category: 'Mix Parrillero' },
-    { id: 4, name: 'Chuleta de Res', desc: 'Jugosa y tierna, ideal para todo tipo de preparaciones.', price: '$12.50', badge: null, img: lomoImg, category: 'Todos' },
-    { id: 5, name: 'Carne Molida Extra', desc: 'Carne molida de primera calidad, baja en grasa.', price: '$8.00', badge: 'Oferta', img: lomoImg, category: 'Ofertas' },
-    { id: 6, name: 'Asado de Tira', desc: 'Corte tradicional argentino, jugoso y sabroso.', price: '$20.00', badge: 'Premium', img: lomoImg, category: 'Premium' },
-]
+    { id: 4, name: 'Chuleta de Res', desc: 'Jugosa y tierna, ideal para todo tipo de preparaciones.', price: '$12.50', badge: null, img: lomoImg, category: 'Todos' }
+])
 
 const filteredProducts = computed(() => {
-    if (currentFilter.value === 'Todos') return allProducts
-    return allProducts.filter(p => p.category === currentFilter.value || (p.badge && currentFilter.value.includes(p.badge)))
+    if (currentFilter.value === 'Todos') return realProducts.value
+    return realProducts.value.filter(p => p.category === currentFilter.value || (p.badge && currentFilter.value.includes(p.badge)))
+})
+
+const cargarDatosProveedor = async () => {
+    const pId = route.params.id
+    if (!pId) return;
+
+    try {
+        const { data: profile } = await supabase.from('profiles').select('*').eq('id', pId).single()
+        if (profile) {
+            proveedorInfo.value.nombre = profile.first_name || profile.email.split('@')[0]
+            proveedorInfo.value.correo = profile.email
+        }
+        
+        // Cargar logo
+        const { data: infoData } = await supabase.from('proveedor_info').select('logo_url').eq('proveedor_id', pId).single()
+        if (infoData && infoData.logo_url) {
+            proveedorInfo.value.logo = infoData.logo_url
+        }
+
+        // Cargar productos
+        const { data: prodData } = await supabase.from('productos').select('*').eq('proveedor_id', pId)
+        if (prodData && prodData.length > 0) {
+            realProducts.value = prodData.map(p => ({
+                id: p.id,
+                name: p.nombre,
+                desc: p.descripcion || `Corte fresco. Categoria: ${p.categoria || 'Normal'}`,
+                price: '$' + p.precio.toFixed(2),
+                badge: p.estado === 'disponible' ? 'Stock' : 'Agotado',
+                img: p.imagen_url || lomoImg,
+                category: p.categoria || 'Todos'
+            }))
+        } else {
+            realProducts.value = [] // Mostramos que no hay productos suyos
+        }
+    } catch (e) {
+        console.error('Error cargando proveedor', e)
+    }
+}
+
+onMounted(() => {
+    cargarDatosProveedor()
 })
 </script>
 

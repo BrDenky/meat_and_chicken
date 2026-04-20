@@ -143,6 +143,7 @@
 
 <script setup>
 import { ref, reactive } from 'vue';
+import { supabase } from '../supabase.js';
 
 const formData = reactive({
   nombreNegocio: '',
@@ -155,13 +156,30 @@ const formData = reactive({
 
 const enviando = ref(false);
 
-const enviarSolicitud = () => {
+const enviarSolicitud = async () => {
   enviando.value = true;
-  // Simulación de envío
-  setTimeout(() => {
+  
+  try {
+    // Insertamos los datos en la tabla 'solicitudes_proveedor' en Supabase
+    const { data, error } = await supabase
+      .from('solicitudes_proveedor')
+      .insert([
+        {
+          nombre_negocio: formData.nombreNegocio,
+          categoria: formData.categoria,
+          nombre_contacto: formData.nombreContacto,
+          telefono: formData.telefono,
+          email: formData.email,
+          mensaje: formData.mensaje,
+          estado: 'pendiente' // Opcional: estado inicial de la solicitud
+        }
+      ]);
+
+    if (error) throw error;
+
     alert('¡Solicitud enviada con éxito! Nos comunicaremos pronto contigo.');
-    enviando.value = false;
-    // Reset form
+    
+    // Limpiamos el formulario tras el envío exitoso
     Object.assign(formData, {
       nombreNegocio: '',
       categoria: '',
@@ -170,7 +188,13 @@ const enviarSolicitud = () => {
       email: '',
       mensaje: ''
     });
-  }, 1500);
+
+  } catch (error) {
+    console.error('Error enviando la solicitud:', error);
+    alert('Hubo un error al enviar tu solicitud. Por favor intenta nuevamente.');
+  } finally {
+    enviando.value = false;
+  }
 };
 </script>
 

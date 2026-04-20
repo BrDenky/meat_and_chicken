@@ -9,12 +9,16 @@
                 <div class="sidebar-sticky">
         <div class="provider-profile-mobile">
             <div class="provider-badge-container">
-                <img src="@/assets/img/proveedores/provedor_1.png" alt="7 Pozo" class="provider-logo-large">
+                <img :src="proveedorPerfil.logo || defaultProviderImg" :alt="proveedorPerfil.nombre" class="provider-logo-large">
+                <button class="btn-edit-logo" @click="$refs.logoInput.click()" title="Actualizar Logo">
+                    <i class="fa-solid fa-camera"></i>
+                </button>
+                <input type="file" ref="logoInput" accept="image/*" hidden @change="subirLogoProveedor">
                 <span class="verified-badge"><i class="fa-solid fa-circle-check"></i> Verificado</span>
             </div>
             
             <div class="provider-info-header">
-                <h1>7 Pozo</h1>
+                <h1>{{ proveedorPerfil.nombre }}</h1>
                 <p class="provider-tagline">Maestros Carniceros</p>
             </div>
         </div>
@@ -102,8 +106,24 @@
                     </div>
                 </section>
 
+                <!-- TABS DE NAVEGACION PRINCIPAL -->
+                <div class="dashboard-tabs" style="margin-bottom: 20px; display: flex; gap: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+                    <button 
+                        style="background: transparent; border: none; font-size: 18px; cursor: pointer; padding: 10px 20px; border-radius: 8px;" 
+                        :style="currentTab === 'productos' ? 'background: #F05A22; color: white; font-weight: bold;' : 'color: #555;'"
+                        @click="currentTab = 'productos'">
+                        <i class="fa-solid fa-boxes-stacked"></i> Mis Productos
+                    </button>
+                    <button 
+                        style="background: transparent; border: none; font-size: 18px; cursor: pointer; padding: 10px 20px; border-radius: 8px;" 
+                        :style="currentTab === 'pedidos' ? 'background: #F05A22; color: white; font-weight: bold;' : 'color: #555;'"
+                        @click="currentTab = 'pedidos'">
+                        <i class="fa-solid fa-clipboard-list"></i> Mis Pedidos
+                    </button>
+                </div>
+
                 <!-- Gestión de Productos -->
-                <section class="products-management">
+                <section class="products-management" v-if="currentTab === 'productos'">
                     <div class="table-header-row" :class="{ 'search-open': isSearchActive }">
                         <h2 class="section-title">Mis Productos</h2>
                         <div class="table-actions">
@@ -183,6 +203,64 @@
                         </div>
                     </div>
                 </section>
+
+                <!-- Gestión de Pedidos -->
+                <section class="orders-management" v-if="currentTab === 'pedidos'">
+                    <h2 class="section-title">Pedidos Entrantes</h2>
+                    
+                    <div class="premium-table-wrapper" style="margin-top: 20px;">
+                        <table class="premium-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Cliente (Info)</th>
+                                    <th>Producto Comprado</th>
+                                    <th>Cant / Subtotal</th>
+                                    <th>Estado de Entrega</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="detalle in misPedidos" :key="detalle.id">
+                                    <td style="font-size: 13px; color:#555;">{{ new Date(detalle.created_at).toLocaleString() }}</td>
+                                    <td>
+                                        <div style="font-size:13px;">
+                                            <strong>Tel:</strong> {{ detalle.pedidos?.telefono_contacto }}<br>
+                                            <strong>Dirección:</strong> {{ detalle.pedidos?.direccion_envio?.calle_principal || 'No especificada' }}, {{ detalle.pedidos?.direccion_envio?.ciudad }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="display:flex; align-items:center; gap: 10px;">
+                                            <img v-if="detalle.productos?.imagen_url" :src="detalle.productos.imagen_url" style="width:40px; height:40px; border-radius:5px; object-fit:cover;">
+                                            <span style="font-weight:600;">{{ detalle.productos?.nombre || 'Producto Desconocido' }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span style="display:block;">{{ detalle.cantidad }}x - <strong>${{ detalle.precio_unitario }}</strong></span>
+                                        <span style="color:#F05A22; font-weight:bold; font-size:15px;">Total: ${{ detalle.subtotal }}</span>
+                                    </td>
+                                    <td>
+                                        <select 
+                                            class="premium-select" 
+                                            style="padding: 6px 12px; font-size: 13px;"
+                                            v-model="detalle.estado_proveedor" 
+                                            @change="actualizarEstadoPedido(detalle.id, detalle.estado_proveedor)">
+                                            <option value="pendiente">🕒 Pendiente</option>
+                                            <option value="preparando">📦 Preparando</option>
+                                            <option value="en_camino">🚚 En Camino</option>
+                                            <option value="entregado">✅ Entregado</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr v-if="misPedidos.length === 0">
+                                    <td colspan="5" class="empty-state">
+                                        <i class="fa-solid fa-clipboard-list"></i>
+                                        <p>Aún no tienes pedidos registrados.</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
             </main>
         </div>
     </div>
@@ -197,7 +275,13 @@
                 </div>
 
                 <form @submit.prevent="guardarProducto" class="premium-form horizontal-form">
-                    <div class="form-columns">
+                    <div class="modal-tabs">
+                        <button type="button" :class="['modal-tab-btn', { active: modalTab === 'general' }]" @click="modalTab = 'general'">Datos Generales</button>
+                        <button type="button" :class="['modal-tab-btn', { active: modalTab === 'descripcion' }]" @click="modalTab = 'descripcion'">Descripción</button>
+                        <button type="button" :class="['modal-tab-btn', { active: modalTab === 'ficha' }]" @click="modalTab = 'ficha'">Ficha Técnica</button>
+                    </div>
+
+                    <div class="form-columns" v-if="modalTab === 'general'">
                         <!-- COLUMNA IZQUIERDA: DATOS -->
                         <div class="form-column">
                             <div class="form-group-full">
@@ -226,11 +310,22 @@
                                 </div>
                             </div>
 
-                            <div class="form-row-2">
+                            <div class="form-row-3">
                                 <div class="form-group">
                                     <label>Precio ($) *</label>
                                     <input type="number" v-model.number="formData.precio" step="0.01" required>
                                 </div>
+                                <div class="form-group">
+                                    <label>P. Oferta ($)</label>
+                                    <input type="number" v-model.number="formData.precioOferta" step="0.01" placeholder="Vacío">
+                                </div>
+                                <div class="form-group">
+                                    <label>Stock *</label>
+                                    <input type="number" v-model.number="formData.stock" step="1" required placeholder="0">
+                                </div>
+                            </div>
+
+                            <div class="form-row-3">
                                 <div class="form-group">
                                     <label>Estado *</label>
                                     <select v-model="formData.estado" required>
@@ -238,11 +333,8 @@
                                         <option value="agotado">Agotado</option>
                                     </select>
                                 </div>
-                            </div>
-
-                            <div class="form-row-2">
                                 <div class="form-group">
-                                    <label>Fecha Camal *</label>
+                                    <label>F. Camal *</label>
                                     <input type="date" v-model="formData.fechaCamal" required>
                                 </div>
                                 <div class="form-group">
@@ -254,8 +346,8 @@
 
                         <!-- COLUMNA DERECHA: IMAGENES Y CERTIFICADOS -->
                         <div class="form-column">
-                            <label>Imágenes del Producto *</label>
-                            <div class="image-upload-zone large-zone" @click="$refs.fileInput.click()" @dragover.prevent @drop.prevent="handleDrop">
+                            <label>Imagen del Producto *</label>
+                            <div class="image-upload-zone" style="height: 150px;" @click="$refs.fileInput.click()" @dragover.prevent @drop.prevent="handleDrop">
                                 <input type="file" ref="fileInput" @change="handleFileUpload" hidden accept="image/*">
                                 <div class="upload-placeholder" v-if="!tempImagePreview">
                                     <i class="fa-solid fa-cloud-arrow-up"></i>
@@ -264,7 +356,7 @@
                                 </div>
                                 <div class="image-preview-container" v-else>
                                     <img :src="tempImagePreview" alt="Preview">
-                                    <button type="button" class="btn-clear-img" @click.stop="tempImagePreview = null">
+                                    <button type="button" class="btn-clear-img" @click.stop="clearImage">
                                         <i class="fa-solid fa-xmark"></i>
                                     </button>
                                 </div>
@@ -273,6 +365,64 @@
                             <div class="form-group-full" style="margin-top:20px;">
                                 <label>Certificación del Producto</label>
                                 <input type="text" v-model="formData.certificacion" placeholder="Ej: Certificación Sanitaria #12345">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div v-if="modalTab === 'descripcion'" style="padding-top: 10px;">
+                        <div class="form-group-full">
+                            <label>Descripción detallada del producto</label>
+                            <textarea 
+                                v-model="formData.descripcion" 
+                                maxlength="400" 
+                                rows="6" 
+                                placeholder="Describe el corte, sus beneficios, recomendaciones de uso..."
+                                style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; resize: vertical; font-family: inherit;">
+                            </textarea>
+                            <span style="font-size: 12px; color: #888; float: right; margin-top: 5px;">{{ formData.descripcion?.length || 0 }}/400 caracteres</span>
+                        </div>
+                    </div>
+
+                    <div class="form-columns" v-if="modalTab === 'ficha'">
+                        <!-- COLUMNA IZQUIERDA: ALGUNOS DATOS FICHA -->
+                        <div class="form-column">
+                            <div class="form-row-2">
+                                <div class="form-group">
+                                    <label>Origen</label>
+                                    <input type="text" v-model="formData.origen" placeholder="Ej: Haciendas Locales (Ecuador)">
+                                </div>
+                                <div class="form-group">
+                                    <label>Tipo de Ganado</label>
+                                    <input type="text" v-model="formData.tipoGanado" placeholder="Ej: Angus / Brangus">
+                                </div>
+                            </div>
+                            <div class="form-row-2">
+                                <div class="form-group">
+                                    <label>Maduración</label>
+                                    <input type="text" v-model="formData.maduracion" placeholder="Ej: 14 - 21 días">
+                                </div>
+                                <div class="form-group">
+                                    <label>Presentación</label>
+                                    <input type="text" v-model="formData.presentacion" placeholder="Ej: Empacado al vacío">
+                                </div>
+                            </div>
+                            <div class="form-row-2">
+                                <div class="form-group">
+                                    <label>Vida Útil</label>
+                                    <input type="text" v-model="formData.vidaUtil" placeholder="Ej: 30 días">
+                                </div>
+                                <div class="form-group">
+                                    <label>Temp. Almacenamiento</label>
+                                    <input type="text" v-model="formData.tempAlmacenamiento" placeholder="Ej: 0°C a 4°C">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- COLUMNA DERECHA: RESTO DE DATOS -->
+                        <div class="form-column">
+                            <div class="form-group-full">
+                                <label>Alimentación</label>
+                                <input type="text" v-model="formData.alimentacion" placeholder="Ej: Pastura natural y granos">
                             </div>
                         </div>
                     </div>
@@ -501,32 +651,54 @@
 import { ref, computed, onMounted } from 'vue'
 import { supabase } from '../supabase'
 import lomoImg from '@/assets/img/ofertas/lomo.png'
+import defaultProviderImg from '@/assets/img/proveedores/provedor_1.png'
+
+const proveedorPerfil = ref({
+    nombre: 'Cargando...',
+    logo: null
+})
 
 const filtroNombre = ref('')
 const filtroCategoria = ref('')
 const filtroEstado = ref('')
 const isSearchActive = ref(false)
 
+const currentTab = ref('productos')
+const misPedidos = ref([])
+
 const isModalOpen = ref(false)
 const modalMode = ref('create')
+const modalTab = ref('general')
 
 const formData = ref({
     nombre: '',
     tipoCorte: '',
     categoria: '',
     precio: 0,
+    precioOferta: null,
     estado: 'disponible',
+    stock: 0,
     certificacion: '',
     fechaCamal: '',
-    peso: 0
+    peso: 0,
+    descripcion: '',
+    origen: '',
+    tipoGanado: '',
+    maduracion: '',
+    presentacion: '',
+    vidaUtil: '',
+    tempAlmacenamiento: '',
+    alimentacion: ''
 })
 
 const tempImagePreview = ref(null)
+const imageFileToUpload = ref(null)
 
 const handleFileUpload = (e) => {
     const file = e.target.files[0]
     if (file) {
         tempImagePreview.value = URL.createObjectURL(file)
+        imageFileToUpload.value = file
     }
 }
 
@@ -534,7 +706,14 @@ const handleDrop = (e) => {
     const file = e.dataTransfer.files[0]
     if (file) {
         tempImagePreview.value = URL.createObjectURL(file)
+        imageFileToUpload.value = file
     }
+}
+
+// Y para limpiar la imagen con el botón de "x"
+const clearImage = () => {
+    tempImagePreview.value = null
+    imageFileToUpload.value = null
 }
 
 /* LOGICA DEL MODAL DE PAGOS Y CONTACTO */
@@ -563,6 +742,8 @@ const cargarDatosProveedor = async () => {
         const { data: authData } = await supabase.auth.getUser()
         if (!authData?.user) return
         
+        proveedorPerfil.value.nombre = authData.user.user_metadata?.full_name || 'Proveedor Carnico'
+        
         const { data, error } = await supabase
             .from('proveedor_info')
             .select('*')
@@ -573,6 +754,8 @@ const cargarDatosProveedor = async () => {
         if (error && error.code !== 'PGRST116') throw error 
         
         if (data) {
+            proveedorPerfil.value.logo = data.logo_url || null
+            
             formDataPago.value = {
                 cuentaPichincha: data.cuenta_pichincha || '',
                 cuentaGuayaquil: data.cuenta_guayaquil || '',
@@ -580,6 +763,12 @@ const cargarDatosProveedor = async () => {
                 email: data.email_soporte || '',
                 direccion: data.direccion || ''
             }
+
+            // Poblamos las certificaciones que ya existan en la BD
+            if (data.cert_1) tempCerts.value[1] = { name: 'Registrado en sistema' }
+            if (data.cert_2) tempCerts.value[2] = { name: 'Registrado en sistema' }
+            if (data.cert_3) tempCerts.value[3] = { name: 'Registrado en sistema' }
+            if (data.cert_4) tempCerts.value[4] = { name: 'Registrado en sistema' }
         }
     } catch (error) {
         console.error('Error al cargar la información del proveedor:', error)
@@ -658,9 +847,96 @@ const handlePdfUpload = (e, index) => {
     }
 }
 
-const guardarCerts = () => {
-    alert('✅ Certificaciones guardadas correctamente. Serán revisadas por nuestro equipo técnico.')
-    cerrarModalCert()
+const guardarCerts = async () => {
+    try {
+        const { data: authData } = await supabase.auth.getUser()
+        if (!authData?.user) {
+            alert('Debes iniciar sesión para subir certificaciones.')
+            return
+        }
+
+        let subidas = 0;
+        let updateData = { proveedor_id: authData.user.id };
+
+        // Recorremos los 4 posibles archivos
+        for (const index of [1, 2, 3, 4]) {
+            const certData = tempCerts.value[index];
+            // Si hay un archivo seleccionado y aún no se ha subido
+            if (certData && certData.file) {
+                // Generamos un nombre único: id_del_proveedor/cert_1_timestamp.pdf
+                const ext = certData.name.split('.').pop();
+                const fileName = `${authData.user.id}/cert_${index}_${Date.now()}.${ext}`;
+                
+                const { data, error: uploadError } = await supabase.storage
+                    .from('certificaciones')
+                    .upload(fileName, certData.file, {
+                        cacheControl: '3600',
+                        upsert: true // reemplaza el archivo si tiene el mismo nombre
+                    });
+                    
+                if (uploadError) throw uploadError;
+                
+                subidas++;
+                
+                // Obtener la URL pública del PDF subido
+                const { data: publicUrlData } = supabase.storage.from('certificaciones').getPublicUrl(fileName);
+                
+                // Agregamos la URL según el índice de certificación
+                updateData[`cert_${index}`] = publicUrlData.publicUrl;
+            }
+        }
+
+        if (subidas > 0) {
+            // Guardamos todas las URLs obtenidas de los certificados subidos en proveedor_info
+            const { error: dbError } = await supabase.from('proveedor_info').upsert(updateData);
+            
+            if (dbError) throw dbError;
+
+            alert('✅ Certificaciones subidas correctamente a Supabase y registradas. Serán revisadas por nuestro equipo técnico.')
+            cerrarModalCert()
+            await cargarDatosProveedor() // Refrescamos todo y mostramos el check verde
+        } else {
+            alert('No has seleccionado ningún archivo nuevo para subir.')
+        }
+
+    } catch (error) {
+        console.error('Error al subir certificaciones:', error)
+        alert('❌ Hubo un error al subir los archivos: ' + error.message)
+    }
+}
+
+const subirLogoProveedor = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    
+    try {
+        const { data: authData } = await supabase.auth.getUser()
+        if (!authData?.user) return
+        
+        const ext = file.name.split('.').pop()
+        const fileName = `${authData.user.id}/logo_${Date.now()}.${ext}`
+        
+        const { error: uploadError } = await supabase.storage
+            .from('proveedores_logos')
+            .upload(fileName, file, { upsert: true })
+            
+        if (uploadError) throw uploadError
+        
+        const { data: publicUrlData } = supabase.storage.from('proveedores_logos').getPublicUrl(fileName)
+        const logoUrl = publicUrlData.publicUrl
+        
+        const { error: dbError } = await supabase.from('proveedor_info').upsert({
+            proveedor_id: authData.user.id,
+            logo_url: logoUrl
+        })
+        
+        if (dbError) throw dbError
+        
+        proveedorPerfil.value.logo = logoUrl
+    } catch (error) {
+        console.error('Error al subir logo:', error)
+        alert('Asegúrate de que el bucket de almacenamiento "proveedores_logos" esté creado para que tu logo se guarde correctamente.')
+    }
 }
 
 const productos = ref([])
@@ -702,7 +978,17 @@ const cargarMisProductos = async () => {
                 _raw_certificacion: p.certificacion || '',
                 _raw_peso: p.peso || 0,
                 _raw_tipoCorte: p.tipo_corte || '',
-                _raw_estado: p.estado || 'disponible'
+                _raw_estado: p.estado || 'disponible',
+                _raw_origen: p.origen || '',
+                _raw_tipoGanado: p.tipo_ganado || '',
+                _raw_maduracion: p.maduracion || '',
+                _raw_presentacion: p.presentacion || '',
+                _raw_vidaUtil: p.vida_util || '',
+                _raw_tempAlmacenamiento: p.temp_almacenamiento || '',
+                _raw_alimentacion: p.alimentacion || '',
+                _raw_precioOferta: p.precio_oferta || null,
+                _raw_stock: p.stock || 0,
+                _raw_descripcion: p.descripcion || ''
             }))
         }
     } catch (error) {
@@ -713,7 +999,63 @@ const cargarMisProductos = async () => {
 onMounted(() => {
     cargarMisProductos()
     cargarDatosProveedor()
+    cargarMisPedidos()
 })
+
+const cargarMisPedidos = async () => {
+    try {
+        const { data: authData } = await supabase.auth.getUser()
+        if (!authData?.user) return
+        
+        const { data, error } = await supabase
+            .from('detalles_pedido')
+            .select(`
+                id,
+                cantidad,
+                precio_unitario,
+                subtotal,
+                estado_proveedor,
+                created_at,
+                pedidos!inner(
+                    id,
+                    cliente_id,
+                    estado,
+                    direccion_envio,
+                    telefono_contacto,
+                    created_at
+                ),
+                productos!inner(
+                    nombre,
+                    imagen_url
+                )
+            `)
+            .eq('proveedor_id', authData.user.id)
+            .order('created_at', { ascending: false })
+            
+        if (error) throw error
+        
+        if (data) {
+            misPedidos.value = data
+        }
+    } catch (e) {
+        console.error('Error cargando pedidos', e)
+    }
+}
+
+const actualizarEstadoPedido = async (detalleId, nuevoEstado) => {
+    try {
+        const { error } = await supabase
+            .from('detalles_pedido')
+            .update({ estado_proveedor: nuevoEstado })
+            .eq('id', detalleId)
+            
+        if (error) throw error
+        alert('✅ Estado del pedido actualizado exitosamente')
+    } catch(e) {
+        console.error('Error al actualizar estado:', e)
+        alert('❌ No se pudo actualizar el estado del pedido.')
+    }
+}
 
 const filteredProducts = computed(() => {
     return productos.value.filter(p => {
@@ -726,6 +1068,7 @@ const filteredProducts = computed(() => {
 
 const abrirModalProducto = () => {
     modalMode.value = 'create'
+    modalTab.value = 'general'
     formData.value = {
         id: null,
         nombre: '',
@@ -735,8 +1078,20 @@ const abrirModalProducto = () => {
         peso: 0,
         fechaCamal: '',
         certificacion: '',
-        estado: 'disponible'
+        estado: 'disponible',
+        origen: '',
+        tipoGanado: '',
+        maduracion: '',
+        presentacion: '',
+        vidaUtil: '',
+        tempAlmacenamiento: '',
+        alimentacion: '',
+        precioOferta: null,
+        stock: 0,
+        descripcion: ''
     }
+    tempImagePreview.value = null
+    imageFileToUpload.value = null
     isModalOpen.value = true
 }
 
@@ -744,6 +1099,7 @@ const editarProducto = (id) => {
     const p = productos.value.find(x => x.id === id)
     if (p) {
         modalMode.value = 'edit'
+        modalTab.value = 'general'
         formData.value = {
             id: p.id,
             nombre: p.nombre,
@@ -753,8 +1109,20 @@ const editarProducto = (id) => {
             categoria: p.categoria,
             peso: p._raw_peso,
             fechaCamal: p._raw_fechaCamal,
-            certificacion: p._raw_certificacion
+            certificacion: p._raw_certificacion,
+            origen: p._raw_origen,
+            tipoGanado: p._raw_tipoGanado,
+            maduracion: p._raw_maduracion,
+            presentacion: p._raw_presentacion,
+            vidaUtil: p._raw_vidaUtil,
+            tempAlmacenamiento: p._raw_tempAlmacenamiento,
+            alimentacion: p._raw_alimentacion,
+            precioOferta: p._raw_precioOferta,
+            stock: p._raw_stock,
+            descripcion: p._raw_descripcion
         }
+        tempImagePreview.value = p.img !== lomoImg ? p.img : null
+        imageFileToUpload.value = null
         isModalOpen.value = true
     }
 }
@@ -773,11 +1141,29 @@ const guardarProducto = async () => {
             return
         }
 
+        let imageUrl = undefined
+
+        // Si se seleccionó un archivo nuevo, lo subimos
+        if (imageFileToUpload.value) {
+            const ext = imageFileToUpload.value.name.split('.').pop()
+            const fileName = `${authData.user.id}/prod_${Date.now()}.${ext}`
+            
+            const { error: uploadError } = await supabase.storage
+                .from('productos')
+                .upload(fileName, imageFileToUpload.value, {
+                    upsert: true
+                })
+                
+            if (uploadError) throw uploadError
+            
+            // Obtenemos la URL pública de la foto recién subida
+            const { data: publicUrlData } = supabase.storage.from('productos').getPublicUrl(fileName)
+            imageUrl = publicUrlData.publicUrl
+        }
+
         if (modalMode.value === 'create') {
-            // Mandamos los datos a la tabla productos de Supabase
-            const { error } = await supabase.from('productos').insert({
+            const insertData = {
                 nombre: formData.value.nombre,
-                // descripcion se omite porque no está en tu formData aún
                 tipo_corte: formData.value.tipoCorte,
                 categoria: formData.value.categoria,
                 precio: formData.value.precio,
@@ -785,28 +1171,50 @@ const guardarProducto = async () => {
                 fecha_camal: formData.value.fechaCamal,
                 peso: formData.value.peso,
                 certificacion: formData.value.certificacion,
+                origen: formData.value.origen,
+                tipo_ganado: formData.value.tipoGanado,
+                maduracion: formData.value.maduracion,
+                presentacion: formData.value.presentacion,
+                vida_util: formData.value.vidaUtil,
+                temp_almacenamiento: formData.value.tempAlmacenamiento,
+                alimentacion: formData.value.alimentacion,
+                precio_oferta: formData.value.precioOferta || null,
+                stock: formData.value.stock || 0,
+                descripcion: formData.value.descripcion || '',
                 proveedor_id: authData.user.id
-            })
-
-            if (error) {
-                // Si la política de seguridad RLS rebota (no es proveedor), caerá aquí
-                throw error
             }
-            
+            if (imageUrl) insertData.imagen_url = imageUrl
+
+            // Mandamos los datos a la tabla productos de Supabase
+            const { error } = await supabase.from('productos').insert(insertData)
+
+            if (error) throw error
             alert('✅ Producto creado exitosamente en la Base de Datos')
         } else {
-            // Actualizamos un producto existente que tiene el id guardado
-            const { error } = await supabase.from('productos').update({
+            const updateData = {
                 nombre: formData.value.nombre,
-                // descripcion
                 tipo_corte: formData.value.tipoCorte,
                 categoria: formData.value.categoria,
                 precio: formData.value.precio,
                 estado: formData.value.estado,
                 fecha_camal: formData.value.fechaCamal,
                 peso: formData.value.peso,
-                certificacion: formData.value.certificacion
-            }).eq('id', formData.value.id)
+                certificacion: formData.value.certificacion,
+                origen: formData.value.origen,
+                tipo_ganado: formData.value.tipoGanado,
+                maduracion: formData.value.maduracion,
+                presentacion: formData.value.presentacion,
+                vida_util: formData.value.vidaUtil,
+                temp_almacenamiento: formData.value.tempAlmacenamiento,
+                alimentacion: formData.value.alimentacion,
+                precio_oferta: formData.value.precioOferta || null,
+                stock: formData.value.stock || 0,
+                descripcion: formData.value.descripcion || ''
+            }
+            if (imageUrl) updateData.imagen_url = imageUrl
+
+            // Actualizamos un producto existente que tiene el id guardado
+            const { error } = await supabase.from('productos').update(updateData).eq('id', formData.value.id)
 
             if (error) throw error
             alert(`✅ Producto actualizado exitosamente`)
@@ -882,8 +1290,8 @@ const eliminarProducto = async (id) => {
 
 .verified-badge {
     position: absolute;
-    bottom: 0;
-    right: 0;
+    bottom: -5px;
+    right: 5px;
     background: #4caf50;
     color: white;
     padding: 4px 10px;
@@ -891,6 +1299,33 @@ const eliminarProducto = async (id) => {
     font-size: 10px;
     font-weight: 700;
     border: 2px solid #fff;
+    z-index: 5;
+}
+
+.btn-edit-logo {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid #eee;
+    color: #F05A22;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: all 0.2s;
+    z-index: 10;
+}
+
+.btn-edit-logo:hover {
+    background: #F05A22;
+    color: white;
+    transform: scale(1.1);
+    border-color: #F05A22;
 }
 
 .provider-info-header {
@@ -1205,6 +1640,41 @@ const eliminarProducto = async (id) => {
     box-shadow: 0 20px 60px rgba(0,0,0,0.2);
 }
 
+.modal-tabs {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 5px;
+}
+
+.modal-tab-btn {
+    background: none;
+    border: none;
+    font-size: 16px;
+    font-weight: 700;
+    color: #aaa;
+    cursor: pointer;
+    padding: 5px 10px;
+    position: relative;
+    transition: all 0.3s;
+}
+
+.modal-tab-btn.active {
+    color: #F05A22;
+}
+
+.modal-tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -7px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: #F05A22;
+    border-radius: 3px;
+}
+
 .form-columns {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1220,6 +1690,13 @@ const eliminarProducto = async (id) => {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
+    margin-bottom: 20px;
+}
+
+.form-row-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 15px;
     margin-bottom: 20px;
 }
 

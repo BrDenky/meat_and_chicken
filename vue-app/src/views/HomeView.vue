@@ -67,7 +67,7 @@
                             v-for="p in productosMasVendidos" 
                             :key="p.id" 
                             class="vendido-card"
-                            @click="$router.push('/producto')">
+                            @click="$router.push('/producto/' + p.id)">
                             
                             <div class="vendido-img">
                                 <img :src="p.img" :alt="p.nombre">
@@ -107,7 +107,7 @@
                             v-for="(item, index) in productosCarrusel" 
                             :key="index" 
                             class="oferta-card" 
-                            @click="$router.push('/producto')">
+                            @click="$router.push('/producto/' + item.id)">
 
                             <div class="oferta-badge">{{ item.badge }}</div>
 
@@ -181,12 +181,12 @@
                     v-for="prov in listaProveedores" 
                     :key="prov.id" 
                     class="provider-card" 
-                    @click="$router.push('/perfil-proveedor')" 
+                    @click="$router.push('/perfil-proveedor/' + prov.id)" 
                     style="cursor: pointer;"
                 >
                     <div class="provider-top" :style="{ background: prov.colorFondo }">
                         <div class="provider-avatar">
-                            <img :src="`/img/proveedores/${prov.img}`" :alt="prov.nombre">
+                            <img :src="prov.imgUrl ? prov.imgUrl : `/img/proveedores/${prov.img}`" :alt="prov.nombre">
                         </div>
                     </div>
             
@@ -197,7 +197,7 @@
                 
                         <button 
                             class="provider-btn" 
-                            @click.stop="$router.push({ name: 'perfil-proveedor', query: { proveedor: prov.slug } })">
+                            @click.stop="$router.push('/perfil-proveedor/' + prov.id)">
                             Ver Proveedor
                         </button>
                     </div>
@@ -300,6 +300,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCartStore } from '../stores/cart'
+import { supabase } from '../supabase'
 
 const cartStore = useCartStore()
 
@@ -421,17 +422,66 @@ const productosEnOferta = ref([
 
 const productosCarrusel = ref([...productosEnOferta.value, ...productosEnOferta.value]);
 
-// Lista de productos más vendidos (8 unidades)
-const productosMasVendidos = ref([
-    { id: 1, nombre: 'Lomo de Res Premium', categoria: 'Res', precio: 12.50, img: '/img/carne_1.png' },
-    { id: 2, nombre: 'Pechuga de Pollo x 1kg', categoria: 'Aves', precio: 5.80, img: '/img/carne_3.jpg' },
-    { id: 3, nombre: 'Chuleta de Cerdo Extra', categoria: 'Cerdo', precio: 4.50, img: '/img/carne_4.jpg' },
-    { id: 4, nombre: 'Carne Molida Especial', categoria: 'Res', precio: 6.20, img: '/img/carne_5.jpg' },
-    { id: 5, nombre: 'Alitas de Pollo x 12', categoria: 'Aves', precio: 7.50, img: '/img/carne_2.jpg' },
-    { id: 6, nombre: 'Costilla Ahumada', categoria: 'Cerdo', precio: 8.90, img: '/img/carne_4.jpg' },
-    { id: 7, nombre: 'Hamburguesa Artesanal', categoria: 'Procesados', precio: 2.50, img: '/img/carne_3.jpg' },
-    { id: 8, nombre: 'Chorizo Santarrosano', categoria: 'Embutidos', precio: 10.00, img: '/img/carne_5.jpg' }
-]);
+// Lista de productos reales que viene de Supabase
+const productosMasVendidos = ref([]);
+
+const cargarProductosReales = async () => {
+    try {
+        // Pedimos solo los disponibles y simulamos limitar a 8 para la pantalla principal
+        const { data, error } = await supabase
+            .from('productos')
+            .select('*')
+            .eq('estado', 'disponible')
+            .limit(8)
+            
+        if (error) throw error
+        
+        if (data && data.length > 0) {
+            productosMasVendidos.value = data.map(p => ({
+                id: p.id,
+                nombre: p.nombre,
+                categoria: p.categoria || 'Res',
+                precio: p.precio,
+                proveedor_id: p.proveedor_id,
+                img: p.imagen_url || '/img/ofertas/lomo.png' // Lomo.png temporal si el proveedor no subió foto
+            }))
+        }
+    } catch (error) {
+        console.error('Error al cargar catálogo de productos reales:', error)
+    }
+}
+
+const cargarProveedoresReales = async () => {
+    try {
+        const { data: perfiles, error: err1 } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('role', 'proveedor')
+            
+        const { data: infoList } = await supabase
+            .from('proveedor_info')
+            .select('proveedor_id, logo_url')
+            
+        if (err1) throw err1
+        
+        if (perfiles && perfiles.length > 0) {
+            listaProveedores.value = perfiles.map((p, i) => {
+                const info = infoList?.find(inf => inf.proveedor_id === p.id)
+                return {
+                    id: p.id,
+                    nombre: p.first_name || p.email.split('@')[0],
+                    categoria: 'Proveedor Local',
+                    descripcion: 'Variedad de cortes de alta calidad directos del productor.',
+                    img: 'provedor_1.png',
+                    imgUrl: info?.logo_url || null,
+                    colorFondo: '#212121'
+                }
+            })
+        }
+    } catch (error) {
+        console.error('Error al cargar proveedores reales:', error)
+    }
+}
 
 
 // Lista de proveedores
@@ -585,6 +635,8 @@ const detenerAutoScroll = () => {
 
 onMounted(() => {
     iniciarAutoScroll();
+    cargarProductosReales();
+    cargarProveedoresReales();
 });
 
 onUnmounted(() => {
@@ -600,7 +652,8 @@ const agregarAlCarrito = (producto) => {
         image: producto.img.replace('/img/', ''), // Limpiamos la ruta si ya la trae
         weight: producto.peso || '1kg', // Default si no tiene
         cut: producto.categoria || 'Corte especial',
-        sku: 'SKU-' + producto.id
+        sku: 'SKU-' + producto.id,
+        proveedor_id: producto.proveedor_id
     }
     
     cartStore.addItem(itemToAdd)

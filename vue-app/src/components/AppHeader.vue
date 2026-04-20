@@ -55,11 +55,11 @@
     <!-- BARRA DE NAVEGACIÓN SECUNDARIA (Se oculta en el panel de proveedor) -->
     <nav class="secondary-nav" v-if="showSecondaryNav">
       <div class="container secondary-nav-inner">
-        <router-link to="/resultados" class="secondary-nav-link">Productos</router-link>
-        <router-link to="/#productos" class="secondary-nav-link">Proveedores</router-link>
-        <router-link to="/registro" class="secondary-nav-link">Trabaja con Nosotros</router-link>
-        <router-link to="/sobrenosotros" class="secondary-nav-link">Sobre Nosotros</router-link>
-        <router-link to="/noticias" class="secondary-nav-link">Noticias</router-link>
+        <router-link to="/resultados" class="secondary-nav-link" @click="forceShowHeader">Productos</router-link>
+        <router-link to="/#productos" class="secondary-nav-link" @click="forceShowHeader">Proveedores</router-link>
+        <router-link to="/registro" class="secondary-nav-link" @click="forceShowHeader">Trabaja con Nosotros</router-link>
+        <router-link to="/sobrenosotros" class="secondary-nav-link" @click="forceShowHeader">Sobre Nosotros</router-link>
+        <router-link to="/noticias" class="secondary-nav-link" @click="forceShowHeader">Noticias</router-link>
       </div>
     </nav>
   </div>
@@ -149,8 +149,7 @@ const showNotification = (message, type = 'success') => {
 const abrirLogin = () => isLoginVisible.value = true
 const cerrarLogin = () => isLoginVisible.value = false
 
-// Forzamos que el header aparezca al cambiar de ruta o usar anclas
-watch(() => route.fullPath, () => {
+const forceShowHeader = () => {
     if (!isBehaviorEnabled.value) {
         isVisible.value = true
         return
@@ -160,7 +159,12 @@ watch(() => route.fullPath, () => {
     setTimeout(() => {
         lastScrollY = window.scrollY
         skipScroll.value = false
-    }, 250)
+    }, 800) // Aumentamos el tiempo de bloqueo para asegurar que los navegadores terminen de lanzar eventos de scroll tras el salto
+}
+
+// Forzamos que el header aparezca al cambiar de ruta o usar anclas
+watch(() => route.fullPath, () => {
+    forceShowHeader()
 })
 
 // LOGICA DE SESIÓN CON SUPABASE

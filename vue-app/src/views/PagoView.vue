@@ -367,7 +367,7 @@ const confirmationMessage = computed(() => {
     }
 })
 
-const submitForm = () => {
+const submitForm = async () => {
     if (!selectedPayment.value) {
         alert('Por favor selecciona un método de pago')
         return
@@ -396,10 +396,68 @@ const submitForm = () => {
         return
     }
 
-    // ¡Éxito! Vaciar los productos del carrito (también los borrará de supabase)
-    cartStore.clearCart()
+    try {
+        const { data: userData } = await supabase.auth.getUser()
+        const unUsuario = userData?.user?.id || null
 
-    isConfirmed.value = true
+        // 1. Insertar el "pedido" maestro
+        let queryPedido = supabase.from('pedidos').insert({
+            cliente_id: unUsuario,
+            total: cartStore.subtotal,
+            estado: selectedPayment.value === 'card' ? 'pagado' : 'pendiente',
+            metodo_pago: selectedPayment.value,
+            direccion_envio: {
+                provincia: formData.value.province,
+                ciudad: formData.value.city,
+                calle_principal: formData.value.street,
+                numero: formData.value.streetNumber,
+                interseccion: formData.value.intersection,
+                barrio: formData.value.neighborhood,
+                codigo_postal: formData.value.zipCode,
+                referencias: formData.value.reference
+            },
+            telefono_contacto: formData.value.phone 
+        })
+
+        // Sólo hacemos .select() si el usuario está logueado, para evitar error de RLS
+        // Si no está logueado, traemos el ID sin .select(). Wait, supabase insert sin select 
+        // ya no devuelve la fila en v2 si no encadenas .select(), pero si no encadenas .select()
+        // no sabes el ID del pedido. Supabase V2 REQUIERE .select() para retornar los datos.
+        // As workaround for guests, we MUST execute .select() and update SQL policy!
+        const { data: nuevoPedido, error: pedidoError } = await queryPedido.select().single()
+
+        if (pedidoError) throw pedidoError
+
+        const isUUID = (str) => /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(str)
+
+        // 2. Insertar los "detalles_pedido"
+        const detalles = cartStore.items.map(item => {
+            // Verificar si el producto_id y proveedor_id son verdaderos UUIDs válidos para no quebrar PostgreSQL
+            const validProductoId = isUUID(item.id) ? item.id : null;
+            const validProveedorId = isUUID(item.proveedor_id) ? item.proveedor_id : null;
+            
+            return {
+                pedido_id: nuevoPedido.id,
+                producto_id: validProductoId,
+                proveedor_id: validProveedorId,
+                cantidad: item.qty,
+                precio_unitario: item.price,
+                subtotal: parseFloat((item.price * item.qty).toFixed(2)),
+                estado_proveedor: 'pendiente'
+            }
+        })
+
+        const { error: detallesError } = await supabase.from('detalles_pedido').insert(detalles)
+        if (detallesError) throw detallesError
+
+        // Éxito: Vaciar el carrito local y mostrar confirmación
+        cartStore.clearCart()
+        isConfirmed.value = true
+
+    } catch(err) {
+        console.error('Error insertando la orden:', err)
+        alert('Ocurrió un error al procesar el pedido. Verifica la consola para más detalles.')
+    }
 }
 </script>
 

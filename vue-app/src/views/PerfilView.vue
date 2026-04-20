@@ -34,10 +34,6 @@
 
         <!-- CONTENIDO PRINCIPAL -->
         <div class="perfil-content">
-            
-            <div class="breadcrumb-perfil">
-                <router-link to="/">Inicio</router-link> › <span>Perfil</span>
-            </div>
 
             <!-- SECCIÓN PEDIDOS -->
             <div class="seccion-contenido" v-show="currentSection === 'pedidos'">
@@ -87,29 +83,7 @@
                         </div>
                     </div>
 
-                    <div class="form-section">
-                        <h3 class="form-section-title">Dirección Fiscal</h3>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="form-label">Provincia</label>
-                                <select class="form-input" v-model="formFacturacion.provincia">
-                                    <option>Pichincha</option>
-                                    <option>Guayas</option>
-                                    <option>Azuay</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Ciudad</label>
-                                <input type="text" class="form-input" v-model="formFacturacion.ciudad">
-                            </div>
-                        </div>
 
-                        <div class="form-group">
-                            <label class="form-label">Dirección Completa</label>
-                            <input type="text" class="form-input" v-model="formFacturacion.direccion">
-                        </div>
-                    </div>
 
                     <div class="form-actions">
                         <button type="submit" class="btn-guardar">Guardar cambios</button>
@@ -338,6 +312,11 @@ const isLoading = ref(true)
 
 const cambiarSeccion = (seccion) => {
     currentSection.value = seccion
+    // Opcional: hacer un scroll suave hacia el inicio del área de contenido del perfil
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    })
 }
 
 const cerrarSesion = async () => {

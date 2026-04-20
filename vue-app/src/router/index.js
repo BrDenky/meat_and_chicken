@@ -25,12 +25,12 @@ const router = createRouter({
             component: () => import('../views/PerfilView.vue')
         },
         {
-            path: '/perfil-proveedor',
+            path: '/perfil-proveedor/:id',
             name: 'perfil-proveedor',
             component: () => import('../views/PerfilProveedorView.vue')
         },
         {
-            path: '/producto',
+            path: '/producto/:id',
             name: 'producto',
             component: () => import('../views/ProductoView.vue')
         },
